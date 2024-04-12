@@ -1,0 +1,54 @@
+/********************************************************
+* Filename		: thBaseAnimation.h
+* Creator		: ac
+* Date time		: 2024.04.11
+* Description	: base fsm.
+********************************************************/
+
+
+#include "thBaseFSM.h"
+
+CTHBaseFSM::CTHBaseFSM()
+{
+}
+
+CTHBaseFSM::~CTHBaseFSM()
+{
+}
+
+
+thBool CTHBaseFSM::init()
+{
+	thBool bRet = THFALSE;
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+thBool CTHBaseFSM::thFsmDriver()
+{
+	thBool bRet = THFALSE;
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+thBool CTHBaseFSM::thFsmSwitch()
+{
+	thBool bRet = THFALSE;
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+thBool CTHBaseFSM::thFsmPause()
+{
+	thBool bRet = THFALSE;
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}

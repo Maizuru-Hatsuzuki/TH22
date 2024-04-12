@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="win32">
+      <UniqueIdentifier>{84a8ebd7-7cf0-47f6-b75e-d441df67da40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resource">
+      <UniqueIdentifier>{715254bc-d70b-4ec5-bf29-467dd3ace079}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header">
+      <UniqueIdentifier>{038a4704-b162-4161-9a1b-3f834a6f55bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src">
+      <UniqueIdentifier>{bb6c862e-70e9-49d9-81b7-3829a6f50471}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\THMainScene">
+      <UniqueIdentifier>{e4c04069-67f5-4654-8107-87017e68d8f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header\THMainScene">
+      <UniqueIdentifier>{643097b7-530c-4246-9ab4-09a5b7c94dfa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header\THBase">
+      <UniqueIdentifier>{319fac65-5a24-4a0d-85c0-c2b993ffcea0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\THBase">
+      <UniqueIdentifier>{88cd7012-7499-4295-8c70-9f6c420ea570}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\THCharacter">
+      <UniqueIdentifier>{cb66d1f8-d72a-455f-ae21-08361fcd406b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header\THCharacter">
+      <UniqueIdentifier>{c19fb064-9a66-4256-b14a-4b9ca7b0f4e5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\AppDelegate.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\HelloWorldScene.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\thSceneDungeon.cpp">
+      <Filter>Src\THMainScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\thPlayer.cpp">
+      <Filter>Src\THCharacter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\thBaseAnimation.cpp">
+      <Filter>Src\THBase</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\thCharacterFSM.cpp">
+      <Filter>Src\THCharacter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\thBaseFSM.cpp">
+      <Filter>Src\THBase</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="main.h">
+      <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\AppDelegate.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\HelloWorldScene.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Header\thBase.h">
+      <Filter>Header\THBase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Header\thBaseMacro.h">
+      <Filter>Header\THBase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Header\thSceneDungeon.h">
+      <Filter>Header\THMainScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Header\thPlayer.h">
+      <Filter>Header\THCharacter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Header\thBaseAnimation.h">
+      <Filter>Header\THBase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Header\thCharacterFSM.h">
+      <Filter>Header\THCharacter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Header\thBaseFSM.h">
+      <Filter>Header\THBase</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="game.rc">
+      <Filter>resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
