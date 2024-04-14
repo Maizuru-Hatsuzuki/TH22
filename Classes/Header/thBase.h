@@ -21,6 +21,9 @@ USING_NS_CC;
 
 #define THMAX_PLAYERFSMSTATUS 16
 
+#define THNEW_CLASS(c) new c()
+#define THDEL_CLASS(c) delete c
+
 #define fn
 #define var
 

@@ -158,6 +158,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
     <ClCompile Include="..\Classes\thBaseAnimation.cpp" />
     <ClCompile Include="..\Classes\thBaseFSM.cpp" />
+    <ClCompile Include="..\Classes\thCharacter.cpp" />
     <ClCompile Include="..\Classes\thCharacterFSM.cpp" />
     <ClCompile Include="..\Classes\thPlayer.cpp" />
     <ClCompile Include="..\Classes\thSceneDungeon.cpp" />
@@ -167,8 +168,10 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClInclude Include="..\Classes\AppDelegate.h" />
     <ClInclude Include="..\Classes\Header\thBaseAnimation.h" />
     <ClInclude Include="..\Classes\Header\thBaseFSM.h" />
+    <ClInclude Include="..\Classes\Header\thCharacter.h" />
     <ClInclude Include="..\Classes\Header\thCharacterFSM.h" />
     <ClInclude Include="..\Classes\Header\thPlayer.h" />
+    <ClInclude Include="..\Classes\Header\thPlayerFSM.h" />
     <ClInclude Include="..\Classes\Header\thSceneDungeon.h" />
     <ClInclude Include="..\Classes\Header\thBase.h" />
     <ClInclude Include="..\Classes\Header\thBaseMacro.h" />

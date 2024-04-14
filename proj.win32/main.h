@@ -33,5 +33,9 @@
 
 // C RunTime Header Files
 #include "platform/CCStdC.h"
+#include "thBase.h"
+
+thBool thMainLogicFrame();
+
 
 #endif    // __MAIN_H__

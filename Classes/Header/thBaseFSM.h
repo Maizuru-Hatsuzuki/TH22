@@ -24,9 +24,9 @@ public:
 	~CTHBaseFSM();
 
 	thBool init();
-	thBool thFsmDriver();
-	thBool thFsmSwitch();
-	thBool thFsmPause();
+	thBool thFsmDriver() noexcept;
+	thBool thFsmSwitch() noexcept;
+	thBool thFsmPause() noexcept;
 
 private:
 	thBool m_bWorking;

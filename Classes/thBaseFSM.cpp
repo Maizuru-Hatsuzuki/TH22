@@ -26,7 +26,7 @@ Exit0:
 	return bRet;
 }
 
-thBool CTHBaseFSM::thFsmDriver()
+thBool CTHBaseFSM::thFsmDriver() noexcept
 {
 	thBool bRet = THFALSE;
 
@@ -35,7 +35,7 @@ Exit0:
 	return bRet;
 }
 
-thBool CTHBaseFSM::thFsmSwitch()
+thBool CTHBaseFSM::thFsmSwitch() noexcept
 {
 	thBool bRet = THFALSE;
 
@@ -44,7 +44,7 @@ Exit0:
 	return bRet;
 }
 
-thBool CTHBaseFSM::thFsmPause()
+thBool CTHBaseFSM::thFsmPause() noexcept
 {
 	thBool bRet = THFALSE;
 

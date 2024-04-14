@@ -9,6 +9,7 @@
 #define __THCHARATERFSM_H__
 
 #include "thBase.h"
+#include "thCharacter.h"
 
 
 enum THEM_CHARACTERFSM_STATUS
@@ -16,18 +17,29 @@ enum THEM_CHARACTERFSM_STATUS
 	CMS_UNKNOW,
 	CMS_STANDBY,
 	CMS_MOVE,
+	CMS_LEFTMOVE,
+	CMS_RIGHTMOVE,
 	CMS_JUMP,
 	CMS_FLAG
 };
 
+/* CFE -> character fsm event */
+typedef thBool(*THCALLBACK_CFE)(
+	void* vpArgs
+	);
+
 struct _tThCharacterFSMDesc
 {
+	enum THEM_CHARACTERFSM_STATUS emStatus;
 	const char* szpCharacterDesc;
+	THCALLBACK_CFE fnFsmInit;
+	THCALLBACK_CFE fnFsmUpdate;
+	THCALLBACK_CFE fnFsmRelease;
+	void* vpTagArgs;
 };
 typedef struct _tThCharacterFSMDesc THCHARACTERFSM_DESC, * THCHARACTERFSM_DESC_PTR;
-typedef thBool(*THCALLBACK_CFE)(
-	void* pThreadParameter
-	);
+
+
 
 class CTHBaseCharacterFSM
 {
@@ -42,7 +54,8 @@ public fn:
 private:
 };
 
-/* Player event.*/
+
+/* Character event.*/
 class CTHCharaterFSM:
 	public CTHBaseCharacterFSM
 {
@@ -50,14 +63,18 @@ public:
 	CTHCharaterFSM();
 	~CTHCharaterFSM();
 
-	virtual thBool fsmInit(THCALLBACK_CFE fn, void* vpArgs) noexcept;
-	virtual thBool fsmUpdate(THCALLBACK_CFE fn, void* vpArgs) noexcept;
-	virtual thBool fsmRelease(THCALLBACK_CFE fn, void* vpArgs) noexcept;
+	thBool init(THCHARACTERFSM_DESC_PTR pFsmDesc);
+	virtual thBool fsmInit() noexcept;
+	virtual thBool fsmUpdate() noexcept;
+	virtual thBool fsmRelease() noexcept;
+
+	void setCurFsmArgs(void* vpArgs, size_t ullSrcSize) noexcept;
 
 private:
+	void* m_vpCurFsmArgs;
 	thBool bWorking;
+	THCHARACTERFSM_DESC_PTR m_pFsmDesc;
 };
-
 
 
 #endif

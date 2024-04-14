@@ -57,6 +57,9 @@
     <ClCompile Include="..\Classes\thBaseFSM.cpp">
       <Filter>Src\THBase</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\thCharacter.cpp">
+      <Filter>Src\THCharacter</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -88,6 +91,12 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Header\thBaseFSM.h">
       <Filter>Header\THBase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Header\thCharacter.h">
+      <Filter>Header\THCharacter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Header\thPlayerFSM.h">
+      <Filter>Header\THCharacter</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
