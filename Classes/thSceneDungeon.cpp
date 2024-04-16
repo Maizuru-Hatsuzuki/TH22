@@ -6,9 +6,11 @@
 ********************************************************/
 
 
+#include "thBaseMacro.h"
 #include "thPlayer.h"
 #include "thSceneDungeon.h"
-#include "thBaseMacro.h"
+#include "thDeviceControl.h"
+
 
 USING_NS_CC;
 
@@ -38,16 +40,21 @@ bool thSceneDungeon::init()
 		250.f,
 		4.f
 	};
-	CThPlayer pIchigoObject;
+	CThPlayer* pIchigoObject = new CThPlayer;
+	
 	LayerColor* pBgTmp = LayerColor::create(ccc4(0xff, 0x0, 0x0, 0x80), 640, 480);
 	Sprite* pIchigo = NULL;
 
-	pIchigoObject.init(&tPlayer, 4, 1, 5);
-	pIchigoObject.getPlayer(&pIchigo);
+	pIchigoObject->init(&tPlayer, 4, 1, 5);
+	pIchigoObject->getPlayer(&pIchigo);
 	TH_PROCESS_ERROR(pIchigo);
+	
+
+	CThKeyboard::getInstance()->init(pIchigoObject);
+	CThKeyboard::getInstance()->listener(this);
 
 	this->addChild(pBgTmp);
-	this->addChild(pIchigo);
+	this->addChild(pIchigoObject);
 
 	bRet = THTRUE;
 Exit0:

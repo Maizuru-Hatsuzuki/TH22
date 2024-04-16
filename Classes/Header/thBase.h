@@ -21,8 +21,11 @@ USING_NS_CC;
 
 #define THMAX_PLAYERFSMSTATUS 16
 
-#define THNEW_CLASS(c) new c()
-#define THDEL_CLASS(c) delete c
+#define THNEW_CLASS(p) new p()
+#define THDELETE(p) { if (p) { delete (p); (p) = NULL; }}
+#define THFREE(p) { if (p) { free(p); (p) = NULL; }}
+
+#define MOVESPEED_NORMAL_PLAYER 4.5
 
 #define fn
 #define var

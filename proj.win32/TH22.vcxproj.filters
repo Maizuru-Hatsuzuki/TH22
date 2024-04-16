@@ -31,6 +31,12 @@
     <Filter Include="Header\THCharacter">
       <UniqueIdentifier>{c19fb064-9a66-4256-b14a-4b9ca7b0f4e5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header\THDeviceCtrl">
+      <UniqueIdentifier>{5e5e0c00-823e-4242-b280-30371c9bb90b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\THDeviceCtrl">
+      <UniqueIdentifier>{547e7486-e28f-4c10-9a19-f49189f26139}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -58,6 +64,12 @@
       <Filter>Src\THBase</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\thCharacter.cpp">
+      <Filter>Src\THCharacter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\thKeyboards.cpp">
+      <Filter>Src\THDeviceCtrl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\thPlayerFSM.cpp">
       <Filter>Src\THCharacter</Filter>
     </ClCompile>
   </ItemGroup>
@@ -97,6 +109,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Header\thPlayerFSM.h">
       <Filter>Header\THCharacter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Header\thDeviceControl.h">
+      <Filter>Header\THDeviceCtrl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

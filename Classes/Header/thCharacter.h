@@ -9,12 +9,15 @@
 #ifndef __THCHARACTER_H__
 #define __THCHARACTER_H__
 
+#include "thBase.h"
 
-class CTHBaseCharacter
+
+class CThBaseCharacter:
+	public Node
 {
 public:
-	CTHBaseCharacter();
-	~CTHBaseCharacter();
+	CThBaseCharacter();
+	~CThBaseCharacter();
 
 private:
 

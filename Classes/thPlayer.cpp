@@ -5,9 +5,10 @@
 * Description	: player module.
 ********************************************************/
 
-#include "thPlayer.h"
+
 #include "thBaseAnimation.h"
 #include "thBaseMacro.h"
+#include "thPlayerFSM.h"
 
 
 CThPlayer::CThPlayer()
@@ -16,6 +17,8 @@ CThPlayer::CThPlayer()
 
 CThPlayer::~CThPlayer()
 {
+	TFC::uninitPlayerFSMAllEvent(m_ptPlayerFsmDesc);
+	THFREE(m_ptPlayerDesc);
 }
 
 thBool CThPlayer::init(PLAYER_DESC_PTR ptPlayer, unsigned int nAniCount, unsigned int nAniBegin, unsigned nAniEnd)
@@ -28,9 +31,8 @@ thBool CThPlayer::init(PLAYER_DESC_PTR ptPlayer, unsigned int nAniCount, unsigne
 	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::sharedSpriteFrameCache();
 	TH_PROCESS_ERROR(pSpFrameCache);
 
-	/* Init thPlayer. */
-	bFnRet = initPlayerFsm();
-	TH_PROCESS_ERROR(bFnRet);
+	m_pAniStandby = NULL;
+	m_pPlayerFsmCtrl = new CThFSMCtrl;
 
 	/* Init cocos. */
 	sprintf_s(szarrPListPath, "image\\sprite\\%s\\cocos2d\\%s.plist", ptPlayer->cszpSpriteName, ptPlayer->cszpPListName);
@@ -45,41 +47,22 @@ thBool CThPlayer::init(PLAYER_DESC_PTR ptPlayer, unsigned int nAniCount, unsigne
 	m_pPlayer->setPosition(ptPlayer->fPosX, ptPlayer->fPosY);
 	m_pPlayer->setScale(ptPlayer->fScale);
 
-	m_ptPlayerDesc = ptPlayer;
+	schedule(schedule_selector(CThPlayer::doFsmCtrlUpdate), 0.15f);
+	
+	this->addChild(m_pPlayer);
 
-	bRet = THTRUE;
-Exit0:
-	return bRet;
-}
+	/* Init thPlayer. */
+	m_ptPlayerDesc = (PLAYER_DESC_PTR)malloc(sizeof(PLAYER_DESC));
+	memcpy_s(m_ptPlayerDesc, sizeof(PLAYER_DESC), ptPlayer, sizeof(PLAYER_DESC));
 
-thBool CThPlayer::initPlayerFsm()
-{
-	thBool bRet = THFALSE;
-	THCHARACTERFSM_DESC ptPlayerStatusStand =
-	{
-		THEM_CHARACTERFSM_STATUS::CMS_STANDBY,
-		"Player standby.",
-		& CThPlayer::_playerFsmStandbyInit,
-		& CThPlayer::_playerFsmStandbyUpdate,
-		& CThPlayer::_playerFsmStandbyRelease,
-		NULL
-	};
-	THCHARACTERFSM_DESC ptPlayerStatusMove =
-	{
-		THEM_CHARACTERFSM_STATUS::CMS_MOVE,
-		"Player move.",
-		& CThPlayer::_playerFsmMoveInit,
-		& CThPlayer::_playerFsmMoveUpdate,
-		& CThPlayer::_playerFsmMoveRelease,
-		NULL
-	};
+	m_emCurStatus = THEM_CHARACTERFSM_STATUS::CMS_UNKNOW;
 
-	/* Stand fsm */
-	m_arrpPlayerFsm[0] = THNEW_CLASS(CTHCharaterFSM);
-	m_arrpPlayerFsm[0]->init(&ptPlayerStatusStand);
-	/* Move fsm */
-	m_arrpPlayerFsm[1] = THNEW_CLASS(CTHCharaterFSM);
-	m_arrpPlayerFsm[1]->init(&ptPlayerStatusMove);
+	bFnRet = TFC::initPlayerFSMAllEvent(&m_ptPlayerFsmDesc);
+	TH_PROCESS_ERROR(m_ptPlayerFsmDesc);
+	m_ptPlayerFsmDesc->emCurPlayerStatus = m_emCurStatus;
+	m_ptPlayerFsmDesc->emLastPlayerStatus = m_emCurStatus;
+	m_ptPlayerFsmDesc->vpEnv = (void*)this;
+
 
 	bRet = THTRUE;
 Exit0:
@@ -97,14 +80,18 @@ thBool CThPlayer::doPlayAnimationStandby(char* szpFrameAni, unsigned int nAniCou
 		nAniBegin,
 		nAniEnd,
 		0.1f,
+		0.f,
 		-1,
 		false,
-		true
+		false
 	};
 	strcpy_s(tAniDesc.szarrFrameAni, strlen(szpFrameAni) + 1, szpFrameAni);
 	
-	bFnRet = CTHBaseAnimation::getInstance()->createPlayAnimationWithPList(&tAniDesc, &m_pAniStandby);
-	TH_PROCESS_ERROR(bFnRet);
+	if (NULL == m_pAniStandby)
+	{
+		bFnRet = CThBaseAnimation::getInstance()->createPlayAnimationWithPList(&tAniDesc, &m_pAniStandby);
+		TH_PROCESS_ERROR(bFnRet);
+	}
 
 	m_pPlayer->runAction(m_pAniStandby);
 
@@ -113,13 +100,54 @@ Exit0:
 	return bRet;
 }
 
-thBool CThPlayer::doPlayAnimationMove(char* szpFrameAni, unsigned int nAniCount, unsigned int nAniBegin, unsigned nAniEnd)
+thBool CThPlayer::doPlayAnimationMove(char* szpFrameAni, unsigned int nAniCount, unsigned int nAniBegin, unsigned nAniEnd, THEM_CHARACTERFSM_STATUS emMoveDirection)
 {
 	thBool bRet = THFALSE;
+	thBool bFnRet = THFALSE;
+	THANIMATION_DESC tAniDesc =
+	{
+		{ 0 },
+		nAniCount,
+		nAniBegin,
+		nAniEnd,
+		0.1f,
+		0.f
+		-1,
+		false,
+		true
+	};
 
+	strcpy_s(tAniDesc.szarrFrameAni, strlen(szpFrameAni) + 1, szpFrameAni);
+
+	switch (emMoveDirection)
+	{
+	case CMS_LEFTMOVE:
+		bFnRet = CThBaseAnimation::getInstance()->createPlayAnimationWithPList(&tAniDesc, &m_pAniMove);
+		TH_PROCESS_ERROR(bFnRet);
+		break;
+
+	case CMS_RIGHTMOVE:
+		bFnRet = CThBaseAnimation::getInstance()->createPlayAnimationWithPList(&tAniDesc, &m_pAniMove);
+		TH_PROCESS_ERROR(bFnRet);
+		break;
+
+	default:
+		break;
+	}
+
+	m_pPlayer->runAction(m_pAniMove);
 	bRet = THTRUE;
 Exit0:
 	return bRet;
+}
+
+void CThPlayer::doFsmCtrlUpdate(float dt)
+{
+	thBool bFnRet = THFALSE;
+
+	m_ptPlayerFsmDesc->emCurPlayerStatus = m_emCurStatus;
+	m_pPlayerFsmCtrl->thFsmMain(m_ptPlayerFsmDesc);
+	return;
 }
 
 void CThPlayer::getPlayer(Sprite** pRet)
@@ -134,68 +162,33 @@ void CThPlayer::getPlayerDesc(PLAYER_DESC_PTR* pptRet)
 	return;
 }
 
-thBool CThPlayer::_playerFsmStandbyInit(void* vpArgs)
+thBool CThPlayer::setPlayerMoveTo(const float fX, const float fY)
 {
 	thBool bRet = THFALSE;
-	PLAYER_FSM_ARGS_PTR pArgs = static_cast<PLAYER_FSM_ARGS_PTR>(vpArgs);
-	PLAYER_DESC_PTR ptPlayerDesc = NULL;
-	pArgs->pEnv->getPlayerDesc(&ptPlayerDesc);
+	MoveTo* pPlayerMove = MoveTo::create(0.01f, Vec2(m_pPlayer->getPositionX() + fX, m_pPlayer->getPositionY() + fY));
+	TH_PROCESS_ERROR(pPlayerMove);
+	Sequence* pPlayerMoveAction = Sequence::create(pPlayerMove, NULL);
+	TH_PROCESS_ERROR(pPlayerMoveAction);
 
-	bRet = pArgs->pEnv->doPlayAnimationStandby(ptPlayerDesc->cszpPListName, 4, 1, 5);
-	TH_PROCESS_ERROR(bRet);
-	CCLOG("DEBUG LOG: player standby init.");
+	m_pPlayer->runAction(pPlayerMoveAction);
 
 	bRet = THTRUE;
 Exit0:
 	return bRet;
 }
 
-thBool CThPlayer::_playerFsmStandbyUpdate(void* vpArgs)
+thBool CThPlayer::setPlayerStopAllAction()
 {
 	thBool bRet = THFALSE;
-	//CCLOG("DEBUG LOG: player standby UPDATE.");
+	m_pPlayer->stopAllActions();
 
 	bRet = THTRUE;
 Exit0:
 	return bRet;
 }
 
-thBool CThPlayer::_playerFsmStandbyRelease(void* vpArgs)
+void CThPlayer::setPlayerFsmCurStatus(enum THEM_CHARACTERFSM_STATUS emStatus)
 {
-	thBool bRet = THFALSE;
-	CCLOG("DEBUG LOG: player standby release.");
-
-	bRet = THTRUE;
-Exit0:
-	return bRet;
-}
-
-thBool CThPlayer::_playerFsmMoveInit(void* vpArgs)
-{
-	thBool bRet = THFALSE;
-	CCLOG("DEBUG LOG: player move init.");
-
-	bRet = THTRUE;
-Exit0:
-	return bRet;
-}
-
-thBool CThPlayer::_playerFsmMoveUpdate(void* vpArgs)
-{
-	thBool bRet = THFALSE;
-	CCLOG("DEBUG LOG: player move update.");
-
-	bRet = THTRUE;
-Exit0:
-	return bRet;
-}
-
-thBool CThPlayer::_playerFsmMoveRelease(void* vpArgs)
-{
-	thBool bRet = THFALSE;
-	CCLOG("DEBUG LOG: player move release.");
-
-	bRet = THTRUE;
-Exit0:
-	return bRet;
+	m_emCurStatus = emStatus;
+	return;
 }

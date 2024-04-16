@@ -9,26 +9,26 @@
 #include "thBaseAnimation.h"
 
 
-CTHBaseAnimation* CTHBaseAnimation::m_pSelf;
+CThBaseAnimation* CThBaseAnimation::m_pSelf;
 
-CTHBaseAnimation::CTHBaseAnimation()
+CThBaseAnimation::CThBaseAnimation()
 {
 }
 
-CTHBaseAnimation::~CTHBaseAnimation()
+CThBaseAnimation::~CThBaseAnimation()
 {
 }
 
-CTHBaseAnimation* CTHBaseAnimation::getInstance()
+CThBaseAnimation* CThBaseAnimation::getInstance()
 {
 	if (NULL == m_pSelf)
 	{
-		m_pSelf = new (std::nothrow) CTHBaseAnimation();
+		m_pSelf = new (std::nothrow) CThBaseAnimation();
 	}
 	return m_pSelf;
 }
 
-thBool CTHBaseAnimation::createPlayAnimationWithPList(THANIMATION_DESC_PTR ptAniDesc, Animate** ppRet)
+thBool CThBaseAnimation::createPlayAnimationWithPList(THANIMATION_DESC_PTR ptAniDesc, Animate** ppRet)
 {
 	thBool bRet = THFALSE;
 	int nFrameCount = 0;
@@ -50,7 +50,7 @@ thBool CTHBaseAnimation::createPlayAnimationWithPList(THANIMATION_DESC_PTR ptAni
 
 	if (true == ptAniDesc->bReverseReturn)
 	{
-		for (unsigned int i = ptAniDesc->nFrameAniEnd - 1; i <= ptAniDesc->nFrameAniBegin; i--)
+		for (unsigned int i = ptAniDesc->nFrameAniEnd - 1; i >= ptAniDesc->nFrameAniBegin + 1; i--)
 		{
 			sprintf_s(szarrSprite, "%s%d.png", ptAniDesc->szarrFrameAni, i);
 			ptmpTex = pSpFrameCache->spriteFrameByName(szarrSprite);
@@ -59,6 +59,7 @@ thBool CTHBaseAnimation::createPlayAnimationWithPList(THANIMATION_DESC_PTR ptAni
 			nFrameCount++;
 		}
 	}
+
 
 	pAni->setDelayPerUnit(ptAniDesc->fDelayPerUnit);
 	pAni->setLoops(ptAniDesc->nLoops);

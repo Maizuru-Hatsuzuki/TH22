@@ -8,10 +8,10 @@
 #include "thCharacter.h"
 
 
-CTHBaseCharacter::CTHBaseCharacter()
+CThBaseCharacter::CThBaseCharacter()
 {
 }
 
-CTHBaseCharacter::~CTHBaseCharacter()
+CThBaseCharacter::~CThBaseCharacter()
 {
 }
