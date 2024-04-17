@@ -35,10 +35,12 @@ bool thSceneDungeon::init()
 	{
 		"ichigoW0",
 		"ichigoW0-removebg-preview",
-		"ichigoW0-removebg-preview1.png",
+		"ichigoW0-removebg-preview1",
 		350.f,
 		250.f,
-		4.f
+		4.f,
+		false,
+		false
 	};
 	CThPlayer* pIchigoObject = new CThPlayer;
 	

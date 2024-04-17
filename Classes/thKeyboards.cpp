@@ -67,8 +67,7 @@ thBool CThKeyboard::_KeyDownEvent(EventListenerKeyboard* pKeyboard)
 		{
 		case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
 		{
-			//m_pListener->setPlayerFsmCurStatus(THEM_CHARACTERFSM_STATUS::CMS_LEFTMOVE);
-			CCLOG("left");
+			m_pListener->setPlayerFsmCurStatus(THEM_CHARACTERFSM_STATUS::CMS_LEFTMOVE);
 			break;
 		}
 		case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
@@ -89,7 +88,6 @@ thBool CThKeyboard::_KeyDownEvent(EventListenerKeyboard* pKeyboard)
 			break;
 		}
 		default:
-			//m_pListener->setPlayerFsmCurStatus(THEM_CHARACTERFSM_STATUS::CMS_STANDBY);
 			break;
 		}
 	};
@@ -109,7 +107,6 @@ thBool CThKeyboard::_KeyUpEvent(EventListenerKeyboard* pKeyboard)
 		{
 		case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
 		{
-			CCLOG("KEY UP");
 			break;
 		}
 		case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:

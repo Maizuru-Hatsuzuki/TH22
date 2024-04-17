@@ -21,7 +21,6 @@ struct _tThAnimationDesc
 	float fRevolve;
 	int nLoops;
 	bool bResFirstFrame;
-	bool bReverseReturn;
 };
 typedef struct _tThAnimationDesc THANIMATION_DESC, * THANIMATION_DESC_PTR;
 

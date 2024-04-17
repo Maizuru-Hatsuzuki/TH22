@@ -27,7 +27,7 @@ thBool CThPlayer::init(PLAYER_DESC_PTR ptPlayer, unsigned int nAniCount, unsigne
 	thBool bFnRet = THFALSE;
 	char szarrPListPath[MAX_PATH] = { 0 };
 	char szarrPListPngPath[MAX_PATH] = { 0 };
-	SpriteFrame* ptmpTex = NULL;
+	char szarrBasicSpritePath[MAX_PATH] = { 0 };
 	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::sharedSpriteFrameCache();
 	TH_PROCESS_ERROR(pSpFrameCache);
 
@@ -37,19 +37,20 @@ thBool CThPlayer::init(PLAYER_DESC_PTR ptPlayer, unsigned int nAniCount, unsigne
 	/* Init cocos. */
 	sprintf_s(szarrPListPath, "image\\sprite\\%s\\cocos2d\\%s.plist", ptPlayer->cszpSpriteName, ptPlayer->cszpPListName);
 	sprintf_s(szarrPListPngPath, "image\\sprite\\%s\\cocos2d\\%s.png", ptPlayer->cszpSpriteName, ptPlayer->cszpPListName);
+	sprintf_s(szarrBasicSpritePath, "image\\sprite\\%s\\cocos2d\\%s.png", ptPlayer->cszpSpriteName, ptPlayer->cszpFirstFrame);
 
 	pSpFrameCache->addSpriteFramesWithFile(szarrPListPath, szarrPListPngPath);
-	ptmpTex = pSpFrameCache->spriteFrameByName(ptPlayer->cszpFirstFrame);
-	TH_PROCESS_ERROR(ptmpTex);
-	m_pPlayer = Sprite::createWithSpriteFrame(ptmpTex);
+
+	m_pPlayer = Sprite::create(szarrBasicSpritePath);
 	TH_PROCESS_ERROR(m_pPlayer);
 
 	m_pPlayer->setPosition(ptPlayer->fPosX, ptPlayer->fPosY);
 	m_pPlayer->setScale(ptPlayer->fScale);
-
-	schedule(schedule_selector(CThPlayer::doFsmCtrlUpdate), 0.15f);
-	
+	m_pPlayer->setFlippedX(ptPlayer->bFlipX);
+	m_pPlayer->setFlippedY(ptPlayer->bFlipY);
 	this->addChild(m_pPlayer);
+
+	scheduleUpdate();
 
 	/* Init thPlayer. */
 	m_ptPlayerDesc = (PLAYER_DESC_PTR)malloc(sizeof(PLAYER_DESC));
@@ -63,10 +64,14 @@ thBool CThPlayer::init(PLAYER_DESC_PTR ptPlayer, unsigned int nAniCount, unsigne
 	m_ptPlayerFsmDesc->emLastPlayerStatus = m_emCurStatus;
 	m_ptPlayerFsmDesc->vpEnv = (void*)this;
 
-
 	bRet = THTRUE;
 Exit0:
 	return bRet;
+}
+
+void CThPlayer::update(float dt)
+{
+	doFsmCtrlUpdate();
 }
 
 thBool CThPlayer::doPlayAnimationStandby(char* szpFrameAni, unsigned int nAniCount, unsigned int nAniBegin, unsigned nAniEnd)
@@ -83,16 +88,15 @@ thBool CThPlayer::doPlayAnimationStandby(char* szpFrameAni, unsigned int nAniCou
 		0.f,
 		-1,
 		false,
-		false
 	};
 	strcpy_s(tAniDesc.szarrFrameAni, strlen(szpFrameAni) + 1, szpFrameAni);
 	
 	if (NULL == m_pAniStandby)
 	{
-		bFnRet = CThBaseAnimation::getInstance()->createPlayAnimationWithPList(&tAniDesc, &m_pAniStandby);
-		TH_PROCESS_ERROR(bFnRet);
+		
 	}
-
+	bFnRet = CThBaseAnimation::getInstance()->createPlayAnimationWithPList(&tAniDesc, &m_pAniStandby);
+	TH_PROCESS_ERROR(bFnRet);
 	m_pPlayer->runAction(m_pAniStandby);
 
 	bRet = THTRUE;
@@ -111,10 +115,9 @@ thBool CThPlayer::doPlayAnimationMove(char* szpFrameAni, unsigned int nAniCount,
 		nAniBegin,
 		nAniEnd,
 		0.1f,
-		0.f
+		0.f,
 		-1,
 		false,
-		true
 	};
 
 	strcpy_s(tAniDesc.szarrFrameAni, strlen(szpFrameAni) + 1, szpFrameAni);
@@ -122,26 +125,25 @@ thBool CThPlayer::doPlayAnimationMove(char* szpFrameAni, unsigned int nAniCount,
 	switch (emMoveDirection)
 	{
 	case CMS_LEFTMOVE:
-		bFnRet = CThBaseAnimation::getInstance()->createPlayAnimationWithPList(&tAniDesc, &m_pAniMove);
-		TH_PROCESS_ERROR(bFnRet);
+		m_pPlayer->setFlipX(true);
 		break;
 
 	case CMS_RIGHTMOVE:
-		bFnRet = CThBaseAnimation::getInstance()->createPlayAnimationWithPList(&tAniDesc, &m_pAniMove);
-		TH_PROCESS_ERROR(bFnRet);
 		break;
 
 	default:
 		break;
 	}
 
+	bFnRet = CThBaseAnimation::getInstance()->createPlayAnimationWithPList(&tAniDesc, &m_pAniMove);
+	TH_PROCESS_ERROR(bFnRet);
 	m_pPlayer->runAction(m_pAniMove);
 	bRet = THTRUE;
 Exit0:
 	return bRet;
 }
 
-void CThPlayer::doFsmCtrlUpdate(float dt)
+void CThPlayer::doFsmCtrlUpdate()
 {
 	thBool bFnRet = THFALSE;
 

@@ -12,7 +12,6 @@
 thBool tfpUnknowInit(void* vpEnv)
 {
 	thBool bRet = THFALSE;
-	CCLOG("INIT UN");
 	bRet = THTRUE;
 Exit0:
 	return bRet;
@@ -21,7 +20,6 @@ Exit0:
 thBool tfpUnknowUpdate(void* vpEnv)
 {
 	thBool bRet = THFALSE;
-	CCLOG("UP UN");
 
 	bRet = THTRUE;
 Exit0:
@@ -73,3 +71,38 @@ Exit0:
 	return bRet;
 }
 
+thBool tfpMoveLeftInit(void* vpEnv)
+{
+	thBool bRet = THFALSE;
+	PLAYER_DESC_PTR pPlayerDesc = NULL;
+	CThPlayer* pEnv = static_cast<CThPlayer*>(vpEnv);
+	TH_PROCESS_ERROR(pEnv);
+
+	pEnv->getPlayerDesc(&pPlayerDesc);
+	pEnv->doPlayAnimationMove(pPlayerDesc->cszpPListName, 7, 7, 14, THEM_CHARACTERFSM_STATUS::CMS_LEFTMOVE);
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+thBool tfpMoveLeftUpdate(void* vpEnv)
+{
+	thBool bRet = THFALSE;
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+thBool tfpMoveLeftRelease(void* vpEnv)
+{
+	thBool bRet = THFALSE;
+	CThPlayer* pEnv = static_cast<CThPlayer*>(vpEnv);
+	TH_PROCESS_ERROR(pEnv);
+
+	bRet = pEnv->setPlayerStopAllAction();
+	TH_PROCESS_ERROR(bRet);
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}

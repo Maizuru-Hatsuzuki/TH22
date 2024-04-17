@@ -33,41 +33,31 @@ thBool CThBaseAnimation::createPlayAnimationWithPList(THANIMATION_DESC_PTR ptAni
 	thBool bRet = THFALSE;
 	int nFrameCount = 0;
 	char szarrSprite[128] = { 0 };
+	Texture2D* ptmpSprite = NULL;
 	SpriteFrame* ptmpTex = NULL;
 	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::sharedSpriteFrameCache();
 	TH_PROCESS_ERROR(pSpFrameCache);
 	Animation* pAni = Animation::create();
 	TH_PROCESS_ERROR(pAni);
+	GLProgram* pGlFlipY = GLProgram::createWithFilenames("shader\\glsl\\flipY.vert", "shader\\glsl\\flipY.frag");
+	TH_PROCESS_ERROR(pGlFlipY);
 
 	for (unsigned int i = ptAniDesc->nFrameAniBegin; i <= ptAniDesc->nFrameAniEnd; i++)
 	{
 		sprintf_s(szarrSprite, "%s%d.png", ptAniDesc->szarrFrameAni, i);
 		ptmpTex = pSpFrameCache->spriteFrameByName(szarrSprite);
 		TH_PROCESS_ERROR(ptmpTex);
+		
+		ptmpSprite = ptmpTex->getTexture();
 		pAni->addSpriteFrame(ptmpTex);
 		nFrameCount++;
 	}
-
-	if (true == ptAniDesc->bReverseReturn)
-	{
-		for (unsigned int i = ptAniDesc->nFrameAniEnd - 1; i >= ptAniDesc->nFrameAniBegin + 1; i--)
-		{
-			sprintf_s(szarrSprite, "%s%d.png", ptAniDesc->szarrFrameAni, i);
-			ptmpTex = pSpFrameCache->spriteFrameByName(szarrSprite);
-			TH_PROCESS_ERROR(ptmpTex);
-			pAni->addSpriteFrame(ptmpTex);
-			nFrameCount++;
-		}
-	}
-
 
 	pAni->setDelayPerUnit(ptAniDesc->fDelayPerUnit);
 	pAni->setLoops(ptAniDesc->nLoops);
 	pAni->setRestoreOriginalFrame(ptAniDesc->bResFirstFrame);
 	
 	*ppRet = Animate::create(pAni);
-	CCLOG("Total %d frame count.\n", nFrameCount);
-
 	bRet = THTRUE;
 Exit0:
 	return bRet;

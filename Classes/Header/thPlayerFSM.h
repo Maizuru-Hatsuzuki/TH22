@@ -32,6 +32,10 @@ thBool tfpStandbyInit(void* vpEnv);
 thBool tfpStandbyUpdate(void* vpEnv);
 thBool tfpStandbyRelease(void* vpEnv);
 
+/* Left move */
+thBool tfpMoveLeftInit(void* vpEnv);
+thBool tfpMoveLeftUpdate(void* vpEnv);
+thBool tfpMoveLeftRelease(void* vpEnv);
 
 
 

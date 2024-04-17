@@ -33,6 +33,7 @@ namespace TFC
 		PLAYER_FSM_DESC_PTR pRet = (PLAYER_FSM_DESC_PTR)malloc(sizeof(PLAYER_FSM_DESC));
 		THCHARACTERFSM_DESC_PTR ptFsmEventUnknow = NULL;
 		THCHARACTERFSM_DESC_PTR ptFsmEventStandby = NULL;
+		THCHARACTERFSM_DESC_PTR ptFsmEventMoveLeft = NULL;
 
 		for (int i = 0; i < THMAX_PLAYERFSMSTATUS; i++)
 		{
@@ -48,6 +49,11 @@ namespace TFC
 		TH_PROCESS_ERROR(bFnRet);
 		getCharacterFsmArrayVacantPos(pRet->arrpFsmEvent, &sVacant);
 		pRet->arrpFsmEvent[sVacant] = ptFsmEventStandby;
+
+		bFnRet = createPlayerFSMLeftMove(&ptFsmEventMoveLeft);
+		TH_PROCESS_ERROR(bFnRet);
+		getCharacterFsmArrayVacantPos(pRet->arrpFsmEvent, &sVacant);
+		pRet->arrpFsmEvent[sVacant] = ptFsmEventMoveLeft;
 
 		*ppRet = pRet;
 		bRet = THTRUE;
@@ -69,6 +75,7 @@ namespace TFC
 	{
 		thBool bRet = THFALSE;
 		THCHARACTERFSM_DESC_PTR ptFsmEvent = (THCHARACTERFSM_DESC_PTR)malloc(sizeof(THCHARACTERFSM_DESC));
+		TH_PROCESS_ERROR(ptFsmEvent);
 
 		ptFsmEvent->emStatus = THEM_CHARACTERFSM_STATUS::CMS_UNKNOW;
 		ptFsmEvent->szpCharacterDesc = "Player fsm unknow";
@@ -86,6 +93,7 @@ namespace TFC
 	{
 		thBool bRet = THFALSE;
 		THCHARACTERFSM_DESC_PTR ptFsmEvent = (THCHARACTERFSM_DESC_PTR)malloc(sizeof(THCHARACTERFSM_DESC));
+		TH_PROCESS_ERROR(ptFsmEvent);
 
 		ptFsmEvent->emStatus = THEM_CHARACTERFSM_STATUS::CMS_STANDBY;
 		ptFsmEvent->szpCharacterDesc = "Player fsm standby";
@@ -102,7 +110,16 @@ namespace TFC
 	thBool createPlayerFSMLeftMove(THCHARACTERFSM_DESC_PTR* ppRet)
 	{
 		thBool bRet = THFALSE;
+		THCHARACTERFSM_DESC_PTR ptFsmEvent = (THCHARACTERFSM_DESC_PTR)malloc(sizeof(THCHARACTERFSM_DESC));
+		TH_PROCESS_ERROR(ptFsmEvent);
 
+		ptFsmEvent->emStatus = THEM_CHARACTERFSM_STATUS::CMS_LEFTMOVE;
+		ptFsmEvent->szpCharacterDesc = "Player fsm standby";
+		ptFsmEvent->fnFsmInit = tfpMoveLeftInit;
+		ptFsmEvent->fnFsmUpdate = tfpMoveLeftUpdate;
+		ptFsmEvent->fnFsmRelease = tfpMoveLeftRelease;
+
+		*ppRet = ptFsmEvent;
 		bRet = THTRUE;
 	Exit0:
 		return bRet;
