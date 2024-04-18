@@ -7,6 +7,7 @@
 
 
 #include "thPlayerFSM.h"
+#include "thBaseMacro.h"
 
 
 thBool tfpUnknowInit(void* vpEnv)

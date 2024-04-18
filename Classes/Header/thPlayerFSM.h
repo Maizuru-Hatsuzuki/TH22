@@ -10,7 +10,6 @@
 #define __THPLAYERFSM_H__
 
 
-#include "thBase.h"
 #include "thPlayer.h"
 #include "thCharacterFSM.h"
 

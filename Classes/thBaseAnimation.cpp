@@ -39,8 +39,6 @@ thBool CThBaseAnimation::createPlayAnimationWithPList(THANIMATION_DESC_PTR ptAni
 	TH_PROCESS_ERROR(pSpFrameCache);
 	Animation* pAni = Animation::create();
 	TH_PROCESS_ERROR(pAni);
-	GLProgram* pGlFlipY = GLProgram::createWithFilenames("shader\\glsl\\flipY.vert", "shader\\glsl\\flipY.frag");
-	TH_PROCESS_ERROR(pGlFlipY);
 
 	for (unsigned int i = ptAniDesc->nFrameAniBegin; i <= ptAniDesc->nFrameAniEnd; i++)
 	{

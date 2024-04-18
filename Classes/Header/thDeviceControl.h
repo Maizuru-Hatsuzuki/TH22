@@ -9,7 +9,6 @@
 #ifndef __THDEVICECONTROL_H__
 #define __THDEVICECONTROL_H__
 
-#include "thBase.h"
 #include "thPlayer.h"
 
 

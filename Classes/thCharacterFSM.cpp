@@ -7,6 +7,7 @@
 
 
 #include "thPlayerFSM.h"
+#include "thBaseMacro.h"
 
 
 namespace TFC

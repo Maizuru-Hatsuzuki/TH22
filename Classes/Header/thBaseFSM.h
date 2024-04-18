@@ -8,8 +8,10 @@
 #ifndef __THBASEFSM_H__
 #define __THBASEFSM_H__
 
-
+#include "stdafx.h"
 #include "thBase.h"
+
+
 
 
 enum THEM_CHARACTERFSM_STATUS

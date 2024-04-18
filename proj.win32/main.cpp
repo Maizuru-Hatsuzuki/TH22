@@ -6,9 +6,9 @@
 ********************************************************/
 
 
+#include "cocos2d.h"
 #include "main.h"
 #include "AppDelegate.h"
-#include "cocos2d.h"
 #include "thBaseFSM.h"
 
 

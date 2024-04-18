@@ -113,6 +113,9 @@
     <ClInclude Include="..\Classes\Header\thDeviceControl.h">
       <Filter>Header\THDeviceCtrl</Filter>
     </ClInclude>
+    <ClInclude Include="..\Classes\Header\stdafx.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">

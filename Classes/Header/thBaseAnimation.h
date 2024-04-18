@@ -8,7 +8,9 @@
 #ifndef __THBASEANIMATION_H__
 #define __THBASEANIMATION_H__
 
+#include "stdafx.h"
 #include "thBase.h"
+
 
 
 struct _tThAnimationDesc

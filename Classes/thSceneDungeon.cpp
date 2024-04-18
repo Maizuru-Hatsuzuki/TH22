@@ -7,12 +7,10 @@
 
 
 #include "thBaseMacro.h"
-#include "thPlayer.h"
 #include "thSceneDungeon.h"
 #include "thDeviceControl.h"
 
 
-USING_NS_CC;
 
 thSceneDungeon::thSceneDungeon()
 {

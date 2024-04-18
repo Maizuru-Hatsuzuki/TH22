@@ -9,6 +9,7 @@
 #include "thBaseAnimation.h"
 #include "thBaseMacro.h"
 #include "thPlayerFSM.h"
+#include "thegContainer.h"
 
 
 CThPlayerAction* CThPlayerAction::m_pSelf;
@@ -33,6 +34,9 @@ thBool CThPlayer::init(PLAYER_DESC_PTR ptPlayer, unsigned int nAniCount, unsigne
 	char szarrBasicSpritePath[MAX_PATH] = { 0 };
 	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::sharedSpriteFrameCache();
 	TH_PROCESS_ERROR(pSpFrameCache);
+
+	int k = theg_fntest(1);
+	CCLOG("loading waring %d, ", k);
 
 	m_pAniStandby = NULL;
 	m_pPlayerFsmCtrl = new CThFSMCtrl;
@@ -128,13 +132,13 @@ thBool CThPlayer::doPlayAnimationMove(char* szpFrameAni, unsigned int nAniCount,
 	switch (emMoveDirection)
 	{
 	case CMS_LEFTMOVE:
-		m_pPlayer->setFlipX(true);
+		m_pPlayer->setFlippedX(true);
 		break;
 
 	case CMS_RIGHTMOVE:
 		if (true == m_pPlayer->isFlippedX())
 		{
-			m_pPlayer->setFlipX(false);
+			m_pPlayer->setFlippedX(false);
 		}
 		break;
 

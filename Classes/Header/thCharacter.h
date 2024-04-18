@@ -9,7 +9,10 @@
 #ifndef __THCHARACTER_H__
 #define __THCHARACTER_H__
 
+#include "stdafx.h"
 #include "thBase.h"
+
+
 
 
 enum THEM_PLAYERLEVEL_MOVESPEED

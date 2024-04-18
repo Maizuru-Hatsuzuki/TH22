@@ -9,7 +9,7 @@
 #define __THSCENEDUNGEON_H__
 
 
-#include "thBase.h"
+#include "stdafx.h"
 
 class thSceneDungeon:
 	public cocos2d::Scene
