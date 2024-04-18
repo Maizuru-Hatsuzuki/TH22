@@ -10,7 +10,6 @@
 
 
 #include "thBase.h"
-//#include "thPlayer.h"
 
 
 enum THEM_CHARACTERFSM_STATUS

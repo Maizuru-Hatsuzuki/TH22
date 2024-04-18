@@ -11,6 +11,9 @@
 #include "thPlayerFSM.h"
 
 
+CThPlayerAction* CThPlayerAction::m_pSelf;
+
+
 CThPlayer::CThPlayer()
 {
 }
@@ -129,6 +132,10 @@ thBool CThPlayer::doPlayAnimationMove(char* szpFrameAni, unsigned int nAniCount,
 		break;
 
 	case CMS_RIGHTMOVE:
+		if (true == m_pPlayer->isFlippedX())
+		{
+			m_pPlayer->setFlipX(false);
+		}
 		break;
 
 	default:
@@ -143,12 +150,25 @@ Exit0:
 	return bRet;
 }
 
+void CThPlayer::doRunAction(Action* pAction)
+{
+	m_pPlayer->runAction(pAction);
+	return;
+}
+
 void CThPlayer::doFsmCtrlUpdate()
 {
 	thBool bFnRet = THFALSE;
 
 	m_ptPlayerFsmDesc->emCurPlayerStatus = m_emCurStatus;
 	m_pPlayerFsmCtrl->thFsmMain(m_ptPlayerFsmDesc);
+	return;
+}
+
+void CThPlayer::getPlayerPosition(float* pfX, float* pfY)
+{
+	*pfX = m_pPlayer->getPositionX();
+	*pfY = m_pPlayer->getPositionY();
 	return;
 }
 
@@ -189,8 +209,77 @@ Exit0:
 	return bRet;
 }
 
-void CThPlayer::setPlayerFsmCurStatus(enum THEM_CHARACTERFSM_STATUS emStatus)
+void CThPlayer::setPlayerFsmCurStatus(enum THEM_CHARACTERFSM_STATUS emStatus) noexcept
 {
 	m_emCurStatus = emStatus;
 	return;
+}
+
+CThPlayerAction::CThPlayerAction() {};
+CThPlayerAction::~CThPlayerAction() {};
+
+CThPlayerAction* CThPlayerAction::getInstance() noexcept
+{
+	if (NULL == m_pSelf)
+	{
+		m_pSelf = new (std::nothrow) CThPlayerAction;
+	}
+	return m_pSelf;
+}
+
+thBool CThPlayerAction::setPlayerMoveTo(enum THEM_PLAYERLEVEL_MOVESPEED emSpeed, enum THEM_CHARACTERFSM_STATUS emDirection, CThPlayer* pPlayer) noexcept
+{
+	thBool bRet = THFALSE;
+	float fCurX = 0.0f;
+	float fCurY = 0.0f;
+	float fSpeed = 0.0f;
+	Sequence* pMoveSeq = NULL;
+
+	pPlayer->getPlayerPosition(&fCurX, &fCurY);
+
+	switch (emSpeed)
+	{
+	case MOVESPEED_LOW:
+		fSpeed = THMOVESPEED_LOW_PLAYER;
+		break;
+	case MOVESPEED_NARMAL:
+		fSpeed = THMOVESPEED_NORMAL_PLAYER;
+		break;
+	case MOVESPEED_HIGH:
+		fSpeed = THMOVESPEED_HIGH_PLAYER;
+		break;
+	case MOVESPEED_HIGHEX:
+		fSpeed = THMOVESPEED_HIGHEX_PLAYER;
+		break;
+	default:
+		break;
+	}
+
+	switch (emDirection)
+	{
+	case CMS_UNKNOW:
+		break;
+	case CMS_STANDBY:
+		break;
+	case CMS_LEFTMOVE:
+		fCurX = fCurX - fSpeed;
+		break;
+	case CMS_RIGHTMOVE:
+		fCurX = fCurX + fSpeed;
+		break;
+	case CMS_JUMP:
+		break;
+	case CMS_FLAG:
+		break;
+	default:
+		break;
+	}
+
+	CThBaseCharacterAction::getInstance()->createActionMoveTo(0.01f, fCurX, fCurY, NULL, &pMoveSeq);
+	TH_PROCESS_ERROR(pMoveSeq);
+	pPlayer->doRunAction(pMoveSeq);
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
 }

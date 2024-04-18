@@ -26,20 +26,20 @@ typedef struct _tThAnimationDesc THANIMATION_DESC, * THANIMATION_DESC_PTR;
 
 class CThBaseAnimation
 {
-public fn:
+public:
 	static CThBaseAnimation* getInstance();
 	thBool createPlayAnimationWithPList(THANIMATION_DESC_PTR ptAniDesc, Animate** ppRet);
 
-public var:
+public:
 
 
-private fn:
+private:
 	CThBaseAnimation();
 	~CThBaseAnimation();
 	CThBaseAnimation(const CThBaseAnimation& pSelf);
 	const CThBaseAnimation& operator=(const CThBaseAnimation& pSelf);
 
-private var:
+private:
 	static CThBaseAnimation* m_pSelf;
 };
 

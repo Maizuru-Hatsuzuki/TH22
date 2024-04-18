@@ -68,11 +68,13 @@ thBool CThKeyboard::_KeyDownEvent(EventListenerKeyboard* pKeyboard)
 		case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
 		{
 			m_pListener->setPlayerFsmCurStatus(THEM_CHARACTERFSM_STATUS::CMS_LEFTMOVE);
+			CCLOG("left");
 			break;
 		}
 		case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
 		{
-			//m_pListener->setPlayerFsmCurStatus(THEM_CHARACTERFSM_STATUS::CMS_RIGHTMOVE);
+			m_pListener->setPlayerFsmCurStatus(THEM_CHARACTERFSM_STATUS::CMS_RIGHTMOVE);
+			CCLOG("right");
 			break;
 		}
 		case EventKeyboard::KeyCode::KEY_UP_ARROW:

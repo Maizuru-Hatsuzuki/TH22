@@ -12,6 +12,14 @@
 #include "thBase.h"
 
 
+enum THEM_PLAYERLEVEL_MOVESPEED
+{
+	MOVESPEED_LOW,
+	MOVESPEED_NARMAL,
+	MOVESPEED_HIGH,
+	MOVESPEED_HIGHEX
+};
+
 class CThBaseCharacter:
 	public Node
 {
@@ -21,6 +29,24 @@ public:
 
 private:
 
+};
+
+
+class CThBaseCharacterAction
+{
+public:
+	static CThBaseCharacterAction* getInstance();
+	
+	thBool createActionMoveTo(float fSpeed, float fDstX, float fDstY, FiniteTimeAction** arrfnCallback, Sequence** ppRet) noexcept;
+
+private:
+	CThBaseCharacterAction();
+	~CThBaseCharacterAction();
+	CThBaseCharacterAction(const CThBaseCharacterAction& pSelf);
+	const CThBaseCharacterAction& operator=(const CThBaseCharacterAction& pSelf);
+
+private:
+	static CThBaseCharacterAction* m_pSelf;
 };
 
 

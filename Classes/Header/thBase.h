@@ -20,12 +20,17 @@ USING_NS_CC;
 #define THFALSE false
 
 #define THMAX_PLAYERFSMSTATUS 16
+#define THMAX_SEQACTION 16
 
 #define THNEW_CLASS(p) new p()
 #define THDELETE(p) { if (p) { delete (p); (p) = NULL; }}
 #define THFREE(p) { if (p) { free(p); (p) = NULL; }}
 
-#define MOVESPEED_NORMAL_PLAYER 4.5
+
+#define THMOVESPEED_LOW_PLAYER 5.0
+#define THMOVESPEED_NORMAL_PLAYER 4.5
+#define THMOVESPEED_HIGH_PLAYER 3.5
+#define THMOVESPEED_HIGHEX_PLAYER 3.0
 
 #define fn
 #define var

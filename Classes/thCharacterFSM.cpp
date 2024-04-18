@@ -34,6 +34,7 @@ namespace TFC
 		THCHARACTERFSM_DESC_PTR ptFsmEventUnknow = NULL;
 		THCHARACTERFSM_DESC_PTR ptFsmEventStandby = NULL;
 		THCHARACTERFSM_DESC_PTR ptFsmEventMoveLeft = NULL;
+		THCHARACTERFSM_DESC_PTR ptFsmEventMoveRight = NULL;
 
 		for (int i = 0; i < THMAX_PLAYERFSMSTATUS; i++)
 		{
@@ -54,6 +55,11 @@ namespace TFC
 		TH_PROCESS_ERROR(bFnRet);
 		getCharacterFsmArrayVacantPos(pRet->arrpFsmEvent, &sVacant);
 		pRet->arrpFsmEvent[sVacant] = ptFsmEventMoveLeft;
+
+		bFnRet = createPlayerFSMRightMove(&ptFsmEventMoveRight);
+		TH_PROCESS_ERROR(bFnRet);
+		getCharacterFsmArrayVacantPos(pRet->arrpFsmEvent, &sVacant);
+		pRet->arrpFsmEvent[sVacant] = ptFsmEventMoveRight;
 
 		*ppRet = pRet;
 		bRet = THTRUE;
@@ -128,7 +134,16 @@ namespace TFC
 	thBool createPlayerFSMRightMove(THCHARACTERFSM_DESC_PTR* ppRet)
 	{
 		thBool bRet = THFALSE;
+		THCHARACTERFSM_DESC_PTR ptFsmEvent = (THCHARACTERFSM_DESC_PTR)malloc(sizeof(THCHARACTERFSM_DESC));
+		TH_PROCESS_ERROR(ptFsmEvent);
 
+		ptFsmEvent->emStatus = THEM_CHARACTERFSM_STATUS::CMS_RIGHTMOVE;
+		ptFsmEvent->szpCharacterDesc = "Player fsm standby";
+		ptFsmEvent->fnFsmInit = tfpMoveRightInit;
+		ptFsmEvent->fnFsmUpdate = tfpMoveRightUpdate;
+		ptFsmEvent->fnFsmRelease = tfpMoveRightRelease;
+
+		*ppRet = ptFsmEvent;
 		bRet = THTRUE;
 	Exit0:
 		return bRet;

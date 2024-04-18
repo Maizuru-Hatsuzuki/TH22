@@ -50,7 +50,6 @@ bool thSceneDungeon::init()
 	pIchigoObject->init(&tPlayer, 4, 1, 5);
 	pIchigoObject->getPlayer(&pIchigo);
 	TH_PROCESS_ERROR(pIchigo);
-	
 
 	CThKeyboard::getInstance()->init(pIchigoObject);
 	CThKeyboard::getInstance()->listener(this);

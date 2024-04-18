@@ -37,6 +37,10 @@ thBool tfpMoveLeftInit(void* vpEnv);
 thBool tfpMoveLeftUpdate(void* vpEnv);
 thBool tfpMoveLeftRelease(void* vpEnv);
 
+/* Right move */
+thBool tfpMoveRightInit(void* vpEnv);
+thBool tfpMoveRightUpdate(void* vpEnv);
+thBool tfpMoveRightRelease(void* vpEnv);
 
 
 #endif // !__THPLAYERFSM_H__
