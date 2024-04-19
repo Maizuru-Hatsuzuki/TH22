@@ -9,7 +9,7 @@
 #include "thBaseMacro.h"
 #include "thSceneDungeon.h"
 #include "thDeviceControl.h"
-
+#include "thegContainer.h"
 
 
 thSceneDungeon::thSceneDungeon()
@@ -41,9 +41,9 @@ bool thSceneDungeon::init()
 		false
 	};
 	CThPlayer* pIchigoObject = new CThPlayer;
-	
 	LayerColor* pBgTmp = LayerColor::create(ccc4(0xff, 0x0, 0x0, 0x80), 640, 480);
 	Sprite* pIchigo = NULL;
+	THEC_BITMAP_PTR ptBitmap = NULL;
 
 	pIchigoObject->init(&tPlayer, 4, 1, 5);
 	pIchigoObject->getPlayer(&pIchigo);

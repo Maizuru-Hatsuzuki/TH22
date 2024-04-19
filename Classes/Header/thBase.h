@@ -4,7 +4,7 @@
 
 #include <time.h>
 #include <stdio.h>
-
+#include <Windows.h>
 
 
 
@@ -17,6 +17,8 @@
 
 #define THMAX_PLAYERFSMSTATUS 16
 #define THMAX_SEQACTION 16
+
+#define THMALLOC(t, s) (t*)malloc(s)
 #define THFREE(p) { if (p) { free(p); (p) = NULL; }}
 
 
@@ -38,6 +40,11 @@ typedef bool thBool;
 #define THDELETE(p) { if (p) { delete (p); (p) = NULL; }}
 
 #else
+
+typedef int thBool;
+#define THTRUE 1
+#define THFALSE 0
+
 #endif	
 
 

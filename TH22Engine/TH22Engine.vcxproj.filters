@@ -41,7 +41,7 @@
     <ClCompile Include="pch.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\thEngine\thegContainer.c">
+    <ClCompile Include="..\Classes\thEngine\thegBitmap.c">
       <Filter>Source Files\THEG_Container</Filter>
     </ClCompile>
   </ItemGroup>

@@ -35,9 +35,6 @@ thBool CThPlayer::init(PLAYER_DESC_PTR ptPlayer, unsigned int nAniCount, unsigne
 	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::sharedSpriteFrameCache();
 	TH_PROCESS_ERROR(pSpFrameCache);
 
-	int k = theg_fntest(1);
-	CCLOG("loading waring %d, ", k);
-
 	m_pAniStandby = NULL;
 	m_pPlayerFsmCtrl = new CThFSMCtrl;
 
