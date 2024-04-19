@@ -58,6 +58,7 @@ private:
 	PLAYER_FSM_DESC_PTR m_ptPlayerFsmDesc;
 	enum THEM_CHARACTERFSM_STATUS m_emCurStatus;
 	CThFSMCtrl* m_pPlayerFsmCtrl;
+	THEC_BITMAP_PTR m_pbmPlayerStatus;
 };
 
 

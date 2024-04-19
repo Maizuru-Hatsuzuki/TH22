@@ -9,7 +9,6 @@
 #include "thBaseAnimation.h"
 #include "thBaseMacro.h"
 #include "thPlayerFSM.h"
-#include "thegContainer.h"
 
 
 CThPlayerAction* CThPlayerAction::m_pSelf;
@@ -37,6 +36,8 @@ thBool CThPlayer::init(PLAYER_DESC_PTR ptPlayer, unsigned int nAniCount, unsigne
 
 	m_pAniStandby = NULL;
 	m_pPlayerFsmCtrl = new CThFSMCtrl;
+	bFnRet = TecInitBitmap(THMAX_PLAYERFSMSTATUS, &m_pbmPlayerStatus);
+	TH_PROCESS_ERROR(bFnRet);
 
 	/* Init cocos. */
 	sprintf_s(szarrPListPath, "image\\sprite\\%s\\cocos2d\\%s.plist", ptPlayer->cszpSpriteName, ptPlayer->cszpPListName);
