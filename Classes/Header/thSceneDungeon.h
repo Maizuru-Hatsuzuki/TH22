@@ -21,6 +21,8 @@ public:
 	static cocos2d::Scene* createScene();
 	bool init() override;
 
+	thBool initBgMap();
+
 	CREATE_FUNC(thSceneDungeon);
 
 private:

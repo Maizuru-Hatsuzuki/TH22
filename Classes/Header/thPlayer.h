@@ -35,7 +35,7 @@ public:
 	CThPlayer();
 	~CThPlayer();
 	
-	thBool init(PLAYER_DESC_PTR ptPlayer, unsigned int nAniCount, unsigned int nAniBegin, unsigned nAniEnd);
+	thBool init(PLAYER_DESC_PTR ptPlayer);
 	virtual void update(float dt);
 	thBool doPlayAnimationStandby(char* szpFrameAni, unsigned int nAniCount, unsigned int nAniBegin, unsigned nAniEnd);
 	thBool doPlayAnimationMove(char* szpFrameAni, unsigned int nAniCount, unsigned int nAniBegin, unsigned nAniEnd, THEM_CHARACTERFSM_STATUS emMoveDirection);

@@ -72,6 +72,9 @@
     <ClCompile Include="..\Classes\thPlayerFSM.cpp">
       <Filter>Src\THCharacter</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\thDefTower.cpp">
+      <Filter>Src\THCharacter</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -115,6 +118,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Header\stdafx.h">
       <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Header\thDefTower.h">
+      <Filter>Header\THCharacter</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

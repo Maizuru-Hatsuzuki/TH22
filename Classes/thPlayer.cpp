@@ -24,7 +24,7 @@ CThPlayer::~CThPlayer()
 	THFREE(m_ptPlayerDesc);
 }
 
-thBool CThPlayer::init(PLAYER_DESC_PTR ptPlayer, unsigned int nAniCount, unsigned int nAniBegin, unsigned nAniEnd)
+thBool CThPlayer::init(PLAYER_DESC_PTR ptPlayer)
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
