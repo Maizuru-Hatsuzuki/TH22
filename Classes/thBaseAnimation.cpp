@@ -28,13 +28,12 @@ CThBaseAnimation* CThBaseAnimation::getInstance()
 	return m_pSelf;
 }
 
-thBool CThBaseAnimation::createPlayAnimationWithPList(THANIMATION_DESC_PTR ptAniDesc, Animate** ppRet)
+thBool CThBaseAnimation::createPlayAnimationWithPList(CHARACTER_ANI_DESC_PTR ptAniDesc, Animate** ppRet)
 {
 	thBool bRet = THFALSE;
 	int nFrameCount = 0;
 	char szarrSprite[128] = { 0 };
-	Texture2D* ptmpSprite = NULL;
-	SpriteFrame* ptmpTex = NULL;
+	SpriteFrame* pSpFrame = NULL;
 	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::sharedSpriteFrameCache();
 	TH_PROCESS_ERROR(pSpFrameCache);
 	Animation* pAni = Animation::create();
@@ -42,12 +41,11 @@ thBool CThBaseAnimation::createPlayAnimationWithPList(THANIMATION_DESC_PTR ptAni
 
 	for (unsigned int i = ptAniDesc->nFrameAniBegin; i <= ptAniDesc->nFrameAniEnd; i++)
 	{
-		sprintf_s(szarrSprite, "%s%d.png", ptAniDesc->szarrFrameAni, i);
-		ptmpTex = pSpFrameCache->spriteFrameByName(szarrSprite);
-		TH_PROCESS_ERROR(ptmpTex);
+		sprintf_s(szarrSprite, "%s%d.png", ptAniDesc->szarrBasicFrameAniPath, i);
+		pSpFrame = pSpFrameCache->spriteFrameByName(szarrSprite);
+		TH_PROCESS_ERROR(pSpFrame);
 		
-		ptmpSprite = ptmpTex->getTexture();
-		pAni->addSpriteFrame(ptmpTex);
+		pAni->addSpriteFrame(pSpFrame);
 		nFrameCount++;
 	}
 

@@ -17,6 +17,9 @@
 
 #define THMAX_PLAYERFSMSTATUS 16
 #define THMAX_SEQACTION 16
+#define THMAX_ANI_COUNT 32
+#define THMAX_SP_COUNT 64
+#define THMAX_CHAR_DESC 128
 
 #define THMALLOC(t, s) (t*)malloc(s)
 #define THFREE(p) { if (p) { free(p); (p) = NULL; }}

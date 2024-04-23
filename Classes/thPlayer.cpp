@@ -20,10 +20,58 @@ CThPlayer::CThPlayer()
 
 CThPlayer::~CThPlayer()
 {
-	TFC::uninitPlayerFSMAllEvent(m_ptPlayerFsmDesc);
-	THFREE(m_ptPlayerDesc);
+	//TFC::uninitPlayerFSMAllEvent(m_ptPlayerFsmDesc);
+	//THFREE(m_ptPlayerDesc);
 }
 
+thBool CThPlayer::init(CHARACTER_DESC_PTR pDesc)
+{
+	thBool bRet = THFALSE;
+	thBool bFnRet = THFALSE;
+
+	
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+thBool CThPlayer::initCharaterAnimation(CHARACTER_ANI_DESC_PTR pAniDesc, Animate** ppRet)
+{
+
+}
+
+void CThPlayer::uninit()
+{
+
+}
+
+void CThPlayer::getCharaterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet)
+{
+
+}
+
+void CThPlayer::getCharaterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet)
+{
+
+}
+
+void CThPlayer::onMouseUp(EventMouse* pEvent)
+{
+
+}
+
+void CThPlayer::onMouseDown(EventMouse* pEvent)
+{
+
+}
+
+void CThPlayer::onMouseMove(EventMouse* pEvent)
+{
+
+}
+
+/*
 thBool CThPlayer::init(PLAYER_DESC_PTR ptPlayer)
 {
 	thBool bRet = THFALSE;
@@ -39,7 +87,7 @@ thBool CThPlayer::init(PLAYER_DESC_PTR ptPlayer)
 	bFnRet = TecInitBitmap(THMAX_PLAYERFSMSTATUS, &m_pbmPlayerStatus);
 	TH_PROCESS_ERROR(bFnRet);
 
-	/* Init cocos. */
+	/* Init cocos. 
 	sprintf_s(szarrPListPath, "image\\sprite\\%s\\cocos2d\\%s.plist", ptPlayer->cszpSpriteName, ptPlayer->cszpPListName);
 	sprintf_s(szarrPListPngPath, "image\\sprite\\%s\\cocos2d\\%s.png", ptPlayer->cszpSpriteName, ptPlayer->cszpPListName);
 	sprintf_s(szarrBasicSpritePath, "image\\sprite\\%s\\cocos2d\\%s.png", ptPlayer->cszpSpriteName, ptPlayer->cszpFirstFrame);
@@ -57,7 +105,7 @@ thBool CThPlayer::init(PLAYER_DESC_PTR ptPlayer)
 
 	scheduleUpdate();
 
-	/* Init thPlayer. */
+	/* Init thPlayer. 
 	m_ptPlayerDesc = (PLAYER_DESC_PTR)malloc(sizeof(PLAYER_DESC));
 	memcpy_s(m_ptPlayerDesc, sizeof(PLAYER_DESC), ptPlayer, sizeof(PLAYER_DESC));
 
@@ -95,11 +143,7 @@ thBool CThPlayer::doPlayAnimationStandby(char* szpFrameAni, unsigned int nAniCou
 		false,
 	};
 	strcpy_s(tAniDesc.szarrFrameAni, strlen(szpFrameAni) + 1, szpFrameAni);
-	
-	if (NULL == m_pAniStandby)
-	{
-		
-	}
+
 	bFnRet = CThBaseAnimation::getInstance()->createPlayAnimationWithPList(&tAniDesc, &m_pAniStandby);
 	TH_PROCESS_ERROR(bFnRet);
 	m_pPlayer->runAction(m_pAniStandby);
@@ -216,6 +260,8 @@ void CThPlayer::setPlayerFsmCurStatus(enum THEM_CHARACTERFSM_STATUS emStatus) no
 	m_emCurStatus = emStatus;
 	return;
 }
+*/
+
 
 CThPlayerAction::CThPlayerAction() {};
 CThPlayerAction::~CThPlayerAction() {};
@@ -229,7 +275,7 @@ CThPlayerAction* CThPlayerAction::getInstance() noexcept
 	return m_pSelf;
 }
 
-thBool CThPlayerAction::setPlayerMoveTo(enum THEM_PLAYERLEVEL_MOVESPEED emSpeed, enum THEM_CHARACTERFSM_STATUS emDirection, CThPlayer* pPlayer) noexcept
+thBool CThPlayerAction::setPlayerMoveTo(enum THEM_CHARARCTERLEVEL_MOVESPEED emSpeed, enum THEM_CHARACTERFSM_STATUS emDirection, CThPlayer* pPlayer) noexcept
 {
 	thBool bRet = THFALSE;
 	float fCurX = 0.0f;
