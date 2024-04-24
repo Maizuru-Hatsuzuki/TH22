@@ -10,7 +10,7 @@
 #include "thBaseMacro.h"
 #include "thPlayerFSM.h"
 
-
+/*
 CThPlayerAction* CThPlayerAction::m_pSelf;
 
 
@@ -261,7 +261,7 @@ void CThPlayer::setPlayerFsmCurStatus(enum THEM_CHARACTERFSM_STATUS emStatus) no
 	return;
 }
 */
-
+/*
 
 CThPlayerAction::CThPlayerAction() {};
 CThPlayerAction::~CThPlayerAction() {};
@@ -331,3 +331,4 @@ thBool CThPlayerAction::setPlayerMoveTo(enum THEM_CHARARCTERLEVEL_MOVESPEED emSp
 Exit0:
 	return bRet;
 }
+*/

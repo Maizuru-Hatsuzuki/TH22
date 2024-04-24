@@ -14,32 +14,32 @@
 #include "thCharacterFSM.h"
 
 
-struct _tPlayerFsmArgs
-{
-	CThPlayer* pEnv;
-	THEM_CHARACTERFSM_STATUS emStatus;
-};
-typedef struct _tPlayerFsmArgs PLAYER_FSM_ARGS, * PLAYER_FSM_ARGS_PTR;
-
-/* Unknown */
-thBool tfpUnknowInit(void* vpEnv);
-thBool tfpUnknowUpdate(void* vpEnv);
-thBool tfpUnknowRelease(void* vpEnv);
-
-/* Standby */
-thBool tfpStandbyInit(void* vpEnv);
-thBool tfpStandbyUpdate(void* vpEnv);
-thBool tfpStandbyRelease(void* vpEnv);
-
-/* Left move */
-thBool tfpMoveLeftInit(void* vpEnv);
-thBool tfpMoveLeftUpdate(void* vpEnv);
-thBool tfpMoveLeftRelease(void* vpEnv);
-
-/* Right move */
-thBool tfpMoveRightInit(void* vpEnv);
-thBool tfpMoveRightUpdate(void* vpEnv);
-thBool tfpMoveRightRelease(void* vpEnv);
+//struct _tPlayerFsmArgs
+//{
+//	CThPlayer* pEnv;
+//	THEM_CHARACTERFSM_STATUS emStatus;
+//};
+//typedef struct _tPlayerFsmArgs PLAYER_FSM_ARGS, * PLAYER_FSM_ARGS_PTR;
+//
+///* Unknown */
+//thBool tfpUnknowInit(void* vpEnv);
+//thBool tfpUnknowUpdate(void* vpEnv);
+//thBool tfpUnknowRelease(void* vpEnv);
+//
+///* Standby */
+//thBool tfpStandbyInit(void* vpEnv);
+//thBool tfpStandbyUpdate(void* vpEnv);
+//thBool tfpStandbyRelease(void* vpEnv);
+//
+///* Left move */
+//thBool tfpMoveLeftInit(void* vpEnv);
+//thBool tfpMoveLeftUpdate(void* vpEnv);
+//thBool tfpMoveLeftRelease(void* vpEnv);
+//
+///* Right move */
+//thBool tfpMoveRightInit(void* vpEnv);
+//thBool tfpMoveRightUpdate(void* vpEnv);
+//thBool tfpMoveRightRelease(void* vpEnv);
 
 
 #endif // !__THPLAYERFSM_H__

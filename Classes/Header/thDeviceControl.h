@@ -11,7 +11,7 @@
 
 #include "thPlayer.h"
 
-
+/*
 class CThKeyboard
 {
 public:
@@ -34,6 +34,6 @@ private:
 	CThPlayer * m_pListener;
 	static CThKeyboard* m_pSelf;
 };
-
+*/
 
 #endif

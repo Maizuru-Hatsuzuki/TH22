@@ -9,7 +9,7 @@
 #include "thPlayerFSM.h"
 #include "thBaseMacro.h"
 
-
+/*
 thBool tfpUnknowInit(void* vpEnv)
 {
 	thBool bRet = THFALSE;
@@ -150,3 +150,4 @@ thBool tfpMoveRightRelease(void* vpEnv)
 Exit0:
 	return bRet;
 }
+*/

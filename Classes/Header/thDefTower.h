@@ -20,49 +20,34 @@ public:
 	CThDefTower();
 	~CThDefTower();
 
-	virtual thBool init(CHARACTER_DESC_PTR pDesc, CHARACTER_ANI_DESC_PTR* arrpAniDesc);
+	thBool init(CHARACTER_DESC_PTR pDesc, CHARACTER_ANI_DESC_PTR* arrpAniDesc, DEFTOWER_DESC_PTR ptTowerDesc);
 	thBool initCharaterAnimate(CHARACTER_ANI_DESC_PTR pAniDesc, const int cnGroupPos);
 	virtual void uninit();
 
 	virtual void getCharaterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet);
 	virtual void getCharaterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet);
+	
+	thBool initDefTowerWarriorsDesc(CHARACTER_DESC_PTR* arrpCharacterDesc, enum THEM_CHARACTER_LEVEL emLevel, const short csSize);
 
 	virtual void onMouseUp(EventMouse* pEvent);
 	virtual void onMouseDown(EventMouse* pEvent);
 	virtual void onMouseMove(EventMouse* pEvent);
 
 	virtual void update(float dt);
+	virtual thBool globalMonitoring() override;
 
 private:
 	thBool _initBaiscAnimate(CHARACTER_ANI_DESC_PTR* arrpAniDesc);
+	void _getSpArrayVacantPos(short* psRet);
 
 private:
 	CHARACTER_FRAMEINFO_PTR m_pTower;
 	CHARACTER_FRAMEINFO_PTR* m_arrpSpGroup;
 	CHARACTER_ANI_FRAMEINFO_PTR* m_arrpAniGroup;
+	DEFTOWER_DESC_PTR m_ptTowerStatus;
+	/* 防御塔战士精灵描述，每个等级 3 种类型. */
+	CHARACTER_DESC_PTR m_arrpWarriorsDesc[THEM_CHARACTER_LEVEL::CHARACTER_MAXLEVEL][THMAX_TARLEVEL_DEFTOWER_WARRIORS];
 };
-
-
-
-//class CThHunterCabin:
-//	public CThBaseCharacter
-//{
-//public:
-//	CThHunterCabin();
-//	~CThHunterCabin();
-//
-//	thBool init(PLAYER_DESC_PTR ptPlayer);
-//	void initMouseEvent(Node* pScene);
-//	void initAnimation();
-//	void onMouseUp(EventMouse* pEvent);
-//	thBool createFighter();
-//	thBool getPlayer(Sprite** pRet);
-//
-//private:
-//	Sprite* m_pSpHunterCabin;
-//	Animate* m_pAniOpenTheDoor;
-//	Animate* m_pAniCloseTheDoor;
-//};
 
 
 

@@ -11,7 +11,7 @@
 #include "thCharacter.h"
 #include "thBaseFSM.h"
 
-
+/*
 class CThPlayer
 {
 public:
@@ -39,7 +39,7 @@ private:
 };
 
 
-
+*/
 
 
 
@@ -94,7 +94,7 @@ private:
 //	CThFSMCtrl* m_pPlayerFsmCtrl;
 //	THEC_BITMAP_PTR m_pbmPlayerStatus;
 //};
-
+/*
 
 class CThPlayerAction
 {
@@ -113,6 +113,6 @@ private:
 
 };
 
-
+*/
 
 #endif

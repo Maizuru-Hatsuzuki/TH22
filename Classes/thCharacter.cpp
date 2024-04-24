@@ -20,58 +20,63 @@ CThBaseCharacter::~CThBaseCharacter()
 {
 }
 
-thBool CThBaseCharacter::initCharater(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR* ppRet)
+thBool CThBaseCharacter::initCharater(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR* ppRet, thBool bInitSp) const
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
 	CHARACTER_FRAMEINFO_PTR ptCharFrame = THMALLOC(CHARACTER_FRAMEINFO, sizeof(CHARACTER_FRAMEINFO));
 	TH_PROCESS_ERROR(ptCharFrame);
+	
+	if (THTRUE == bInitSp)
+	{
+		ptCharFrame->pSpCharater = Sprite::create(pDesc->cszpSpriteTexPath);
+		TH_PROCESS_ERROR(ptCharFrame->pSpCharater);
+		ptCharFrame->pSpCharater->setFlippedX(pDesc->bFlipX);
+		ptCharFrame->pSpCharater->setFlippedY(pDesc->bFlipY);
+		ptCharFrame->pSpCharater->setScale(pDesc->fScale);
+		ptCharFrame->pSpCharater->setPositionX(pDesc->fPosX);
+		ptCharFrame->pSpCharater->setPositionY(pDesc->fPosY);
+	}
+	else
+	{
+		ptCharFrame->pSpCharater = NULL;
+	}
 
-	bFnRet = initCharaterFrameInfo(ptCharFrame);
-	TH_PROCESS_ERROR(bFnRet);
-
-	ptCharFrame->pSpCharater = Sprite::create(pDesc->cszpSpriteTexPath);
-	TH_PROCESS_ERROR(ptCharFrame->pSpCharater);
-	ptCharFrame->pSpCharater->setFlippedX(pDesc->bFlipX);
-	ptCharFrame->pSpCharater->setFlippedY(pDesc->bFlipY);
-	ptCharFrame->pSpCharater->setScale(pDesc->fScale);
-	ptCharFrame->pSpCharater->setPositionX(pDesc->fPosX);
-	ptCharFrame->pSpCharater->setPositionY(pDesc->fPosY);
-
+	ptCharFrame->nHP = pDesc->nHP;
+	ptCharFrame->nMP = pDesc->nMP;
+	ptCharFrame->nAttack = pDesc->nAttack;
+	ptCharFrame->nDefense = pDesc->nDefense;
+	ptCharFrame->nCDResurrection = pDesc->nCDResurrection;
+	ptCharFrame->nLastestDieTime = pDesc->nLastestDieTime;
+	ptCharFrame->nDuration = pDesc->nDuration;
+	ptCharFrame->emCharacterType = pDesc->emCharacterType;
+	ptCharFrame->emMoveSpeed = pDesc->emMoveSpeed;
 	strcpy_s(ptCharFrame->szarrDesc, strlen(pDesc->cszpSpriteName) + 1, pDesc->cszpSpriteName);
+
 	*ppRet = ptCharFrame;
 	bRet = THTRUE;
 Exit0:
 	return bRet;
 }
 
-thBool CThBaseCharacter::initCharaterFrameInfo(CHARACTER_FRAMEINFO_PTR pRet)
+thBool CThBaseCharacter::initCharaterAnimation(CHARACTER_ANI_DESC_PTR pAniDesc, Animate** ppRet) const
 {
 	thBool bRet = THFALSE;
+	char szarrPlistPath[MAX_PATH] = { 0 };
+	char szarrPlistPngPath[MAX_PATH] = { 0 };
+	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::sharedSpriteFrameCache();
+	TH_PROCESS_ERROR(pSpFrameCache);
 
-	pRet->emMoveSpeed = MOVESPEED_NARMAL;
-	pRet->nAttack = 20;
-	pRet->nDefense = 20;
-	pRet->nHP = 100;
-	pRet->nMP = 100;
-	pRet->nCDResurrection = 30;
-	pRet->nDuration = 30;
-	pRet->nLastestDieTime = 0;
-	pRet->pSpCharater = NULL;
+	sprintf_s(szarrPlistPath, "%s.plist", pAniDesc->szarrBasicFrameAniPath);
+	sprintf_s(szarrPlistPngPath, "%s.png", pAniDesc->szarrBasicFrameAniPath);
 
-	bRet = THTRUE;
-Exit0:
-	return bRet;
-}
-
-thBool CThBaseCharacter::initCharaterAnimation(CHARACTER_ANI_DESC_PTR pAniDesc, Animate** ppRet)
-{
-	thBool bRet = THFALSE;
+	pSpFrameCache->addSpriteFramesWithFile(pAniDesc->szarrBasicFrameAniPath);
 	bRet = CThBaseAnimation::getInstance()->createPlayAnimationWithPList(pAniDesc, ppRet);
 	TH_PROCESS_ERROR(bRet);
 
 	bRet = THTRUE;
 Exit0:
+	pSpFrameCache->removeSpriteFramesFromFile(szarrPlistPath);
 	return bRet;
 }
 
@@ -82,6 +87,18 @@ void CThBaseCharacter::uninitCharater(CHARACTER_FRAMEINFO_PTR pCharater)
 		pCharater->pSpCharater->removeAllChildren();
 	}
 	THFREE(pCharater);
+	return;
+}
+
+void CThBaseCharacter::setPlayerRunAction(Action* pAction, Sprite* pSp)
+{
+	pSp->runAction(pAction);
+	return;
+}
+
+void CThBaseCharacter::setPlayerStopAllAction(Sprite* pSp)
+{
+	pSp->stopAllActions();
 	return;
 }
 
@@ -97,7 +114,6 @@ thBool CThBaseCharacter::getCharaterAnimateFrameInfo(CHARACTER_ANI_DESC_PTR pAni
 Exit0:
 	return bRet;
 }
-
 
 CThBaseCharacterAction::CThBaseCharacterAction()
 {

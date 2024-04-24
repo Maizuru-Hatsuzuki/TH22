@@ -46,43 +46,43 @@ bool thSceneDungeon::init()
 {
 	bool bRet = THFALSE;
 	bool bFnRet = THFALSE;
-	PLAYER_DESC tPlayer =
+
+	CThDefTower* pHunterCabinObject = new CThDefTower;
+	/* tower */
+	CHARACTER_DESC tTowerDesc =
 	{
-		"ichigoW0",
-		"ichigoW0-removebg-preview",
-		"ichigoW0-removebg-preview1",
-		760.f,
-		Director::getInstance()->getWinSize().height - 228.f,
-		0.5f,
-		false,
-		false
-	};
-	PLAYER_DESC tHunterCabin =
-	{
-		"HunterCabin",
-		NULL,
-		NULL,
+		"Hunter cabin",
+		"image\\sprite\\kr\\hunterCabin1.png",
 		435.f,
 		Director::getInstance()->getWinSize().height - 165.f,
-		0.3f,
-		false,
-		false
+		0.3f, false, false, 100, 100, 10, 10, 10, 10, 0,
+		THEM_CHARARCTERLEVEL_MOVESPEED::MOVESPEED_NARMAL,
+		THEM_CHARACTER_TYPE::CHARACTER_DEFTOWER
 	};
-	CThPlayer* pIchigoObject = new CThPlayer;
-	CThHunterCabin* pHunterCabinObject = new CThHunterCabin;
-	//LayerColor* pBgTmp = LayerColor::create(ccc4(0xff, 0x0, 0x0, 0x80), 640, 480);
+	CHARACTER_ANI_DESC_PTR arrpAniDesc[THMAX_ANI_COUNT] = { 0 };
+	DEFTOWER_DESC tTowerStatusDesc = { 3, 4, 1, 10, 10, 50, 0 };
 
-	pIchigoObject->init(&tPlayer);
-	pHunterCabinObject->init(&tHunterCabin);
-	pHunterCabinObject->initMouseEvent(this);
+	/* warriors */
+	CHARACTER_DESC tTowerWarriorA =
+	{
+		"hunter cabin warrior A",
+		"image\\sprite\\kr\\batMove1.png",
+		435.f,
+		Director::getInstance()->getWinSize().height - 165.f,
+		0.3f, false, false, 100, 100, 10, 10, 10, 10, 0,
+		THEM_CHARARCTERLEVEL_MOVESPEED::MOVESPEED_NARMAL,
+		THEM_CHARACTER_TYPE::CHARACTER_TOWER_WARRIOR
+	};
+	CHARACTER_DESC_PTR arrpWarriors[THMAX_TARLEVEL_DEFTOWER_WARRIORS] = { &tTowerWarriorA, NULL, NULL };
+	
+	bFnRet = pHunterCabinObject->init(&tTowerDesc, arrpAniDesc, &tTowerStatusDesc);
+	TH_PROCESS_ERROR(bFnRet);
+	bFnRet = pHunterCabinObject->initDefTowerWarriorsDesc(arrpWarriors, THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, 1);
+	TH_PROCESS_ERROR(bFnRet);
 
-	CThKeyboard::getInstance()->init(pIchigoObject);
-	CThKeyboard::getInstance()->listener(this);
-
-	//this->addChild(pBgTmp);
 	bFnRet = initBgMap();
 	TH_PROCESS_ERROR(bFnRet);
-	this->addChild(pIchigoObject);
+
 	this->addChild(pHunterCabinObject);
 
 	bRet = THTRUE;
@@ -90,3 +90,7 @@ Exit0:
 	return bRet;
 }
 
+
+
+//LayerColor* pBgTmp = LayerColor::create(ccc4(0xff, 0x0, 0x0, 0x80), 640, 480);
+//this->addChild(pBgTmp);

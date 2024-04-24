@@ -21,6 +21,29 @@ enum THEM_CHARARCTERLEVEL_MOVESPEED
 	MOVESPEED_HIGHEX
 };
 
+enum THEM_CHARACTER_TYPE
+{
+	CHARACTER_UNKNOW,
+	CHARACTER_PLAYER,
+	CHARACTER_DEFTOWER,
+	CHARACTER_TOWER_WARRIOR,
+	CHARACTER_SUPPORT_WARRIOR,
+	CHARACTER_ENEMY,
+	CHARACTER_ENEMY_DEFTOWER,
+	CHARACTER_BOSS,
+	CHARACTER_NPC
+};
+
+enum THEM_CHARACTER_LEVEL
+{
+	CHARACTER_LEVEL_1,
+	CHARACTER_LEVEL_2,
+	CHARACTER_LEVEL_3,
+	CHARACTER_LEVEL_4,
+	CHARACTER_LEVEL_5,
+	CHARACTER_MAXLEVEL
+};
+
 struct _tCharacterDesc
 {
 	const char* cszpSpriteName;
@@ -30,6 +53,15 @@ struct _tCharacterDesc
 	float fScale;
 	bool bFlipX;
 	bool bFlipY;
+	int nHP;
+	int nMP;
+	int nAttack;
+	int nDefense;
+	int nCDResurrection;
+	int nDuration;
+	DWORD nLastestDieTime;
+	enum THEM_CHARARCTERLEVEL_MOVESPEED emMoveSpeed;
+	enum THEM_CHARACTER_TYPE emCharacterType;
 };
 
 struct _tCharacterAnimationDesc
@@ -55,6 +87,7 @@ struct _tCharacterFrameInfo
 	int nDuration;
 	DWORD nLastestDieTime;
 	enum THEM_CHARARCTERLEVEL_MOVESPEED emMoveSpeed;
+	enum THEM_CHARACTER_TYPE emCharacterType;
 	Sprite* pSpCharater;
 	char szarrDesc[THMAX_CHAR_DESC];
 };
@@ -65,10 +98,23 @@ struct _tCharacterAnimateFrameInfo
 	char szarrDesc[64];
 };
 
+struct _tDefTowerDesc
+{
+	const int cnMaxWarriors;
+	const int cnMaxLevel;
+	int nCurLevel;
+	int nAttack;
+	short sCurWarriors;
+	short sAttackCD;
+	short sActionRadius;
+	short sAliveWarriors;
+};
+
 typedef struct _tCharacterDesc				CHARACTER_DESC, * CHARACTER_DESC_PTR;
 typedef struct _tCharacterAnimationDesc		CHARACTER_ANI_DESC, * CHARACTER_ANI_DESC_PTR;
 typedef struct _tCharacterFrameInfo			CHARACTER_FRAMEINFO, * CHARACTER_FRAMEINFO_PTR;
 typedef struct _tCharacterAnimateFrameInfo	CHARACTER_ANI_FRAMEINFO, * CHARACTER_ANI_FRAMEINFO_PTR;
+typedef struct _tDefTowerDesc				DEFTOWER_DESC, * DEFTOWER_DESC_PTR;
 
 
 class CThBaseCharacter:
@@ -76,26 +122,27 @@ class CThBaseCharacter:
 {
 public:
 	CThBaseCharacter();
-	~CThBaseCharacter();
+	virtual ~CThBaseCharacter();
 
-	virtual thBool init(CHARACTER_DESC_PTR pDesc)												= 0;
-	virtual thBool initCharater(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR* ppRet);
-	virtual thBool initCharaterAnimation(CHARACTER_ANI_DESC_PTR pAniDesc, Animate** ppRet);
-	virtual void uninit()																		= 0;
-	virtual void uninitCharater(CHARACTER_FRAMEINFO_PTR pCharater);
+	thBool			initCharater(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR* ppRet, thBool bInitSp) const;
+	void			uninitCharater(CHARACTER_FRAMEINFO_PTR pCharater);
+	thBool			initCharaterAnimation(CHARACTER_ANI_DESC_PTR pAniDesc, Animate** ppRet) const ;
 
-	virtual void getCharaterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet)							= 0;
-	virtual void getCharaterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet) = 0;
-	virtual thBool getCharaterAnimateFrameInfo(CHARACTER_ANI_DESC_PTR pAniDesc, CHARACTER_ANI_FRAMEINFO_PTR ppRet) const;
-	virtual void setPlayerRunAction(Action* pAction)											= 0;
-	virtual void setPlayerStopAllAction()														= 0;
+	thBool getCharaterAnimateFrameInfo(CHARACTER_ANI_DESC_PTR pAniDesc, CHARACTER_ANI_FRAMEINFO_PTR ppRet) const;
+	virtual void getCharaterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet)								= 0;
+	virtual void getCharaterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet)	= 0;
+
+	void setPlayerRunAction(Action* pAction, Sprite* pSp);
+	void setPlayerStopAllAction(Sprite* pSp);
 
 	virtual void onMouseUp(EventMouse* pEvent)													= 0;
 	virtual void onMouseDown(EventMouse* pEvent)												= 0;
 	virtual void onMouseMove(EventMouse* pEvent)												= 0;
 
+	virtual thBool globalMonitoring()															= 0;
+
 private:
-	thBool initCharaterFrameInfo(CHARACTER_FRAMEINFO_PTR pRet);
+
 };
 
 

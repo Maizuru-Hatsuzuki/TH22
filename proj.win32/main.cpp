@@ -41,6 +41,7 @@ int WINAPI _tWinMain(HINSTANCE hInstance,
 #endif
 
     int nRet = -1;
+    srand(time(0));
 
     AppDelegate app;
     nRet = Application::getInstance()->run();

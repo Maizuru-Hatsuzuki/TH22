@@ -8,7 +8,7 @@
 
 #include "thDeviceControl.h"
 #include "thBaseMacro.h"
-
+/*
 CThKeyboard* CThKeyboard::m_pSelf;
 
 
@@ -139,3 +139,4 @@ thBool CThKeyboard::_KeyUpEvent(EventListenerKeyboard* pKeyboard)
 Exit0:
 	return bRet;
 }
+*/
