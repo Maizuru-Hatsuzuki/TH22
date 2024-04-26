@@ -34,7 +34,7 @@ public:
 	virtual void onMouseMove(EventMouse* pEvent);
 
 	virtual void update(float dt);
-	virtual thBool globalMonitoring() override;
+	virtual thBool globalMonitoring();
 
 private:
 	thBool _initBaiscAnimate(CHARACTER_ANI_DESC_PTR* arrpAniDesc);

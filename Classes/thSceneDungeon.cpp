@@ -42,25 +42,51 @@ Exit0:
 	return bRet;
 }
 
+
+void initAni()
+{
+
+}
+
 bool thSceneDungeon::init()
 {
 	bool bRet = THFALSE;
 	bool bFnRet = THFALSE;
 
+
 	CThDefTower* pHunterCabinObject = new CThDefTower;
+
 	/* tower */
+	CHARACTER_ANI_MAP tBatAniMap = { 0 };
+	tBatAniMap.cszpAniMoveTransverse = "batMove";
+	CHARACTER_ANI_MAP tTowerAniMap = { 0 };
+	tTowerAniMap.cszpAniOpenTheDoor = "TowerInitWarriorsOpenDoor";
+	tTowerAniMap.cszpAniCloseTheDoor = "TowerInitWarriorsCloseDoor";
 	CHARACTER_DESC tTowerDesc =
 	{
 		"Hunter cabin",
-		"image\\sprite\\kr\\hunterCabin1.png",
+		"image\\sprite\\kr\\hunterCabin2.png",
 		435.f,
 		Director::getInstance()->getWinSize().height - 165.f,
 		0.3f, false, false, 100, 100, 10, 10, 10, 10, 0,
 		THEM_CHARARCTERLEVEL_MOVESPEED::MOVESPEED_NARMAL,
-		THEM_CHARACTER_TYPE::CHARACTER_DEFTOWER
+		THEM_CHARACTER_TYPE::CHARACTER_DEFTOWER,
+		& tTowerAniMap
 	};
-	CHARACTER_ANI_DESC_PTR arrpAniDesc[THMAX_ANI_COUNT] = { 0 };
-	DEFTOWER_DESC tTowerStatusDesc = { 3, 4, 1, 10, 10, 50, 0 };
+
+	CHARACTER_ANI_DESC tAniBatMove =
+	{
+		2,
+		3,
+		4,
+		0.35f,
+		-1,
+		false,
+		"image\\sprite\\kr\\BatMovePlist",
+		"batMove",
+		"batMove"
+	};
+	DEFTOWER_DESC tTowerStatusDesc = { 3, 4, 1, 1, 0, 50, THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1 };
 
 	/* warriors */
 	CHARACTER_DESC tTowerWarriorA =
@@ -69,10 +95,40 @@ bool thSceneDungeon::init()
 		"image\\sprite\\kr\\batMove1.png",
 		435.f,
 		Director::getInstance()->getWinSize().height - 165.f,
-		0.3f, false, false, 100, 100, 10, 10, 10, 10, 0,
+		0.25f, false, false, 100, 100, 10, 10, 10, 10, 0,
 		THEM_CHARARCTERLEVEL_MOVESPEED::MOVESPEED_NARMAL,
-		THEM_CHARACTER_TYPE::CHARACTER_TOWER_WARRIOR
+		THEM_CHARACTER_TYPE::CHARACTER_TOWER_WARRIOR,
+		& tBatAniMap
 	};
+	/* open the door */
+	CHARACTER_ANI_DESC tAniOpD =
+	{
+		5,
+		2,
+		4,
+		1.f,
+		-1,
+		false,
+		"image\\sprite\\kr\\hunterCabinPlist",
+		"hunterCabin",
+		"TowerInitWarriorsOpenDoor"
+	};
+
+	/* close the door */
+	CHARACTER_ANI_DESC tAniClD =
+	{
+		5,
+		2,
+		4,
+		1.f,
+		1,
+		false,
+		"image\\sprite\\kr\\hunterCabinPlist",
+		"hunterCabin",
+		"TowerInitWarriorsCloseDoor"
+	};
+
+	CHARACTER_ANI_DESC_PTR arrpAniDesc[THMAX_ANI_COUNT] = { &tAniBatMove, &tAniOpD, &tAniClD };
 	CHARACTER_DESC_PTR arrpWarriors[THMAX_TARLEVEL_DEFTOWER_WARRIORS] = { &tTowerWarriorA, NULL, NULL };
 	
 	bFnRet = pHunterCabinObject->init(&tTowerDesc, arrpAniDesc, &tTowerStatusDesc);

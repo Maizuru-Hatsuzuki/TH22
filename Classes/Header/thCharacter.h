@@ -44,6 +44,19 @@ enum THEM_CHARACTER_LEVEL
 	CHARACTER_MAXLEVEL
 };
 
+struct _tCharacterAniMap
+{
+	const char* cszpAniStandby;
+	const char* cszpAniMoveTransverse;
+	const char* cszpAniMoveUp;
+	const char* cszpAniMoveDown;
+	const char* cszpAniMoveAttack;
+	const char* cszpAniMoveSkill;
+	const char* cszpAniMoveDie;
+	const char* cszpAniOpenTheDoor;
+	const char* cszpAniCloseTheDoor;
+};
+
 struct _tCharacterDesc
 {
 	const char* cszpSpriteName;
@@ -62,6 +75,7 @@ struct _tCharacterDesc
 	DWORD nLastestDieTime;
 	enum THEM_CHARARCTERLEVEL_MOVESPEED emMoveSpeed;
 	enum THEM_CHARACTER_TYPE emCharacterType;
+	struct _tCharacterAniMap* ptAniMap;
 };
 
 struct _tCharacterAnimationDesc
@@ -70,10 +84,10 @@ struct _tCharacterAnimationDesc
 	unsigned int nFrameAniBegin;
 	unsigned int nFrameAniEnd;
 	float fDelayPerUnit;
-	float fRevolve;
 	int nLoops;
 	bool bResFirstFrame;
-	char szarrBasicFrameAniPath[MAX_PATH];
+	char szarrBasicFrameAniPlistPath[MAX_PATH];
+	char szarrPlistPngPath[64];
 	char szarrAniDesc[32];
 };
 
@@ -88,7 +102,7 @@ struct _tCharacterFrameInfo
 	DWORD nLastestDieTime;
 	enum THEM_CHARARCTERLEVEL_MOVESPEED emMoveSpeed;
 	enum THEM_CHARACTER_TYPE emCharacterType;
-	Sprite* pSpCharater;
+	Sprite* pSpCharacter;
 	char szarrDesc[THMAX_CHAR_DESC];
 };
 
@@ -102,15 +116,15 @@ struct _tDefTowerDesc
 {
 	const int cnMaxWarriors;
 	const int cnMaxLevel;
-	int nCurLevel;
 	int nAttack;
 	short sCurWarriors;
 	short sAttackCD;
 	short sActionRadius;
-	short sAliveWarriors;
+	THEM_CHARACTER_LEVEL emCurLevel;
 };
 
 typedef struct _tCharacterDesc				CHARACTER_DESC, * CHARACTER_DESC_PTR;
+typedef struct _tCharacterAniMap			CHARACTER_ANI_MAP, * CHARACTER_ANI_MAP_PTR;
 typedef struct _tCharacterAnimationDesc		CHARACTER_ANI_DESC, * CHARACTER_ANI_DESC_PTR;
 typedef struct _tCharacterFrameInfo			CHARACTER_FRAMEINFO, * CHARACTER_FRAMEINFO_PTR;
 typedef struct _tCharacterAnimateFrameInfo	CHARACTER_ANI_FRAMEINFO, * CHARACTER_ANI_FRAMEINFO_PTR;
@@ -124,9 +138,9 @@ public:
 	CThBaseCharacter();
 	virtual ~CThBaseCharacter();
 
-	thBool			initCharater(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR* ppRet, thBool bInitSp) const;
-	void			uninitCharater(CHARACTER_FRAMEINFO_PTR pCharater);
-	thBool			initCharaterAnimation(CHARACTER_ANI_DESC_PTR pAniDesc, Animate** ppRet) const ;
+	thBool	initCharater(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR* ppRet, thBool bInitSp) const;
+	void	uninitCharater(CHARACTER_FRAMEINFO_PTR pCharater);
+	thBool	initCharaterAnimation(CHARACTER_ANI_DESC_PTR pAniDesc, Animate** ppRet) const ;
 
 	thBool getCharaterAnimateFrameInfo(CHARACTER_ANI_DESC_PTR pAniDesc, CHARACTER_ANI_FRAMEINFO_PTR ppRet) const;
 	virtual void getCharaterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet)								= 0;

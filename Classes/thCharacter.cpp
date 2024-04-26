@@ -29,17 +29,17 @@ thBool CThBaseCharacter::initCharater(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEI
 	
 	if (THTRUE == bInitSp)
 	{
-		ptCharFrame->pSpCharater = Sprite::create(pDesc->cszpSpriteTexPath);
-		TH_PROCESS_ERROR(ptCharFrame->pSpCharater);
-		ptCharFrame->pSpCharater->setFlippedX(pDesc->bFlipX);
-		ptCharFrame->pSpCharater->setFlippedY(pDesc->bFlipY);
-		ptCharFrame->pSpCharater->setScale(pDesc->fScale);
-		ptCharFrame->pSpCharater->setPositionX(pDesc->fPosX);
-		ptCharFrame->pSpCharater->setPositionY(pDesc->fPosY);
+		ptCharFrame->pSpCharacter = Sprite::create(pDesc->cszpSpriteTexPath);
+		TH_PROCESS_ERROR(ptCharFrame->pSpCharacter);
+		ptCharFrame->pSpCharacter->setFlippedX(pDesc->bFlipX);
+		ptCharFrame->pSpCharacter->setFlippedY(pDesc->bFlipY);
+		ptCharFrame->pSpCharacter->setScale(pDesc->fScale);
+		ptCharFrame->pSpCharacter->setPositionX(pDesc->fPosX);
+		ptCharFrame->pSpCharacter->setPositionY(pDesc->fPosY);
 	}
 	else
 	{
-		ptCharFrame->pSpCharater = NULL;
+		ptCharFrame->pSpCharacter = NULL;
 	}
 
 	ptCharFrame->nHP = pDesc->nHP;
@@ -67,13 +67,14 @@ thBool CThBaseCharacter::initCharaterAnimation(CHARACTER_ANI_DESC_PTR pAniDesc, 
 	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::sharedSpriteFrameCache();
 	TH_PROCESS_ERROR(pSpFrameCache);
 
-	sprintf_s(szarrPlistPath, "%s.plist", pAniDesc->szarrBasicFrameAniPath);
-	sprintf_s(szarrPlistPngPath, "%s.png", pAniDesc->szarrBasicFrameAniPath);
+	sprintf_s(szarrPlistPath, "%s.plist", pAniDesc->szarrBasicFrameAniPlistPath);
+	sprintf_s(szarrPlistPngPath, "%s.png", pAniDesc->szarrBasicFrameAniPlistPath);
 
-	pSpFrameCache->addSpriteFramesWithFile(pAniDesc->szarrBasicFrameAniPath);
+	pSpFrameCache->addSpriteFramesWithFile(szarrPlistPath, szarrPlistPngPath);
 	bRet = CThBaseAnimation::getInstance()->createPlayAnimationWithPList(pAniDesc, ppRet);
 	TH_PROCESS_ERROR(bRet);
 
+	(*ppRet)->retain();
 	bRet = THTRUE;
 Exit0:
 	pSpFrameCache->removeSpriteFramesFromFile(szarrPlistPath);
@@ -82,9 +83,9 @@ Exit0:
 
 void CThBaseCharacter::uninitCharater(CHARACTER_FRAMEINFO_PTR pCharater)
 {
-	if (0 != pCharater->pSpCharater->getReferenceCount())
+	if (0 != pCharater->pSpCharacter->getReferenceCount())
 	{
-		pCharater->pSpCharater->removeAllChildren();
+		pCharater->pSpCharacter->removeAllChildren();
 	}
 	THFREE(pCharater);
 	return;

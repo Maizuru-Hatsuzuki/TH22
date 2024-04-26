@@ -41,12 +41,12 @@ thBool CThDefTower::init(CHARACTER_DESC_PTR pTowerDesc, CHARACTER_ANI_DESC_PTR* 
 	bFnRet = _initBaiscAnimate(arrpAniDesc);
 	TH_PROCESS_ERROR(bFnRet);
 
-	this->addChild(m_pTower->pSpCharater);
+	this->addChild(m_pTower->pSpCharacter);
 
 	pMouse->onMouseUp = CC_CALLBACK_1(CThDefTower::onMouseUp, this);
 	pMouse->onMouseMove = CC_CALLBACK_1(CThDefTower::onMouseMove, this);
 	pMouse->onMouseDown = CC_CALLBACK_1(CThDefTower::onMouseDown, this);
-	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(pMouse, m_pTower->pSpCharater);
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(pMouse, m_pTower->pSpCharacter);
 
 	scheduleUpdate();
 
@@ -73,6 +73,7 @@ thBool CThDefTower::initDefTowerWarriorsDesc(CHARACTER_DESC_PTR* arrpCharacterDe
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
 	CHARACTER_DESC_PTR pSpDesc = NULL;
+	CHARACTER_ANI_MAP_PTR pAniMap = NULL;
 
 	for (short i = 0; i < THMAX_TARLEVEL_DEFTOWER_WARRIORS; i++)
 	{
@@ -80,8 +81,14 @@ thBool CThDefTower::initDefTowerWarriorsDesc(CHARACTER_DESC_PTR* arrpCharacterDe
 		{
 			pSpDesc = THMALLOC(CHARACTER_DESC, sizeof(CHARACTER_DESC));
 			TH_PROCESS_ERROR(pSpDesc);
+			pAniMap = THMALLOC(CHARACTER_ANI_MAP, sizeof(CHARACTER_ANI_MAP));
+			TH_PROCESS_ERROR(pAniMap);
+
+			memcpy_s(pSpDesc, sizeof(CHARACTER_DESC), arrpCharacterDesc[i], sizeof(CHARACTER_DESC));
+			memcpy_s(pAniMap, sizeof(CHARACTER_ANI_MAP), arrpCharacterDesc[i]->ptAniMap, sizeof(CHARACTER_ANI_MAP));
 
 			m_arrpWarriorsDesc[emLevel][i] = pSpDesc;
+			pSpDesc->ptAniMap = pAniMap;
 		}
 		else
 		{
@@ -109,6 +116,7 @@ thBool CThDefTower::_initBaiscAnimate(CHARACTER_ANI_DESC_PTR* arrpAniDesc)
 			pResAni = THMALLOC(CHARACTER_ANI_FRAMEINFO, sizeof(CHARACTER_ANI_FRAMEINFO));
 			pResAni->pAnimate = NULL;
 			strcpy_s(pResAni->szarrDesc, strlen(ptmpAniDesc->szarrAniDesc) + 1, ptmpAniDesc->szarrAniDesc);
+			m_arrpAniGroup[i] = pResAni;
 
 			bFnRet = initCharaterAnimate(ptmpAniDesc, i);
 			TH_PROCESS_ERROR(bFnRet);
@@ -129,6 +137,7 @@ void CThDefTower::uninit()
 	}
 	for (int i = 0; i < THMAX_ANI_COUNT; i++)
 	{
+		m_arrpAniGroup[i]->pAnimate->release();
 		THFREE(m_arrpAniGroup[i]);
 	}
 
@@ -202,12 +211,17 @@ thBool CThDefTower::globalMonitoring()
 	CHARACTER_FRAMEINFO_PTR pSp = NULL;
 	CHARACTER_FRAMEINFO_PTR pSpReinit = NULL;
 	Sequence* pSeMoveTo = NULL;
+	Animate* pAniMoveTo = NULL;
+	Animate* pAniOpenDoor = NULL;
+	Animate* pAniCloseDoor = NULL;
+	short sWarriorsCnt = 0;
 	short sWarriorType = 0;
+	short sSpArrVacantPos = 0;
 	float fReinitPosX = 0.f;
 	float fReinitPosY = 0.f;
 
 	/* debug use */
-	float fWarriorsBirthAngle = 75.f;
+	static float fWarriorsBirthAngle = 35.f;
 
 	// 获取防御塔战士精灵信息并做一些检查.
 	for (int i = 0; i < THMAX_SP_COUNT; i++)
@@ -225,27 +239,91 @@ thBool CThDefTower::globalMonitoring()
 	pSp = NULL;
 
 	// 检查是否需要创建精灵：检查HP，检查重生CD，检查精灵数组内容是否为空.
-	if (m_ptTowerStatus->cnMaxWarriors >= m_ptTowerStatus->sCurWarriors)
+	if (m_ptTowerStatus->cnMaxWarriors > m_ptTowerStatus->sCurWarriors)
 	{
 
 		while (NULL == ptSpDesc)
 		{
-			sWarriorType = (rand() % THMAX_TARLEVEL_DEFTOWER_WARRIORS + 1);
-			ptSpDesc = m_arrpWarriorsDesc[m_ptTowerStatus->nCurLevel][sWarriorType];
+			sWarriorType = (rand() % THMAX_TARLEVEL_DEFTOWER_WARRIORS);
+			ptSpDesc = m_arrpWarriorsDesc[m_ptTowerStatus->emCurLevel][sWarriorType];
 		}
 		
-		for (int i = 0; i < m_ptTowerStatus->sAliveWarriors; i++, m_ptTowerStatus->sCurWarriors++)
-		{
-			// 获取需要重建的精灵数量，重建精灵.
-			bFnRet = initCharater(ptSpDesc, &pSpReinit, THTRUE);
-			TH_PROCESS_ERROR(bFnRet);
-			this->addChild(pSpReinit->pSpCharater);
+		// 获取需要重建的精灵数量，重建精灵.
+		sWarriorsCnt = m_ptTowerStatus->cnMaxWarriors - m_ptTowerStatus->sCurWarriors;
+		bFnRet = initCharater(ptSpDesc, &pSpReinit, THTRUE);
+		TH_PROCESS_ERROR(bFnRet);
+		this->addChild(pSpReinit->pSpCharacter);
 
-			fReinitPosX = m_pTower->pSpCharater->getPositionX() + m_ptTowerStatus->sActionRadius * cos(fWarriorsBirthAngle * (M_PI / 180));
-			fReinitPosY = m_pTower->pSpCharater->getPositionX() + m_ptTowerStatus->sActionRadius * sin(fWarriorsBirthAngle * (M_PI / 180));
-			bFnRet = CThBaseCharacterAction::getInstance()->createActionMoveTo(0.2f, fReinitPosX, fReinitPosY, NULL, &pSeMoveTo);
-			TH_PROCESS_ERROR(bFnRet);
+		fReinitPosX = m_pTower->pSpCharacter->getPositionX() + m_ptTowerStatus->sActionRadius * cos(fWarriorsBirthAngle * (M_PI / 180));
+		fReinitPosY = m_pTower->pSpCharacter->getPositionX() + m_ptTowerStatus->sActionRadius * sin(fWarriorsBirthAngle * (M_PI / 180));
+		bFnRet = CThBaseCharacterAction::getInstance()->createActionMoveTo(1.f, fReinitPosX, fReinitPosY, NULL, &pSeMoveTo);
+		TH_PROCESS_ERROR(bFnRet);
+
+		// 判断左移还是右移
+		if (m_pTower->pSpCharacter->getPositionX() > fReinitPosX)
+		{
+			// 左.
 		}
+		else
+		{
+			// 右.
+			pSpReinit->pSpCharacter->setFlippedX(true);
+		}
+		for (short i = 0; i < THMAX_ANI_COUNT; i++)
+		{
+			// 查找对应的动画对象，比对动画数组里和需要使用的动画名称.
+			if (0 == strcmp(m_arrpAniGroup[i]->szarrDesc, ptSpDesc->ptAniMap->cszpAniMoveTransverse))
+			{
+				pAniMoveTo = m_arrpAniGroup[i]->pAnimate;
+				break;
+			}
+		}
+
+		
+		pAniMoveTo->setTag(1);
+		
+		//pSpReinit->pSpCharacter->runAction(pAniMoveTo->clone());
+		pSpReinit->pSpCharacter->runAction(pSeMoveTo);
+
+		fWarriorsBirthAngle += 25.f;
+		_getSpArrayVacantPos(&sSpArrVacantPos);
+		m_arrpSpGroup[sSpArrVacantPos] = pSpReinit;
+
+		m_ptTowerStatus->sCurWarriors++;
+
+
+
+
+
+
+
+
+
+
+		for (short i = 0; i < THMAX_ANI_COUNT; i++)
+		{
+			if (0 == strcmp(m_arrpAniGroup[i]->szarrDesc, "TowerInitWarriorsOpenDoor"))
+			{
+				pAniOpenDoor = m_arrpAniGroup[i]->pAnimate;
+				break;
+			}
+		}
+
+		for (short i = 0; i < THMAX_ANI_COUNT; i++)
+		{
+			if (0 == strcmp(m_arrpAniGroup[i]->szarrDesc, "TowerInitWarriorsCloseDoor"))
+			{
+				pAniCloseDoor = m_arrpAniGroup[i]->pAnimate;
+				break;
+			}
+		}
+		pSpReinit->pSpCharacter->runAction(pAniOpenDoor->clone());
+	}
+
+	
+	if (NULL != pSpReinit && NULL == pSpReinit->pSpCharacter->getActionByTag(1))
+	{
+		//m_pTower->pSpCharacter->runAction(pAniCloseDoor);
 	}
 
 	bRet = THTRUE;
