@@ -21,7 +21,8 @@
 #define THMAX_ANI_COUNT						32
 #define THMAX_SP_COUNT						64
 #define THMAX_CHAR_DESC						128
-#define THMAX_TARLEVEL_DEFTOWER_WARRIORS	3
+#define THMAX_DEFTOWER_TARLEVEL_WARRIORS	3
+#define THMAX_DEFTOWER_SYNC_ANI				32
 
 #define THMALLOC(t, s) (t*)malloc(s)
 #define THFREE(p) { if (p) { free(p); (p) = NULL; }}

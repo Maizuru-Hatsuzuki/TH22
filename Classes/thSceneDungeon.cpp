@@ -103,11 +103,11 @@ bool thSceneDungeon::init()
 	/* open the door */
 	CHARACTER_ANI_DESC tAniOpD =
 	{
-		5,
-		2,
 		4,
-		1.f,
-		-1,
+		2,
+		5,
+		0.2f,
+		1,
 		false,
 		"image\\sprite\\kr\\hunterCabinPlist",
 		"hunterCabin",
@@ -117,10 +117,10 @@ bool thSceneDungeon::init()
 	/* close the door */
 	CHARACTER_ANI_DESC tAniClD =
 	{
+		4,
 		5,
 		2,
-		4,
-		1.f,
+		0.2f,
 		1,
 		false,
 		"image\\sprite\\kr\\hunterCabinPlist",
@@ -129,7 +129,7 @@ bool thSceneDungeon::init()
 	};
 
 	CHARACTER_ANI_DESC_PTR arrpAniDesc[THMAX_ANI_COUNT] = { &tAniBatMove, &tAniOpD, &tAniClD };
-	CHARACTER_DESC_PTR arrpWarriors[THMAX_TARLEVEL_DEFTOWER_WARRIORS] = { &tTowerWarriorA, NULL, NULL };
+	CHARACTER_DESC_PTR arrpWarriors[THMAX_DEFTOWER_TARLEVEL_WARRIORS] = { &tTowerWarriorA, NULL, NULL };
 	
 	bFnRet = pHunterCabinObject->init(&tTowerDesc, arrpAniDesc, &tTowerStatusDesc);
 	TH_PROCESS_ERROR(bFnRet);
@@ -146,7 +146,3 @@ Exit0:
 	return bRet;
 }
 
-
-
-//LayerColor* pBgTmp = LayerColor::create(ccc4(0xff, 0x0, 0x0, 0x80), 640, 480);
-//this->addChild(pBgTmp);

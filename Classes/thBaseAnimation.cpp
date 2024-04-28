@@ -39,7 +39,11 @@ thBool CThBaseAnimation::createPlayAnimationWithPList(CHARACTER_ANI_DESC_PTR ptA
 	Animation* pAni = Animation::create();
 	TH_PROCESS_ERROR(pAni);
 
-	for (unsigned int i = ptAniDesc->nFrameAniBegin; i <= ptAniDesc->nFrameAniEnd; i++)
+	for (
+		unsigned int i = ptAniDesc->nFrameAniBegin, j = 0;
+		j < ptAniDesc->nFrameAniCount; 
+		ptAniDesc->nFrameAniBegin > ptAniDesc->nFrameAniEnd ? i-- : i++, j++
+		)
 	{
 		sprintf_s(szarrSprite, "%s%d.png", ptAniDesc->szarrPlistPngPath, i);
 		pSpFrame = pSpFrameCache->spriteFrameByName(szarrSprite);

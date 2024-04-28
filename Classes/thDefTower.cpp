@@ -23,6 +23,7 @@ thBool CThDefTower::init(CHARACTER_DESC_PTR pTowerDesc, CHARACTER_ANI_DESC_PTR* 
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
 	EventListenerMouse* pMouse = EventListenerMouse::create();
+	m_nAniTagTowerSummon = 33;
 	m_ptTowerStatus = THMALLOC(DEFTOWER_DESC, sizeof(DEFTOWER_DESC));
 	memcpy_s(m_ptTowerStatus, sizeof(DEFTOWER_DESC), ptTowerDesc, sizeof(DEFTOWER_DESC));
 
@@ -75,7 +76,7 @@ thBool CThDefTower::initDefTowerWarriorsDesc(CHARACTER_DESC_PTR* arrpCharacterDe
 	CHARACTER_DESC_PTR pSpDesc = NULL;
 	CHARACTER_ANI_MAP_PTR pAniMap = NULL;
 
-	for (short i = 0; i < THMAX_TARLEVEL_DEFTOWER_WARRIORS; i++)
+	for (short i = 0; i < THMAX_DEFTOWER_TARLEVEL_WARRIORS; i++)
 	{
 		if (i < csSize)
 		{
@@ -166,6 +167,19 @@ void CThDefTower::getCharaterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRA
 	return;
 }
 
+void CThDefTower::getAniFrameInfoByTag(const char* cszpTag, CHARACTER_ANI_FRAMEINFO_PTR* ppRet)
+{
+	for (short i = 0; i < THMAX_ANI_COUNT; i++)
+	{
+		if (0 == strcmp(m_arrpAniGroup[i]->szarrDesc, cszpTag))
+		{
+			*ppRet = m_arrpAniGroup[i];
+			break;
+		}
+	}
+	return;
+}
+
 void CThDefTower::_getSpArrayVacantPos(short* psRet)
 {
 	for (short i = 0; i < THMAX_SP_COUNT; i++)
@@ -177,6 +191,75 @@ void CThDefTower::_getSpArrayVacantPos(short* psRet)
 		}
 	}
 	return;
+}
+
+thBool CThDefTower::setPlayAniTowerSummon(const short* arrnCondAniTag, const short cnSize, const thBool bIsSummoning)
+{
+	/* arrnCondAniTag: int 数组，代表Action tag, 当此tag指向的action全部播放结束后，才执行关门动画. */
+	thBool bRet = THFALSE;
+	thBool bFnRet = THFALSE;
+	static thBool s_bDoorStatus = THFALSE;
+	thBool bIsPlayEnd = THTRUE;
+
+	for (int i = 0; i < cnSize; i++)
+	{
+		if (NULL != getActionByTag(arrnCondAniTag[i]))
+		{
+			bIsPlayEnd = THFALSE;
+			break;
+		}
+	}
+	/* 检查开门动画是否播放完. */
+	if (NULL != m_pTower->pSpCharacter->getActionByTag(m_nAniTagTowerSummon)) bIsPlayEnd = THFALSE;
+
+	if (THFALSE == s_bDoorStatus && THTRUE == bIsPlayEnd && THTRUE == bIsSummoning)
+	{
+		// init.
+		bFnRet = _setPlayAniOpenTheDoor();
+		TH_PROCESS_ERROR(bFnRet);
+		s_bDoorStatus = THTRUE;
+	}
+	else if (THTRUE == s_bDoorStatus && THTRUE == bIsPlayEnd && THFALSE == bIsSummoning)
+	{
+		// release.
+		bFnRet = _setPlayAniCloseTheDoor();
+		TH_PROCESS_ERROR(bFnRet);
+		s_bDoorStatus = THFALSE;
+	}
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+thBool CThDefTower::_setPlayAniOpenTheDoor()
+{
+	thBool bRet = THFALSE;
+	CHARACTER_ANI_FRAMEINFO_PTR pAniOpDor = NULL;
+	
+	getAniFrameInfoByTag("TowerInitWarriorsOpenDoor", &pAniOpDor);
+	TH_PROCESS_ERROR(pAniOpDor);
+	m_pTower->pSpCharacter->runAction(pAniOpDor->pAnimate);
+	pAniOpDor->pAnimate->setTag(m_nAniTagTowerSummon);
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+thBool CThDefTower::_setPlayAniCloseTheDoor()
+{
+	thBool bRet = THFALSE;
+	CHARACTER_ANI_FRAMEINFO_PTR pAniClDor = NULL;
+
+	getAniFrameInfoByTag("TowerInitWarriorsCloseDoor", &pAniClDor);
+	TH_PROCESS_ERROR(pAniClDor);
+	m_pTower->pSpCharacter->runAction(pAniClDor->pAnimate);
+	pAniClDor->pAnimate->setTag(m_nAniTagTowerSummon);
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
 }
 
 void CThDefTower::onMouseUp(EventMouse* pEvent)
@@ -207,24 +290,37 @@ thBool CThDefTower::globalMonitoring()
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
+	
+	bFnRet = monitoringFighter();
+	TH_PROCESS_ERROR(bFnRet);
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+thBool CThDefTower::monitoringFighter()
+{
+	thBool bRet = THFALSE;
+	thBool bFnRet = THFALSE;
 	CHARACTER_DESC_PTR ptSpDesc = NULL;
 	CHARACTER_FRAMEINFO_PTR pSp = NULL;
-	CHARACTER_FRAMEINFO_PTR pSpReinit = NULL;
+	CHARACTER_ANI_FRAMEINFO_PTR ptAniMoveTo = NULL;
 	Sequence* pSeMoveTo = NULL;
-	Animate* pAniMoveTo = NULL;
-	Animate* pAniOpenDoor = NULL;
-	Animate* pAniCloseDoor = NULL;
+	float fReinitPosX = 0.f;
+	float fReinitPosY = 0.f;
 	short sWarriorsCnt = 0;
 	short sWarriorType = 0;
 	short sSpArrVacantPos = 0;
-	float fReinitPosX = 0.f;
-	float fReinitPosY = 0.f;
+	short arrnAniTag[THMAX_DEFTOWER_SYNC_ANI] = { sSpArrVacantPos, };
+	const thBool bIsNeedSummon = m_ptTowerStatus->cnMaxWarriors > m_ptTowerStatus->sCurWarriors;
 
 	/* debug use */
 	static float fWarriorsBirthAngle = 35.f;
 
+
 	// 获取防御塔战士精灵信息并做一些检查.
-	for (int i = 0; i < THMAX_SP_COUNT; i++)
+	for (short i = 0; i < THMAX_SP_COUNT; i++)
 	{
 		pSp = m_arrpSpGroup[i];
 		if (NULL != pSp)
@@ -236,23 +332,24 @@ thBool CThDefTower::globalMonitoring()
 			}
 		}
 	}
+
 	pSp = NULL;
-
 	// 检查是否需要创建精灵：检查HP，检查重生CD，检查精灵数组内容是否为空.
-	if (m_ptTowerStatus->cnMaxWarriors > m_ptTowerStatus->sCurWarriors)
+	setPlayAniTowerSummon(arrnAniTag, THMAX_DEFTOWER_SYNC_ANI, bIsNeedSummon);
+	if (bIsNeedSummon)
 	{
-
 		while (NULL == ptSpDesc)
 		{
-			sWarriorType = (rand() % THMAX_TARLEVEL_DEFTOWER_WARRIORS);
+			sWarriorType = (rand() % THMAX_DEFTOWER_TARLEVEL_WARRIORS);
 			ptSpDesc = m_arrpWarriorsDesc[m_ptTowerStatus->emCurLevel][sWarriorType];
 		}
-		
+		_getSpArrayVacantPos(&sSpArrVacantPos);
+
 		// 获取需要重建的精灵数量，重建精灵.
 		sWarriorsCnt = m_ptTowerStatus->cnMaxWarriors - m_ptTowerStatus->sCurWarriors;
-		bFnRet = initCharater(ptSpDesc, &pSpReinit, THTRUE);
+		bFnRet = initCharater(ptSpDesc, &pSp, THTRUE);
 		TH_PROCESS_ERROR(bFnRet);
-		this->addChild(pSpReinit->pSpCharacter);
+		this->addChild(pSp->pSpCharacter);
 
 		fReinitPosX = m_pTower->pSpCharacter->getPositionX() + m_ptTowerStatus->sActionRadius * cos(fWarriorsBirthAngle * (M_PI / 180));
 		fReinitPosY = m_pTower->pSpCharacter->getPositionX() + m_ptTowerStatus->sActionRadius * sin(fWarriorsBirthAngle * (M_PI / 180));
@@ -267,67 +364,23 @@ thBool CThDefTower::globalMonitoring()
 		else
 		{
 			// 右.
-			pSpReinit->pSpCharacter->setFlippedX(true);
+			pSp->pSpCharacter->setFlippedX(true);
 		}
-		for (short i = 0; i < THMAX_ANI_COUNT; i++)
-		{
-			// 查找对应的动画对象，比对动画数组里和需要使用的动画名称.
-			if (0 == strcmp(m_arrpAniGroup[i]->szarrDesc, ptSpDesc->ptAniMap->cszpAniMoveTransverse))
-			{
-				pAniMoveTo = m_arrpAniGroup[i]->pAnimate;
-				break;
-			}
-		}
+		getAniFrameInfoByTag(ptSpDesc->ptAniMap->cszpAniMoveTransverse, &ptAniMoveTo);
+		TH_PROCESS_ERROR(ptAniMoveTo);
 
-		
-		pAniMoveTo->setTag(1);
-		
-		//pSpReinit->pSpCharacter->runAction(pAniMoveTo->clone());
-		pSpReinit->pSpCharacter->runAction(pSeMoveTo);
+		pSp->pSpCharacter->runAction(ptAniMoveTo->pAnimate->clone());
+		pSp->pSpCharacter->runAction(pSeMoveTo);
+		pSeMoveTo->setTag(sSpArrVacantPos);
 
 		fWarriorsBirthAngle += 25.f;
-		_getSpArrayVacantPos(&sSpArrVacantPos);
-		m_arrpSpGroup[sSpArrVacantPos] = pSpReinit;
+		m_arrpSpGroup[sSpArrVacantPos] = pSp;
 
 		m_ptTowerStatus->sCurWarriors++;
-
-
-
-
-
-
-
-
-
-
-		for (short i = 0; i < THMAX_ANI_COUNT; i++)
-		{
-			if (0 == strcmp(m_arrpAniGroup[i]->szarrDesc, "TowerInitWarriorsOpenDoor"))
-			{
-				pAniOpenDoor = m_arrpAniGroup[i]->pAnimate;
-				break;
-			}
-		}
-
-		for (short i = 0; i < THMAX_ANI_COUNT; i++)
-		{
-			if (0 == strcmp(m_arrpAniGroup[i]->szarrDesc, "TowerInitWarriorsCloseDoor"))
-			{
-				pAniCloseDoor = m_arrpAniGroup[i]->pAnimate;
-				break;
-			}
-		}
-		pSpReinit->pSpCharacter->runAction(pAniOpenDoor->clone());
 	}
 
-	
-	if (NULL != pSpReinit && NULL == pSpReinit->pSpCharacter->getActionByTag(1))
-	{
-		//m_pTower->pSpCharacter->runAction(pAniCloseDoor);
-	}
 
 	bRet = THTRUE;
 Exit0:
 	return bRet;
 }
-
