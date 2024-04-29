@@ -44,6 +44,16 @@ enum THEM_CHARACTER_LEVEL
 	CHARACTER_MAXLEVEL
 };
 
+struct _tAniTag
+{
+	int nOffset;
+	struct _tTag
+	{
+		const char* cszpDesc;
+		int nTag;
+	} arrTag[THMAX_ANI_TAG];
+};
+
 struct _tCharacterAniMap
 {
 	const char* cszpAniStandby;
@@ -114,15 +124,17 @@ struct _tCharacterAnimateFrameInfo
 
 struct _tDefTowerDesc
 {
-	const int cnMaxWarriors;
-	const int cnMaxLevel;
+	const short csMaxWarriors;
+	const short csMaxLevel;
 	int nAttack;
 	short sCurWarriors;
 	short sAttackCD;
+	short sSummonWarriorsCD;
 	short sActionRadius;
 	THEM_CHARACTER_LEVEL emCurLevel;
 };
 
+typedef struct _tAniTag						CHARACTER_ANI_TAG, * CHARACTER_ANI_TAG_PTR;
 typedef struct _tCharacterDesc				CHARACTER_DESC, * CHARACTER_DESC_PTR;
 typedef struct _tCharacterAniMap			CHARACTER_ANI_MAP, * CHARACTER_ANI_MAP_PTR;
 typedef struct _tCharacterAnimationDesc		CHARACTER_ANI_DESC, * CHARACTER_ANI_DESC_PTR;

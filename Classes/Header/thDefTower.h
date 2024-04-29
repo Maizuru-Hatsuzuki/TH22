@@ -13,6 +13,48 @@
 #include "thBase.h"
 
 
+class CThDefTowerWarrior :
+	public CThBaseCharacter
+{
+public:
+	CThDefTowerWarrior();
+	~CThDefTowerWarrior();
+
+	thBool init(
+		const CHARACTER_DESC_PTR cptSpDesc,
+		const short csSpArrVacantPos,
+		const float cfWarriorsBirthAngle,
+		const float cfWarriorsBirthX, 
+		const float cfWarriorsBirthY,
+		const short csActionRadius,
+		const CHARACTER_ANI_FRAMEINFO_PTR cptAniMoveTo
+	);
+	thBool initWarriors(const CHARACTER_DESC_PTR cptSpDesc, const short csSpArrVacantPos, const CHARACTER_ANI_FRAMEINFO_PTR cptAniMoveTo);
+	void uninit();
+
+	const float getWarriorBirthMoveAngle() const;
+	virtual void getCharaterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet);
+	virtual void getCharaterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet);
+
+	void setWarriorBirthMoveAngle(const float fAngle);
+
+	virtual void onMouseUp(EventMouse* pEvent);
+	virtual void onMouseDown(EventMouse* pEvent);
+	virtual void onMouseMove(EventMouse* pEvent);
+
+	virtual thBool globalMonitoring();
+
+
+private:
+	float m_fWarriorBirthMoveAngle;
+	float m_fWarriorBirthX;
+	float m_fWarriorBirthY;
+	short m_sActionRadius;
+	CHARACTER_FRAMEINFO_PTR m_ptWarriorFrameInfo;
+};
+typedef CThDefTowerWarrior* CThDefTowerWarrior_ptr;
+
+
 class CThDefTower:
 	public CThBaseCharacter
 {
@@ -20,17 +62,21 @@ public:
 	CThDefTower();
 	~CThDefTower();
 
-	thBool init(CHARACTER_DESC_PTR pDesc, CHARACTER_ANI_DESC_PTR* arrpAniDesc, DEFTOWER_DESC_PTR ptTowerDesc);
+	thBool init(const CHARACTER_DESC_PTR pDesc, CHARACTER_ANI_DESC_PTR* arrpAniDesc, DEFTOWER_DESC_PTR ptTowerDesc, const CHARACTER_DESC_PTR* arrpTowerWarriorsDesc, enum THEM_CHARACTER_LEVEL emLevel, const short csTowerWarriosSize);
 	thBool initCharaterAnimate(CHARACTER_ANI_DESC_PTR pAniDesc, const int cnGroupPos);
+	thBool initBaiscAnimate(CHARACTER_ANI_DESC_PTR* arrpAniDesc);
+	thBool initWarriors(const short csCnt, short sSpArrVacantPos);
+	thBool initDefTowerWarriorsDesc(const CHARACTER_DESC_PTR* arrpTowerWarriorsDesc, enum THEM_CHARACTER_LEVEL emLevel, const short csSize);
 	virtual void uninit();
 
 	virtual void getCharaterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet);
 	virtual void getCharaterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet);
+	void getAniTagByDesc(const char* cszpDesc, int* pnRet);
 	void getAniFrameInfoByTag(const char* cszpTag, CHARACTER_ANI_FRAMEINFO_PTR* ppRet);
+	void getWarriorExistsByAngle(const float cfAngle, thBool* pbRet);
 
+	void setWarriorExistsByAngle(const float cfAngle, const short csTag);
 	thBool setPlayAniTowerSummon(const short* arrnCondAniTag, const short cnSize, const thBool bIsSummoning);
-	
-	thBool initDefTowerWarriorsDesc(CHARACTER_DESC_PTR* arrpCharacterDesc, enum THEM_CHARACTER_LEVEL emLevel, const short csSize);
 
 	virtual void onMouseUp(EventMouse* pEvent);
 	virtual void onMouseDown(EventMouse* pEvent);
@@ -38,22 +84,28 @@ public:
 
 	virtual void update(float dt);
 	virtual thBool globalMonitoring();
-	thBool monitoringFighter();
+	thBool globalMonitoringWarriors();
 
 private:
-	thBool _initBaiscAnimate(CHARACTER_ANI_DESC_PTR* arrpAniDesc);
 	void _getSpArrayVacantPos(short* psRet);
+	void _getWarArrayVacantPos(short* psRet);
 	thBool _setPlayAniOpenTheDoor();
 	thBool _setPlayAniCloseTheDoor();
+	thBool _setPlayAniWarriorsDie();
+
+	thBool _monitoringWarriorsHealthy(CThDefTowerWarrior_ptr pSp);
 
 private:
-	int m_nAniTagTowerSummon;
-	CHARACTER_FRAMEINFO_PTR m_pTower;
-	CHARACTER_FRAMEINFO_PTR* m_arrpSpGroup;
-	CHARACTER_ANI_FRAMEINFO_PTR* m_arrpAniGroup;
-	DEFTOWER_DESC_PTR m_ptTowerStatus;
+	short							m_sVacantPos;
+	double							m_dLastSummonWarriors;
+	CHARACTER_ANI_TAG				m_tAniTag;
+	CHARACTER_FRAMEINFO_PTR			m_pTower;
+	CHARACTER_FRAMEINFO_PTR*		m_arrpSpGroup;
+	CHARACTER_ANI_FRAMEINFO_PTR*	m_arrpAniGroup;
+	DEFTOWER_DESC_PTR				m_ptTowerStatus;
 	/* 防御塔战士精灵描述，每个等级 3 种类型. */
-	CHARACTER_DESC_PTR m_arrpWarriorsDesc[THEM_CHARACTER_LEVEL::CHARACTER_MAXLEVEL][THMAX_DEFTOWER_TARLEVEL_WARRIORS];
+	CHARACTER_DESC_PTR				m_arrpWarriorsDesc[THEM_CHARACTER_LEVEL::CHARACTER_MAXLEVEL][THMAX_DEFTOWER_TARLEVEL_WARRIORS];
+	CThDefTowerWarrior_ptr*			m_arrpWarriors;
 };
 
 

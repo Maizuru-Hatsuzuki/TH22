@@ -86,7 +86,7 @@ bool thSceneDungeon::init()
 		"batMove",
 		"batMove"
 	};
-	DEFTOWER_DESC tTowerStatusDesc = { 3, 4, 1, 1, 0, 50, THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1 };
+	DEFTOWER_DESC tTowerStatusDesc = { 4, 4, 1, 0, 0, 5, 100, THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1 };
 
 	/* warriors */
 	CHARACTER_DESC tTowerWarriorA =
@@ -106,7 +106,7 @@ bool thSceneDungeon::init()
 		4,
 		2,
 		5,
-		0.2f,
+		0.07f,
 		1,
 		false,
 		"image\\sprite\\kr\\hunterCabinPlist",
@@ -120,7 +120,7 @@ bool thSceneDungeon::init()
 		4,
 		5,
 		2,
-		0.2f,
+		0.07f,
 		1,
 		false,
 		"image\\sprite\\kr\\hunterCabinPlist",
@@ -131,9 +131,7 @@ bool thSceneDungeon::init()
 	CHARACTER_ANI_DESC_PTR arrpAniDesc[THMAX_ANI_COUNT] = { &tAniBatMove, &tAniOpD, &tAniClD };
 	CHARACTER_DESC_PTR arrpWarriors[THMAX_DEFTOWER_TARLEVEL_WARRIORS] = { &tTowerWarriorA, NULL, NULL };
 	
-	bFnRet = pHunterCabinObject->init(&tTowerDesc, arrpAniDesc, &tTowerStatusDesc);
-	TH_PROCESS_ERROR(bFnRet);
-	bFnRet = pHunterCabinObject->initDefTowerWarriorsDesc(arrpWarriors, THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, 1);
+	bFnRet = pHunterCabinObject->init(&tTowerDesc, arrpAniDesc, &tTowerStatusDesc, arrpWarriors, THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, 1);
 	TH_PROCESS_ERROR(bFnRet);
 
 	bFnRet = initBgMap();
