@@ -13,6 +13,14 @@
 #include "thBase.h"
 
 
+enum THEM_BULLET_TYPE
+{
+	SHOOTCHAT_TRACKING,
+	SHOOTCHAT_WINDMILL,
+	SHOOTCHAT_RING,
+	SHOOTCHAT_LASER
+};
+
 enum THEM_CHARARCTERLEVEL_MOVESPEED
 {
 	MOVESPEED_LOW,
@@ -31,7 +39,9 @@ enum THEM_CHARACTER_TYPE
 	CHARACTER_ENEMY,
 	CHARACTER_ENEMY_DEFTOWER,
 	CHARACTER_BOSS,
-	CHARACTER_NPC
+	CHARACTER_NPC,
+	CHARACTER_BULLET,
+	CHARACTER_ENEMY_BULLET
 };
 
 enum THEM_CHARACTER_LEVEL
@@ -79,6 +89,7 @@ struct _tCharacterDesc
 	int nHP;
 	int nMP;
 	int nAttack;
+	int nAttackCD;
 	int nDefense;
 	int nCDResurrection;
 	int nDuration;
@@ -106,6 +117,7 @@ struct _tCharacterFrameInfo
 	int nHP;
 	int nMP;
 	int nAttack;
+	int nAttackCD;
 	int nDefense;
 	int nCDResurrection;
 	int nDuration;
@@ -128,10 +140,11 @@ struct _tDefTowerDesc
 	const short csMaxLevel;
 	int nAttack;
 	short sCurWarriors;
-	short sAttackCD;
+	short sCurBullets;
 	short sSummonWarriorsCD;
 	short sActionRadius;
-	THEM_CHARACTER_LEVEL emCurLevel;
+	enum THEM_CHARACTER_LEVEL emCurLevel;
+	enum THEM_BULLET_TYPE emBulletType;
 };
 
 typedef struct _tAniTag						CHARACTER_ANI_TAG, * CHARACTER_ANI_TAG_PTR;
@@ -177,7 +190,7 @@ class CThBaseCharacterAction
 public:
 	static CThBaseCharacterAction* getInstance();
 	
-	thBool createActionMoveTo(float fSpeed, float fDstX, float fDstY, FiniteTimeAction** arrfnCallback, Sequence** ppRet) noexcept;
+	thBool createActionMoveTo(float fSpeed, float fDstX, float fDstY, FiniteTimeAction** arrfnCallback, const short csCallbackSize, Sequence** ppRet) noexcept;
 
 
 private:

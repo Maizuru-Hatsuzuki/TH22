@@ -45,6 +45,7 @@ thBool CThBaseCharacter::initCharater(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEI
 	ptCharFrame->nHP = pDesc->nHP;
 	ptCharFrame->nMP = pDesc->nMP;
 	ptCharFrame->nAttack = pDesc->nAttack;
+	ptCharFrame->nAttackCD = pDesc->nAttackCD;
 	ptCharFrame->nDefense = pDesc->nDefense;
 	ptCharFrame->nCDResurrection = pDesc->nCDResurrection;
 	ptCharFrame->nLastestDieTime = pDesc->nLastestDieTime;
@@ -133,25 +134,27 @@ CThBaseCharacterAction* CThBaseCharacterAction::getInstance()
 	return m_pSelf;
 }
 
-thBool CThBaseCharacterAction::createActionMoveTo(float fSpeed, float fDstX, float fDstY, FiniteTimeAction** arrfnCallback, Sequence** ppRet) noexcept
+thBool CThBaseCharacterAction::createActionMoveTo(float fSpeed, float fDstX, float fDstY, FiniteTimeAction** arrfnCallback, const short csCallbackSize, Sequence** ppRet) noexcept
 {
 	thBool bRet = THFALSE;
-	unsigned int ntmpFnCount = 1;
+	unsigned short ustmpFnCount = 1;
 	MoveTo* pMoveTo = MoveTo::create(fSpeed, Vec2(fDstX, fDstY));
 	cocos2d::Vector<FiniteTimeAction*> vecSeq(THMAX_SEQACTION);
 	Sequence* pActionSeq = NULL;
 
+	TH_PROCESS_SUCCESS(THMAX_SEQACTION < csCallbackSize);
 	vecSeq.insert(0, pMoveTo);
 
 	if (NULL != arrfnCallback)
 	{
-		while (ntmpFnCount < THMAX_SEQACTION - 1)
+		/* 在循环之前0位置插入了主动作，所以从1开始，判断条件改成 <= . */
+		while (ustmpFnCount <= csCallbackSize)
 		{
-			if (NULL != arrfnCallback[ntmpFnCount])
+			if (NULL != arrfnCallback[ustmpFnCount - 1])
 			{
-				vecSeq.insert(ntmpFnCount, arrfnCallback[ntmpFnCount]);
+				vecSeq.insert(ustmpFnCount, arrfnCallback[ustmpFnCount - 1]);
 			}
-			ntmpFnCount++;
+			ustmpFnCount++;
 		}
 	}
 

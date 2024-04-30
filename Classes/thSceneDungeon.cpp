@@ -68,10 +68,22 @@ bool thSceneDungeon::init()
 		"image\\sprite\\kr\\hunterCabin2.png",
 		435.f,
 		Director::getInstance()->getWinSize().height - 165.f,
-		0.3f, false, false, 100, 100, 10, 10, 10, 10, 0,
+		0.3f, false, false, 100, 100, 10, 1, 10, 10, 10, 0,
 		THEM_CHARARCTERLEVEL_MOVESPEED::MOVESPEED_NARMAL,
 		THEM_CHARACTER_TYPE::CHARACTER_DEFTOWER,
 		& tTowerAniMap
+	};
+
+	CHARACTER_DESC tBullet =
+	{
+		"bullet",
+		"image\\sprite\\kr\\smallstar.png",
+		435.f,
+		Director::getInstance()->getWinSize().height - 165.f,
+		0.7f, false, false, 100, 100, 10, 1, 10, 10, 10, 0,
+		THEM_CHARARCTERLEVEL_MOVESPEED::MOVESPEED_NARMAL,
+		THEM_CHARACTER_TYPE::CHARACTER_BULLET,
+		&tTowerAniMap
 	};
 
 	CHARACTER_ANI_DESC tAniBatMove =
@@ -86,7 +98,7 @@ bool thSceneDungeon::init()
 		"batMove",
 		"batMove"
 	};
-	DEFTOWER_DESC tTowerStatusDesc = { 4, 4, 1, 0, 0, 5, 100, THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1 };
+	DEFTOWER_DESC tTowerStatusDesc = { 4, 4, 1, 0, 16, 2, 100, THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, THEM_BULLET_TYPE::SHOOTCHAT_RING };
 
 	/* warriors */
 	CHARACTER_DESC tTowerWarriorA =
@@ -95,7 +107,7 @@ bool thSceneDungeon::init()
 		"image\\sprite\\kr\\batMove1.png",
 		435.f,
 		Director::getInstance()->getWinSize().height - 165.f,
-		0.25f, false, false, 100, 100, 10, 10, 10, 10, 0,
+		0.25f, false, false, 100, 100, 10, 3, 10, 10, 10, 0,
 		THEM_CHARARCTERLEVEL_MOVESPEED::MOVESPEED_NARMAL,
 		THEM_CHARACTER_TYPE::CHARACTER_TOWER_WARRIOR,
 		& tBatAniMap
@@ -131,7 +143,7 @@ bool thSceneDungeon::init()
 	CHARACTER_ANI_DESC_PTR arrpAniDesc[THMAX_ANI_COUNT] = { &tAniBatMove, &tAniOpD, &tAniClD };
 	CHARACTER_DESC_PTR arrpWarriors[THMAX_DEFTOWER_TARLEVEL_WARRIORS] = { &tTowerWarriorA, NULL, NULL };
 	
-	bFnRet = pHunterCabinObject->init(&tTowerDesc, arrpAniDesc, &tTowerStatusDesc, arrpWarriors, THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, 1);
+	bFnRet = pHunterCabinObject->init(&tTowerDesc, &tBullet, arrpAniDesc, &tTowerStatusDesc, arrpWarriors, THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, 1);
 	TH_PROCESS_ERROR(bFnRet);
 
 	bFnRet = initBgMap();

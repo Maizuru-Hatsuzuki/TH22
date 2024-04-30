@@ -27,7 +27,8 @@
 #include <stdio.h>
 #include <Windows.h>
 #include <math.h>
-
+#include <CppCoreCheck/Warnings.h>
+#pragma warning(disable: ALL_CPPCORECHECK_WARNINGS)
 
 
 #define THDLLEXPORT
