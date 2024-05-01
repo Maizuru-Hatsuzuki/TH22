@@ -23,10 +23,12 @@ enum THEM_BULLET_TYPE
 
 enum THEM_CHARARCTERLEVEL_MOVESPEED
 {
+	MOVESPEED_LOWEX,
 	MOVESPEED_LOW,
 	MOVESPEED_NARMAL,
 	MOVESPEED_HIGH,
-	MOVESPEED_HIGHEX
+	MOVESPEED_HIGHEX,
+	MOVESPEED_NOTMOVE
 };
 
 enum THEM_CHARACTER_TYPE
@@ -34,7 +36,7 @@ enum THEM_CHARACTER_TYPE
 	CHARACTER_UNKNOW,
 	CHARACTER_PLAYER,
 	CHARACTER_DEFTOWER,
-	CHARACTER_TOWER_WARRIOR,
+	CHARACTER_DEFTOWER_WARRIOR,
 	CHARACTER_SUPPORT_WARRIOR,
 	CHARACTER_ENEMY,
 	CHARACTER_ENEMY_DEFTOWER,
@@ -66,21 +68,21 @@ struct _tAniTag
 
 struct _tCharacterAniMap
 {
-	const char* cszpAniStandby;
-	const char* cszpAniMoveTransverse;
-	const char* cszpAniMoveUp;
-	const char* cszpAniMoveDown;
-	const char* cszpAniMoveAttack;
-	const char* cszpAniMoveSkill;
-	const char* cszpAniMoveDie;
-	const char* cszpAniOpenTheDoor;
-	const char* cszpAniCloseTheDoor;
+	char* szpAniStandby;
+	char* szpAniMoveTransverse;
+	char* szpAniMoveUp;
+	char* szpAniMoveDown;
+	char* szpAniAttack;
+	char* szpAniSkill;
+	char* szpAniDie;
+	char* szpAniOpenTheDoor;
+	char* szpAniCloseTheDoor;
 };
 
 struct _tCharacterDesc
 {
-	const char* cszpSpriteName;
-	const char* cszpSpriteTexPath;
+	char* szpSpriteName;
+	char* szpSpriteTexPath;
 	float fPosX;
 	float fPosY;
 	float fScale;
@@ -90,10 +92,10 @@ struct _tCharacterDesc
 	int nMP;
 	int nAttack;
 	int nAttackCD;
+	int nAttackRadius;
 	int nDefense;
 	int nCDResurrection;
-	int nDuration;
-	DWORD nLastestDieTime;
+	int nSupportDuration;
 	enum THEM_CHARARCTERLEVEL_MOVESPEED emMoveSpeed;
 	enum THEM_CHARACTER_TYPE emCharacterType;
 	struct _tCharacterAniMap* ptAniMap;
@@ -118,12 +120,15 @@ struct _tCharacterFrameInfo
 	int nMP;
 	int nAttack;
 	int nAttackCD;
+	int nAttackRadius;
 	int nDefense;
 	int nCDResurrection;
-	int nDuration;
+	int nSupportDuration;
 	DWORD nLastestDieTime;
 	enum THEM_CHARARCTERLEVEL_MOVESPEED emMoveSpeed;
 	enum THEM_CHARACTER_TYPE emCharacterType;
+	enum THEM_CHARACTER_LEVEL emMaxLevel;
+	enum THEM_CHARACTER_LEVEL emCurLevel;
 	Sprite* pSpCharacter;
 	char szarrDesc[THMAX_CHAR_DESC];
 };
@@ -137,13 +142,9 @@ struct _tCharacterAnimateFrameInfo
 struct _tDefTowerDesc
 {
 	const short csMaxWarriors;
-	const short csMaxLevel;
-	int nAttack;
 	short sCurWarriors;
-	short sCurBullets;
 	short sSummonWarriorsCD;
-	short sActionRadius;
-	enum THEM_CHARACTER_LEVEL emCurLevel;
+	short sCurBullets;
 	enum THEM_BULLET_TYPE emBulletType;
 };
 
@@ -201,6 +202,28 @@ private:
 
 private:
 	static CThBaseCharacterAction* m_pSelf;
+};
+
+
+class CThCharacterLoadHandler
+{
+public:
+	static CThCharacterLoadHandler* getInstance();
+
+	thBool getCharaterDescFromIni(const char* cszpFilename, CHARACTER_DESC_PTR* ppRet);
+	thBool getCharacterAniDescFromIni(const char* cszpFilename, CHARACTER_ANI_DESC_PTR* ppRet);
+	thBool getDefTowerDescFromIni(const char* cszpFilename, DEFTOWER_DESC_PTR* ppRet);
+	void uninitCharacterDesc(CHARACTER_DESC_PTR p);
+	void uninitDefTowerDesc(DEFTOWER_DESC_PTR p);
+
+private:
+	CThCharacterLoadHandler();
+	~CThCharacterLoadHandler();
+	CThCharacterLoadHandler(const CThCharacterLoadHandler& pSelf);
+	const CThCharacterLoadHandler& operator=(const CThCharacterLoadHandler& pSelf);
+
+private:
+	static CThCharacterLoadHandler* m_pSelf;
 };
 
 

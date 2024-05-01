@@ -58,10 +58,10 @@ bool thSceneDungeon::init()
 
 	/* tower */
 	CHARACTER_ANI_MAP tBatAniMap = { 0 };
-	tBatAniMap.cszpAniMoveTransverse = "batMove";
+	tBatAniMap.szpAniMoveTransverse = "batMove";
 	CHARACTER_ANI_MAP tTowerAniMap = { 0 };
-	tTowerAniMap.cszpAniOpenTheDoor = "TowerInitWarriorsOpenDoor";
-	tTowerAniMap.cszpAniCloseTheDoor = "TowerInitWarriorsCloseDoor";
+	tTowerAniMap.szpAniOpenTheDoor = "TowerInitWarriorsOpenDoor";
+	tTowerAniMap.szpAniCloseTheDoor = "TowerInitWarriorsCloseDoor";
 	CHARACTER_DESC tTowerDesc =
 	{
 		"Hunter cabin",

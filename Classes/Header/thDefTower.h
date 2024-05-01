@@ -63,16 +63,16 @@ public:
 	~CThDefTower();
 
 	thBool init(
-		const CHARACTER_DESC_PTR ptCharacterDesc,
-		const CHARACTER_DESC_PTR ptBulletDesc,
-		CHARACTER_ANI_DESC_PTR* arrpAniDesc, 
-		DEFTOWER_DESC_PTR ptDefTowerDesc,
+		const char* cszpBasicCharacterDescPath,
+		const char* cszpBulletDescPath,
+		const char* cszpTowerDescPath,
+		const char** cszarrpAniDesc,
 		const CHARACTER_DESC_PTR* arrpTowerWarriorsDesc, 
-		enum THEM_CHARACTER_LEVEL emLevel, 
+		enum THEM_CHARACTER_LEVEL emWarriorLevel,
 		const short csTowerWarriosSize
 	);
 	thBool initCharaterAnimate(CHARACTER_ANI_DESC_PTR pAniDesc, const int cnGroupPos);
-	thBool initBaiscAnimate(CHARACTER_ANI_DESC_PTR* arrpAniDesc);
+	thBool initBaiscAnimate(const char** cszarrpAniDesc);
 	thBool initWarriors(const short csCnt, short sSpArrVacantPos);
 	thBool initDefTowerWarriorsDesc(const CHARACTER_DESC_PTR* arrpTowerWarriorsDesc, enum THEM_CHARACTER_LEVEL emLevel, const short csSize);
 	thBool initBullet(float fShootAngle);
