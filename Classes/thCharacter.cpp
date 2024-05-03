@@ -196,13 +196,25 @@ thBool CThCharacterLoadHandler::getCharaterDescFromIni(const char* cszpFilename,
 	CHARACTER_ANI_MAP_PTR pAniMap = THMALLOC(CHARACTER_ANI_MAP, sizeof(CHARACTER_ANI_MAP));
 	TH_PROCESS_ERROR(pAniMap);
 
+	memset(pRet, 0, sizeof(CHARACTER_DESC));
+	memset(pAniMap, 0, sizeof(CHARACTER_ANI_MAP));
+
 	/* 加载 CHARACTER_DESC */
 	GetPrivateProfileStringA(cszpSelCharacterDesc, "szpSpriteName", "NA", pRet->szpSpriteName, 32, cszpFilename);
 	GetPrivateProfileStringA(cszpSelCharacterDesc, "szpSpriteTexPath", "NA", pRet->szpSpriteTexPath, MAX_PATH, cszpFilename);
 	GetPrivateProfileStringA(cszpSelCharacterDesc, "fPosX", "0.0", szarrTmpFloat, 32, cszpFilename);
 	pRet->fPosX = (float)atof(szarrTmpFloat);
+	/* 重置 sztmpNum, 防止脏数据. */
+	memset(szarrTmpFloat, 0, 32);
+
 	GetPrivateProfileStringA(cszpSelCharacterDesc, "fPosY", "0.0", szarrTmpFloat, 32, cszpFilename);
 	pRet->fPosY = (float)atof(szarrTmpFloat);
+	memset(szarrTmpFloat, 0, 32);
+
+	GetPrivateProfileStringA(cszpSelCharacterDesc, "fScale", "0.0", szarrTmpFloat, 32, cszpFilename);
+	pRet->fScale = (float)atof(szarrTmpFloat);
+	memset(szarrTmpFloat, 0, 32);
+
 	pRet->bFlipX = GetPrivateProfileIntA(cszpSelCharacterDesc, "bFileX", THFALSE, cszpFilename);
 	pRet->bFlipY = GetPrivateProfileIntA(cszpSelCharacterDesc, "bFileY", THFALSE, cszpFilename);
 	pRet->nHP = GetPrivateProfileIntA(cszpSelCharacterDesc, "nHP", 100, cszpFilename);
@@ -234,13 +246,56 @@ Exit0:
 	return bRet;
 }
 
+thBool CThCharacterLoadHandler::getCharacterAniDescFromIni(const char* cszpFilename, CHARACTER_ANI_DESC_PTR* ppRet)
+{
+	thBool bRet = THFALSE;
+	thBool bFnRet = THFALSE;
+	const char* cszpSel = "CHARACTER_ANIMATION_DESC";
+	char sztmpNum[32] = { 0 };
+	CHARACTER_ANI_DESC_PTR pRet = THMALLOC(CHARACTER_ANI_DESC, sizeof(CHARACTER_ANI_DESC));
+	TH_PROCESS_ERROR(pRet);
+
+	pRet->nFrameAniCount = GetPrivateProfileIntA(cszpSel, "unFrameAniCount", 1, cszpFilename);
+	pRet->nFrameAniBegin = GetPrivateProfileIntA(cszpSel, "unFrameAniBegin", 1, cszpFilename);
+	pRet->nFrameAniEnd = GetPrivateProfileIntA(cszpSel, "unFrameAniEnd", 1, cszpFilename);
+	pRet->bResFirstFrame = GetPrivateProfileIntA(cszpSel, "bResFirstFrame", THFALSE, cszpFilename);
+	GetPrivateProfileStringA(cszpSel, "fDelayPerUnit", "0.5", sztmpNum, 32, cszpFilename);
+	pRet->fDelayPerUnit = atof(sztmpNum);
+
+	/* 重置 sztmpNum, 防止脏数据. */
+	memset(sztmpNum, 0, 32);
+	GetPrivateProfileStringA(cszpSel, "nLoops", "1", sztmpNum, 32, cszpFilename);
+	pRet->nLoops = atoi(sztmpNum);
+	
+	GetPrivateProfileStringA(cszpSel, "szBasicFrameAniPlistPath", "NA", pRet->szarrBasicFrameAniPlistPath, MAX_PATH, cszpFilename);
+	GetPrivateProfileStringA(cszpSel, "szPlistPngPath", "NA", pRet->szarrPlistPngPath, 64, cszpFilename);
+	GetPrivateProfileStringA(cszpSel, "szAniDesc", "NA", pRet->szarrAniDesc, 32, cszpFilename);
+
+	*ppRet = pRet;
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
 thBool CThCharacterLoadHandler::getDefTowerDescFromIni(const char* cszpFilename, DEFTOWER_DESC_PTR* ppRet)
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
+	const char* cszpSel = "DEFTOWER_DESC";
 	DEFTOWER_DESC_PTR pRet = THMALLOC(DEFTOWER_DESC, sizeof(DEFTOWER_DESC));
 	TH_PROCESS_ERROR(pRet);
 
+	pRet->sCurBullets = 0;
+	pRet->sCurWarriors = 0;
+	pRet->sMaxWarriors = GetPrivateProfileIntA(cszpSel, "sMaxWarriors", THMAX_DEFTOWER_TARLEVEL_WARRIORS, cszpFilename);
+	if (THMAX_DEFTOWER_TARLEVEL_WARRIORS < pRet->sMaxWarriors)
+	{
+		pRet->sMaxWarriors = THMAX_DEFTOWER_TARLEVEL_WARRIORS;
+	}
+	pRet->sSummonWarriorsCD = GetPrivateProfileIntA(cszpSel, "sSummonWarriorsCD", 10, cszpFilename);
+	pRet->emBulletType = (enum THEM_BULLET_TYPE)GetPrivateProfileIntA(cszpSel, "nBulletType", THEM_BULLET_TYPE::SHOOTCHAT_TRACKING, cszpFilename);
+
+	*ppRet = pRet;
 	bRet = THTRUE;
 Exit0:
 	return bRet;
@@ -249,6 +304,12 @@ Exit0:
 void CThCharacterLoadHandler::uninitCharacterDesc(CHARACTER_DESC_PTR p)
 {
 	THFREE(p->ptAniMap);
+	THFREE(p);
+	return;
+}
+
+void CThCharacterLoadHandler::uninitCharacterAniDesc(CHARACTER_ANI_DESC_PTR p)
+{
 	THFREE(p);
 	return;
 }

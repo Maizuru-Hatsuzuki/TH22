@@ -138,10 +138,22 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\data\CharacterConfig\SaigyoSakura\SaigyoSakura.ini">
+    <None Include="..\Resources\data\CharacterConfig\SaigyoSakura\AniCloseTheDoor.ini">
       <Filter>Config\Character\SaigyoSakura</Filter>
     </None>
-    <None Include="..\data\CharacterConfig\SaigyoSakura\Bullet.ini">
+    <None Include="..\Resources\data\CharacterConfig\SaigyoSakura\AniOpenTheDoor.ini">
+      <Filter>Config\Character\SaigyoSakura</Filter>
+    </None>
+    <None Include="..\Resources\data\CharacterConfig\SaigyoSakura\AniWarriorsMove.ini">
+      <Filter>Config\Character\SaigyoSakura</Filter>
+    </None>
+    <None Include="..\Resources\data\CharacterConfig\SaigyoSakura\ChacBullet.ini">
+      <Filter>Config\Character\SaigyoSakura</Filter>
+    </None>
+    <None Include="..\Resources\data\CharacterConfig\SaigyoSakura\ChacSaigyoSakura.ini">
+      <Filter>Config\Character\SaigyoSakura</Filter>
+    </None>
+    <None Include="..\Resources\data\CharacterConfig\SaigyoSakura\ChacWarrior.ini">
       <Filter>Config\Character\SaigyoSakura</Filter>
     </None>
   </ItemGroup>

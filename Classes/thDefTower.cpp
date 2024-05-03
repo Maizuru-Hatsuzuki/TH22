@@ -21,11 +21,8 @@ CThDefTower::~CThDefTower()
 thBool CThDefTower::init(
 	const char* cszpBasicCharacterDescPath,
 	const char* cszpBulletDescPath,
-	const char* cszpTowerDescPath,
 	const char** cszarrpAniDesc,
-	const CHARACTER_DESC_PTR* arrpTowerWarriorsDesc,
-	enum THEM_CHARACTER_LEVEL emWarriorLevel,
-	const short csTowerWarriosSize
+	const DEFTOWER_WARRIORS_PTR ptWarriors
 )
 {
 	thBool bRet = THFALSE;
@@ -51,7 +48,8 @@ thBool CThDefTower::init(
 	TH_PROCESS_ERROR(bFnRet);
 	bFnRet = CThCharacterLoadHandler::getInstance()->getCharaterDescFromIni(cszpBulletDescPath, &m_ptBulletDesc);
 	TH_PROCESS_ERROR(bFnRet);
-	bFnRet = CThCharacterLoadHandler::getInstance()->getDefTowerDescFromIni(cszpTowerDescPath, &m_ptTowerStatus);
+	bFnRet = CThCharacterLoadHandler::getInstance()->getDefTowerDescFromIni(cszpBasicCharacterDescPath, &m_ptTowerStatus);
+	TH_PROCESS_ERROR(bFnRet);
 
 	m_arrpSpGroup = THMALLOC(CHARACTER_FRAMEINFO_PTR, sizeof(CHARACTER_FRAMEINFO_PTR) * THMAX_SP_COUNT);
 	TH_PROCESS_ERROR(m_arrpSpGroup);
@@ -68,13 +66,13 @@ thBool CThDefTower::init(
 	TH_PROCESS_ERROR(bFnRet);
 	bFnRet = initBaiscAnimate(cszarrpAniDesc);
 	TH_PROCESS_ERROR(bFnRet);
-	bFnRet = initDefTowerWarriorsDesc(arrpTowerWarriorsDesc, emWarriorLevel, csTowerWarriosSize);
+	bFnRet = initDefTowerWarriorsDesc(ptWarriors);
 	TH_PROCESS_ERROR(bFnRet);
 
 	/* 播放开门动画并初始化战士精灵. */
 	bFnRet = setPlayAniTowerSummon(arrnAniTag, THMAX_DEFTOWER_SYNC_ANI, THTRUE);
 	TH_PROCESS_ERROR(bFnRet);
-	bFnRet = initWarriors(m_ptTowerStatus->csMaxWarriors, m_sVacantPos);
+	bFnRet = initWarriors(m_ptTowerStatus->sMaxWarriors, m_sVacantPos);
 	TH_PROCESS_ERROR(bFnRet);
 
 	pMouse->onMouseUp = CC_CALLBACK_1(CThDefTower::onMouseUp, this);
@@ -109,7 +107,7 @@ Exit0:
 	return bRet;
 }
 
-thBool CThDefTower::initDefTowerWarriorsDesc(const CHARACTER_DESC_PTR* arrpTowerWarriorsDesc, enum THEM_CHARACTER_LEVEL emLevel, const short csSize)
+thBool CThDefTower::initDefTowerWarriorsDesc(const DEFTOWER_WARRIORS_PTR ptWarriors)
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
@@ -118,22 +116,22 @@ thBool CThDefTower::initDefTowerWarriorsDesc(const CHARACTER_DESC_PTR* arrpTower
 
 	for (short i = 0; i < THMAX_DEFTOWER_TARLEVEL_WARRIORS; i++)
 	{
-		if (i < csSize)
+		if (i < ptWarriors->csSize)
 		{
 			pSpDesc = THMALLOC(CHARACTER_DESC, sizeof(CHARACTER_DESC));
 			TH_PROCESS_ERROR(pSpDesc);
 			pAniMap = THMALLOC(CHARACTER_ANI_MAP, sizeof(CHARACTER_ANI_MAP));
 			TH_PROCESS_ERROR(pAniMap);
 
-			memcpy_s(pSpDesc, sizeof(CHARACTER_DESC), arrpTowerWarriorsDesc[i], sizeof(CHARACTER_DESC));
-			memcpy_s(pAniMap, sizeof(CHARACTER_ANI_MAP), arrpTowerWarriorsDesc[i]->ptAniMap, sizeof(CHARACTER_ANI_MAP));
+			memcpy_s(pSpDesc, sizeof(CHARACTER_DESC), ptWarriors->arrpTowerWarriorsDesc[i], sizeof(CHARACTER_DESC));
+			memcpy_s(pAniMap, sizeof(CHARACTER_ANI_MAP), ptWarriors->arrpTowerWarriorsDesc[i]->ptAniMap, sizeof(CHARACTER_ANI_MAP));
 
-			m_arrpWarriorsDesc[emLevel][i] = pSpDesc;
 			pSpDesc->ptAniMap = pAniMap;
+			m_arrpWarriorsDesc[ptWarriors->emLevel][i] = pSpDesc;
 		}
 		else
 		{
-			m_arrpWarriorsDesc[emLevel][i] = NULL;
+			m_arrpWarriorsDesc[ptWarriors->emLevel][i] = NULL;
 		}
 	}
 
@@ -156,12 +154,15 @@ thBool CThDefTower::initBaiscAnimate(const char** cszarrpAniDesc)
 			bFnRet = CThCharacterLoadHandler::getInstance()->getCharacterAniDescFromIni(cszarrpAniDesc[i], &ptmpAniDesc);
 			TH_PROCESS_ERROR(bFnRet);
 			pResAni = THMALLOC(CHARACTER_ANI_FRAMEINFO, sizeof(CHARACTER_ANI_FRAMEINFO));
+			TH_PROCESS_ERROR(pResAni);
 			pResAni->pAnimate = NULL;
 			strcpy_s(pResAni->szarrDesc, strlen(ptmpAniDesc->szarrAniDesc) + 1, ptmpAniDesc->szarrAniDesc);
 			m_arrpAniGroup[i] = pResAni;
 
 			bFnRet = initCharaterAnimate(ptmpAniDesc, i);
 			TH_PROCESS_ERROR(bFnRet);
+
+			CThCharacterLoadHandler::getInstance()->uninitCharacterAniDesc(ptmpAniDesc);
 		}
 	}
 
@@ -601,7 +602,7 @@ thBool CThDefTower::globalMonitoringWarriors()
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
 	CThDefTowerWarrior_ptr ptmpSpWarr = NULL;
-	const thBool bIsNeedSummon = m_ptTowerStatus->csMaxWarriors > m_ptTowerStatus->sCurWarriors;
+	const thBool bIsNeedSummon = m_ptTowerStatus->sMaxWarriors > m_ptTowerStatus->sCurWarriors;
 	short arrnAniTag[THMAX_DEFTOWER_SYNC_ANI] = { m_sVacantPos, };
 
 	bFnRet = setPlayAniTowerSummon(arrnAniTag, THMAX_DEFTOWER_SYNC_ANI, THFALSE);

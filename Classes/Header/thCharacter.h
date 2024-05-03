@@ -141,11 +141,18 @@ struct _tCharacterAnimateFrameInfo
 
 struct _tDefTowerDesc
 {
-	const short csMaxWarriors;
+	short sMaxWarriors;
 	short sCurWarriors;
 	short sSummonWarriorsCD;
 	short sCurBullets;
 	enum THEM_BULLET_TYPE emBulletType;
+};
+
+struct _tTowerWarriors
+{
+	struct _tCharacterDesc** arrpTowerWarriorsDesc;
+	enum THEM_CHARACTER_LEVEL emLevel;
+	const short csSize;
 };
 
 typedef struct _tAniTag						CHARACTER_ANI_TAG, * CHARACTER_ANI_TAG_PTR;
@@ -155,6 +162,7 @@ typedef struct _tCharacterAnimationDesc		CHARACTER_ANI_DESC, * CHARACTER_ANI_DES
 typedef struct _tCharacterFrameInfo			CHARACTER_FRAMEINFO, * CHARACTER_FRAMEINFO_PTR;
 typedef struct _tCharacterAnimateFrameInfo	CHARACTER_ANI_FRAMEINFO, * CHARACTER_ANI_FRAMEINFO_PTR;
 typedef struct _tDefTowerDesc				DEFTOWER_DESC, * DEFTOWER_DESC_PTR;
+typedef struct _tTowerWarriors				DEFTOWER_WARRIORS, * DEFTOWER_WARRIORS_PTR;
 
 
 class CThBaseCharacter:
@@ -213,7 +221,9 @@ public:
 	thBool getCharaterDescFromIni(const char* cszpFilename, CHARACTER_DESC_PTR* ppRet);
 	thBool getCharacterAniDescFromIni(const char* cszpFilename, CHARACTER_ANI_DESC_PTR* ppRet);
 	thBool getDefTowerDescFromIni(const char* cszpFilename, DEFTOWER_DESC_PTR* ppRet);
+
 	void uninitCharacterDesc(CHARACTER_DESC_PTR p);
+	void uninitCharacterAniDesc(CHARACTER_ANI_DESC_PTR P);
 	void uninitDefTowerDesc(DEFTOWER_DESC_PTR p);
 
 private:
