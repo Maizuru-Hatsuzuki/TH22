@@ -66,10 +66,11 @@ public:
 		const char* cszpBasicCharacterDescPath,
 		const char* cszpBulletDescPath,
 		const char** cszarrpAniDesc,
+		const short csAniDescSize,
 		const DEFTOWER_WARRIORS_PTR ptWarriors
 	);
 	thBool initCharaterAnimate(CHARACTER_ANI_DESC_PTR pAniDesc, const int cnGroupPos);
-	thBool initBaiscAnimate(const char** cszarrpAniDesc);
+	thBool initBaiscAnimate(const char** cszarrpAniDesc, const short csSize);
 	thBool initWarriors(const short csCnt, short sSpArrVacantPos);
 	thBool initDefTowerWarriorsDesc(const DEFTOWER_WARRIORS_PTR ptWarriors);
 	thBool initBullet(float fShootAngle);

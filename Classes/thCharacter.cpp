@@ -30,7 +30,7 @@ thBool CThBaseCharacter::initCharater(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEI
 	
 	if (THTRUE == bInitSp)
 	{
-		ptCharFrame->pSpCharacter = Sprite::create(pDesc->szpSpriteTexPath);
+		ptCharFrame->pSpCharacter = Sprite::create(pDesc->szarrSpriteTexPath);
 		TH_PROCESS_ERROR(ptCharFrame->pSpCharacter);
 		ptCharFrame->pSpCharacter->setFlippedX(pDesc->bFlipX);
 		ptCharFrame->pSpCharacter->setFlippedY(pDesc->bFlipY);
@@ -47,13 +47,15 @@ thBool CThBaseCharacter::initCharater(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEI
 	ptCharFrame->nMP = pDesc->nMP;
 	ptCharFrame->nAttack = pDesc->nAttack;
 	ptCharFrame->nAttackCD = pDesc->nAttackCD;
+	ptCharFrame->nAttackRadius = pDesc->nAttackRadius;
 	ptCharFrame->nDefense = pDesc->nDefense;
 	ptCharFrame->nCDResurrection = pDesc->nCDResurrection;
 	ptCharFrame->nLastestDieTime = 0;
 	ptCharFrame->nSupportDuration = pDesc->nSupportDuration;
 	ptCharFrame->emCharacterType = pDesc->emCharacterType;
 	ptCharFrame->emMoveSpeed = pDesc->emMoveSpeed;
-	strcpy_s(ptCharFrame->szarrDesc, strlen(pDesc->szpSpriteName) + 1, pDesc->szpSpriteName);
+	ptCharFrame->emMaxLevel = pDesc->emMaxLevel;
+	strcpy_s(ptCharFrame->szarrDesc, strlen(pDesc->szarrSpriteName) + 1, pDesc->szarrSpriteName);
 
 	*ppRet = ptCharFrame;
 	bRet = THTRUE;
@@ -190,6 +192,7 @@ thBool CThCharacterLoadHandler::getCharaterDescFromIni(const char* cszpFilename,
 	thBool bFnRet = THFALSE;
 	const char* cszpSelCharacterDesc = "CHARACTER_DESC";
 	const char* cszpSelAniMap = "CHARACTER_ANI_MAP";
+	char szarrTmpStr[MAX_PATH] = { 0 };
 	char szarrTmpFloat[32] = { 0 };
 	CHARACTER_DESC_PTR pRet = THMALLOC(CHARACTER_DESC, sizeof(CHARACTER_DESC));
 	TH_PROCESS_ERROR(pRet);
@@ -200,20 +203,20 @@ thBool CThCharacterLoadHandler::getCharaterDescFromIni(const char* cszpFilename,
 	memset(pAniMap, 0, sizeof(CHARACTER_ANI_MAP));
 
 	/* 加载 CHARACTER_DESC */
-	GetPrivateProfileStringA(cszpSelCharacterDesc, "szpSpriteName", "NA", pRet->szpSpriteName, 32, cszpFilename);
-	GetPrivateProfileStringA(cszpSelCharacterDesc, "szpSpriteTexPath", "NA", pRet->szpSpriteTexPath, MAX_PATH, cszpFilename);
+	GetPrivateProfileStringA(cszpSelCharacterDesc, "szarrSpriteName", "NA", szarrTmpStr, 32, cszpFilename);
+	strcpy_s(pRet->szarrSpriteName, strlen(szarrTmpStr) + 1, szarrTmpStr);
+
+	GetPrivateProfileStringA(cszpSelCharacterDesc, "szarrSpriteTexPath", "NA", szarrTmpStr, MAX_PATH, cszpFilename);
+	strcpy_s(pRet->szarrSpriteTexPath, strlen(szarrTmpStr) + 1, szarrTmpStr);
+
 	GetPrivateProfileStringA(cszpSelCharacterDesc, "fPosX", "0.0", szarrTmpFloat, 32, cszpFilename);
 	pRet->fPosX = (float)atof(szarrTmpFloat);
-	/* 重置 sztmpNum, 防止脏数据. */
-	memset(szarrTmpFloat, 0, 32);
 
 	GetPrivateProfileStringA(cszpSelCharacterDesc, "fPosY", "0.0", szarrTmpFloat, 32, cszpFilename);
 	pRet->fPosY = (float)atof(szarrTmpFloat);
-	memset(szarrTmpFloat, 0, 32);
 
 	GetPrivateProfileStringA(cszpSelCharacterDesc, "fScale", "0.0", szarrTmpFloat, 32, cszpFilename);
 	pRet->fScale = (float)atof(szarrTmpFloat);
-	memset(szarrTmpFloat, 0, 32);
 
 	pRet->bFlipX = GetPrivateProfileIntA(cszpSelCharacterDesc, "bFileX", THFALSE, cszpFilename);
 	pRet->bFlipY = GetPrivateProfileIntA(cszpSelCharacterDesc, "bFileY", THFALSE, cszpFilename);
@@ -227,17 +230,35 @@ thBool CThCharacterLoadHandler::getCharaterDescFromIni(const char* cszpFilename,
 	pRet->nSupportDuration = GetPrivateProfileIntA(cszpSelCharacterDesc, "nSupportDuration", 15, cszpFilename);
 	pRet->emMoveSpeed = (enum THEM_CHARARCTERLEVEL_MOVESPEED)GetPrivateProfileIntA(cszpSelCharacterDesc, "emMoveSpeed", 2, cszpFilename);
 	pRet->emCharacterType = (enum THEM_CHARACTER_TYPE)GetPrivateProfileIntA(cszpSelCharacterDesc, "emCharacterType", 0, cszpFilename);
+	pRet->emMaxLevel = (enum THEM_CHARACTER_LEVEL)GetPrivateProfileIntA(cszpSelCharacterDesc, "emMaxLevel", 1, cszpFilename);
 
 	/* 加载 CHARACTER_ANI_MAP */
-	GetPrivateProfileStringA(cszpSelAniMap, "szpAniStandby", "NA", pAniMap->szpAniStandby, MAX_PATH, cszpFilename);
-	GetPrivateProfileStringA(cszpSelAniMap, "szpAniMoveTransverse", "NA", pAniMap->szpAniMoveTransverse, MAX_PATH, cszpFilename);
-	GetPrivateProfileStringA(cszpSelAniMap, "szpAniMoveUp", "NA", pAniMap->szpAniMoveUp, MAX_PATH, cszpFilename);
-	GetPrivateProfileStringA(cszpSelAniMap, "szpAniMoveDown", "NA", pAniMap->szpAniMoveDown, MAX_PATH, cszpFilename);
-	GetPrivateProfileStringA(cszpSelAniMap, "szpAniAttack", "NA", pAniMap->szpAniAttack, MAX_PATH, cszpFilename);
-	GetPrivateProfileStringA(cszpSelAniMap, "szpAniSkill", "NA", pAniMap->szpAniSkill, MAX_PATH, cszpFilename);
-	GetPrivateProfileStringA(cszpSelAniMap, "szpAniDie", "NA", pAniMap->szpAniDie, MAX_PATH, cszpFilename);
-	GetPrivateProfileStringA(cszpSelAniMap, "szpAniOpenTheDoor", "NA", pAniMap->szpAniOpenTheDoor, MAX_PATH, cszpFilename);
-	GetPrivateProfileStringA(cszpSelAniMap, "szpAniCloseTheDoor", "NA", pAniMap->szpAniCloseTheDoor, MAX_PATH, cszpFilename);
+	GetPrivateProfileStringA(cszpSelAniMap, "szarrAniStandby", "NA", szarrTmpStr, MAX_PATH, cszpFilename);
+	strcpy_s(pAniMap->szarrAniStandby, strlen(szarrTmpStr) + 1, szarrTmpStr);
+
+	GetPrivateProfileStringA(cszpSelAniMap, "szarrAniMoveTransverse", "NA", szarrTmpStr, MAX_PATH, cszpFilename);
+	strcpy_s(pAniMap->szarrAniMoveTransverse, strlen(szarrTmpStr) + 1, szarrTmpStr);
+
+	GetPrivateProfileStringA(cszpSelAniMap, "szarrAniMoveUp", "NA", szarrTmpStr, MAX_PATH, cszpFilename);
+	strcpy_s(pAniMap->szarrAniMoveUp, strlen(szarrTmpStr) + 1, szarrTmpStr);
+
+	GetPrivateProfileStringA(cszpSelAniMap, "szarrAniMoveDown", "NA", szarrTmpStr, MAX_PATH, cszpFilename);
+	strcpy_s(pAniMap->szarrAniMoveDown, strlen(szarrTmpStr) + 1, szarrTmpStr);
+
+	GetPrivateProfileStringA(cszpSelAniMap, "szarrAniAttack", "NA", szarrTmpStr, MAX_PATH, cszpFilename);
+	strcpy_s(pAniMap->szarrAniAttack, strlen(szarrTmpStr) + 1, szarrTmpStr);
+
+	GetPrivateProfileStringA(cszpSelAniMap, "szarrAniSkill", "NA", szarrTmpStr, MAX_PATH, cszpFilename);
+	strcpy_s(pAniMap->szarrAniSkill, strlen(szarrTmpStr) + 1, szarrTmpStr);
+
+	GetPrivateProfileStringA(cszpSelAniMap, "szarrAniDie", "NA", szarrTmpStr, MAX_PATH, cszpFilename);
+	strcpy_s(pAniMap->szarrAniDie, strlen(szarrTmpStr) + 1, szarrTmpStr);
+
+	GetPrivateProfileStringA(cszpSelAniMap, "szarrAniOpenTheDoor", "NA", szarrTmpStr, MAX_PATH, cszpFilename);
+	strcpy_s(pAniMap->szarrAniOpenTheDoor, strlen(szarrTmpStr) + 1, szarrTmpStr);
+
+	GetPrivateProfileStringA(cszpSelAniMap, "szarrAniCloseTheDoor", "NA", szarrTmpStr, MAX_PATH, cszpFilename);
+	strcpy_s(pAniMap->szarrAniCloseTheDoor, strlen(szarrTmpStr) + 1, szarrTmpStr);
 
 	pRet->ptAniMap = pAniMap;
 	*ppRet = pRet;
@@ -262,8 +283,6 @@ thBool CThCharacterLoadHandler::getCharacterAniDescFromIni(const char* cszpFilen
 	GetPrivateProfileStringA(cszpSel, "fDelayPerUnit", "0.5", sztmpNum, 32, cszpFilename);
 	pRet->fDelayPerUnit = atof(sztmpNum);
 
-	/* 重置 sztmpNum, 防止脏数据. */
-	memset(sztmpNum, 0, 32);
 	GetPrivateProfileStringA(cszpSel, "nLoops", "1", sztmpNum, 32, cszpFilename);
 	pRet->nLoops = atoi(sztmpNum);
 	
@@ -285,8 +304,8 @@ thBool CThCharacterLoadHandler::getDefTowerDescFromIni(const char* cszpFilename,
 	DEFTOWER_DESC_PTR pRet = THMALLOC(DEFTOWER_DESC, sizeof(DEFTOWER_DESC));
 	TH_PROCESS_ERROR(pRet);
 
-	pRet->sCurBullets = 0;
 	pRet->sCurWarriors = 0;
+	pRet->sMaxBullets = GetPrivateProfileIntA(cszpSel, "sMaxBullets", 1, cszpFilename);
 	pRet->sMaxWarriors = GetPrivateProfileIntA(cszpSel, "sMaxWarriors", THMAX_DEFTOWER_TARLEVEL_WARRIORS, cszpFilename);
 	if (THMAX_DEFTOWER_TARLEVEL_WARRIORS < pRet->sMaxWarriors)
 	{

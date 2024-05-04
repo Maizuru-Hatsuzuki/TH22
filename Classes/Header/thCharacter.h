@@ -48,7 +48,7 @@ enum THEM_CHARACTER_TYPE
 
 enum THEM_CHARACTER_LEVEL
 {
-	CHARACTER_LEVEL_1,
+	CHARACTER_LEVEL_1 = 1,
 	CHARACTER_LEVEL_2,
 	CHARACTER_LEVEL_3,
 	CHARACTER_LEVEL_4,
@@ -68,21 +68,21 @@ struct _tAniTag
 
 struct _tCharacterAniMap
 {
-	char* szpAniStandby;
-	char* szpAniMoveTransverse;
-	char* szpAniMoveUp;
-	char* szpAniMoveDown;
-	char* szpAniAttack;
-	char* szpAniSkill;
-	char* szpAniDie;
-	char* szpAniOpenTheDoor;
-	char* szpAniCloseTheDoor;
+	char szarrAniStandby[MAX_PATH];
+	char szarrAniMoveTransverse[MAX_PATH];
+	char szarrAniMoveUp[MAX_PATH];
+	char szarrAniMoveDown[MAX_PATH];
+	char szarrAniAttack[MAX_PATH];
+	char szarrAniSkill[MAX_PATH];
+	char szarrAniDie[MAX_PATH];
+	char szarrAniOpenTheDoor[MAX_PATH];
+	char szarrAniCloseTheDoor[MAX_PATH];
 };
 
 struct _tCharacterDesc
 {
-	char* szpSpriteName;
-	char* szpSpriteTexPath;
+	char szarrSpriteName[32];
+	char szarrSpriteTexPath[MAX_PATH];
 	float fPosX;
 	float fPosY;
 	float fScale;
@@ -98,6 +98,7 @@ struct _tCharacterDesc
 	int nSupportDuration;
 	enum THEM_CHARARCTERLEVEL_MOVESPEED emMoveSpeed;
 	enum THEM_CHARACTER_TYPE emCharacterType;
+	enum THEM_CHARACTER_LEVEL emMaxLevel;
 	struct _tCharacterAniMap* ptAniMap;
 };
 
@@ -144,7 +145,7 @@ struct _tDefTowerDesc
 	short sMaxWarriors;
 	short sCurWarriors;
 	short sSummonWarriorsCD;
-	short sCurBullets;
+	short sMaxBullets;
 	enum THEM_BULLET_TYPE emBulletType;
 };
 

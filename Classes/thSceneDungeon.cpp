@@ -58,7 +58,8 @@ bool thSceneDungeon::init()
 		"data\\CharacterConfig\\SaigyoSakura\\AniOpenTheDoor.ini",
 		"data\\CharacterConfig\\SaigyoSakura\\AniCloseTheDoor.ini"
 	};
-	DEFTOWER_WARRIORS tWarrior = { NULL, THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, 2 };
+	CHARACTER_DESC_PTR arrpChacWarrios[2] = { 0 };
+	DEFTOWER_WARRIORS tWarrior = { arrpChacWarrios, THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, 2 };
 	CThDefTower* pHunterCabinObject = new CThDefTower;
 
 	bFnRet = CThCharacterLoadHandler::getInstance()->getCharaterDescFromIni(
@@ -71,6 +72,7 @@ bool thSceneDungeon::init()
 		"data\\CharacterConfig\\SaigyoSakura\\ChacSaigyoSakura.ini",
 		"data\\CharacterConfig\\SaigyoSakura\\ChacBullet.ini",
 		szarrpAni,
+		3,
 		&tWarrior
 		);
 	TH_PROCESS_ERROR(bFnRet);
