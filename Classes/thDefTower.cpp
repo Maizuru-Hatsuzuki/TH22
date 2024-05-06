@@ -19,35 +19,39 @@ CThDefTower::~CThDefTower()
 }
 
 thBool CThDefTower::init(
-	const CHARACTER_DESC_PTR ptCharacterDesc,
-	const CHARACTER_DESC_PTR ptBulletDesc,
-	CHARACTER_ANI_DESC_PTR* arrpAniDesc,
-	DEFTOWER_DESC_PTR ptDefTowerDesc,
-	const CHARACTER_DESC_PTR* arrpTowerWarriorsDesc,
-	enum THEM_CHARACTER_LEVEL emLevel,
-	const short csTowerWarriosSize
+	const char* cszpBasicCharacterDescPath,
+	const char* cszpBulletDescPath,
+	const char** cszarrpAniDesc,
+	const short csAniDescSize,
+	const DEFTOWER_WARRIORS_PTR ptWarriors
 )
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
-	EventListenerMouse* pMouse = EventListenerMouse::create();
 	short arrnAniTag[THMAX_DEFTOWER_SYNC_ANI] = { m_sVacantPos, };
+	EventListenerMouse* pMouse = EventListenerMouse::create();
+	CHARACTER_DESC_PTR ptCharacterDesc = NULL;
 
 	m_sVacantPos = 0;
 	m_dLastSummonWarriors = 0.f;
 	m_dLastAttack = 0.f;
+	m_ptBulletDesc = NULL;
+	m_ptTowerStatus = NULL;
 	m_tAniTag.nOffset = THMAX_ANI_COUNT;
-	/* nTag = 33 */
+	/* AniTagTowerSummon nTag = 33 */
 	m_tAniTag.arrTag[0].nTag = m_tAniTag.nOffset + 1;
 	m_tAniTag.arrTag[0].cszpDesc = "AniTagTowerSummon";
-	/* nTag = 34 */
+	/* AniTagWarriorsDie nTag = 34 */
 	m_tAniTag.arrTag[1].nTag = m_tAniTag.nOffset + 2;
 	m_tAniTag.arrTag[1].cszpDesc = "AniTagWarriorsDie";
 
-	m_ptTowerStatus = THMALLOC(DEFTOWER_DESC, sizeof(DEFTOWER_DESC));
-	TH_PROCESS_ERROR(m_ptTowerStatus);
-	m_ptBulletDesc = THMALLOC(CHARACTER_DESC, sizeof(CHARACTER_DESC));
-	TH_PROCESS_ERROR(m_ptBulletDesc);
+	bFnRet = CThCharacterLoadHandler::getInstance()->getCharaterDescFromIni(cszpBasicCharacterDescPath, &ptCharacterDesc);
+	TH_PROCESS_ERROR(bFnRet);
+	bFnRet = CThCharacterLoadHandler::getInstance()->getCharaterDescFromIni(cszpBulletDescPath, &m_ptBulletDesc);
+	TH_PROCESS_ERROR(bFnRet);
+	bFnRet = CThCharacterLoadHandler::getInstance()->getDefTowerDescFromIni(cszpBasicCharacterDescPath, &m_ptTowerStatus);
+	TH_PROCESS_ERROR(bFnRet);
+
 	m_arrpSpGroup = THMALLOC(CHARACTER_FRAMEINFO_PTR, sizeof(CHARACTER_FRAMEINFO_PTR) * THMAX_SP_COUNT);
 	TH_PROCESS_ERROR(m_arrpSpGroup);
 	m_arrpAniGroup = THMALLOC(CHARACTER_ANI_FRAMEINFO_PTR, sizeof(CHARACTER_ANI_FRAMEINFO_PTR) * THMAX_ANI_COUNT);
@@ -55,31 +59,30 @@ thBool CThDefTower::init(
 	m_arrpWarriors = THMALLOC(CThDefTowerWarrior_ptr, sizeof(CThDefTowerWarrior_ptr) * THMAX_DEFTOWER_TARLEVEL_WARRIORS);
 	TH_PROCESS_ERROR(m_arrpWarriors);
 
-	memcpy_s(m_ptTowerStatus, sizeof(DEFTOWER_DESC), ptDefTowerDesc, sizeof(DEFTOWER_DESC));
-	memcpy_s(m_ptBulletDesc, sizeof(CHARACTER_DESC), ptBulletDesc, sizeof(CHARACTER_DESC));
 	memset(m_arrpSpGroup, 0, sizeof(CHARACTER_FRAMEINFO_PTR) * THMAX_SP_COUNT);
 	memset(m_arrpAniGroup, 0, sizeof(CHARACTER_ANI_FRAMEINFO_PTR) * THMAX_ANI_COUNT);
 	memset(m_arrpWarriors, 0, sizeof(CThDefTowerWarrior_ptr) * THMAX_DEFTOWER_TARLEVEL_WARRIORS);
 
 	bFnRet = initCharacter(ptCharacterDesc, &m_pTower, THTRUE);
 	TH_PROCESS_ERROR(bFnRet);
-	bFnRet = initBaiscAnimate(arrpAniDesc);
+	m_pTower->emCurLevel = THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1;
+	bFnRet = initBaiscAnimate(cszarrpAniDesc, csAniDescSize);
 	TH_PROCESS_ERROR(bFnRet);
-	bFnRet = initDefTowerWarriorsDesc(arrpTowerWarriorsDesc, emLevel, csTowerWarriosSize);
+	bFnRet = initDefTowerWarriorsDesc(ptWarriors);
 	TH_PROCESS_ERROR(bFnRet);
+
 	/* 播放开门动画并初始化战士精灵. */
 	bFnRet = setPlayAniTowerSummon(arrnAniTag, THMAX_DEFTOWER_SYNC_ANI, THTRUE);
 	TH_PROCESS_ERROR(bFnRet);
-	bFnRet = initWarriors(ptDefTowerDesc->csMaxWarriors, m_sVacantPos);
+	bFnRet = initWarriors(m_ptTowerStatus->sMaxWarriors, m_sVacantPos);
 	TH_PROCESS_ERROR(bFnRet);
-	m_ptTowerStatus->sCurWarriors = ptDefTowerDesc->csMaxWarriors;
 
 	pMouse->onMouseUp = CC_CALLBACK_1(CThDefTower::onMouseUp, this);
 	pMouse->onMouseMove = CC_CALLBACK_1(CThDefTower::onMouseMove, this);
 	pMouse->onMouseDown = CC_CALLBACK_1(CThDefTower::onMouseDown, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(pMouse, m_pTower->pSpCharacter);
 
-	m_pBatchNodeBullet = SpriteBatchNode::create(ptBulletDesc->cszpSpriteTexPath);
+	m_pBatchNodeBullet = SpriteBatchNode::create(m_ptBulletDesc->szarrSpriteTexPath);
 	TH_PROCESS_ERROR(m_pBatchNodeBullet);
 
 	scheduleUpdate();
@@ -89,6 +92,7 @@ thBool CThDefTower::init(
 
 	bRet = THTRUE;
 Exit0:
+	CThCharacterLoadHandler::getInstance()->uninitCharacterDesc(ptCharacterDesc);
 	return bRet;
 }
 
@@ -105,7 +109,7 @@ Exit0:
 	return bRet;
 }
 
-thBool CThDefTower::initDefTowerWarriorsDesc(const CHARACTER_DESC_PTR* arrpTowerWarriorsDesc, enum THEM_CHARACTER_LEVEL emLevel, const short csSize)
+thBool CThDefTower::initDefTowerWarriorsDesc(const DEFTOWER_WARRIORS_PTR ptWarriors)
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
@@ -114,22 +118,22 @@ thBool CThDefTower::initDefTowerWarriorsDesc(const CHARACTER_DESC_PTR* arrpTower
 
 	for (short i = 0; i < THMAX_DEFTOWER_TARLEVEL_WARRIORS; i++)
 	{
-		if (i < csSize)
+		if (i < ptWarriors->csSize && NULL != ptWarriors->arrpTowerWarriorsDesc[i])
 		{
 			pSpDesc = THMALLOC(CHARACTER_DESC, sizeof(CHARACTER_DESC));
 			TH_PROCESS_ERROR(pSpDesc);
 			pAniMap = THMALLOC(CHARACTER_ANI_MAP, sizeof(CHARACTER_ANI_MAP));
 			TH_PROCESS_ERROR(pAniMap);
 
-			memcpy_s(pSpDesc, sizeof(CHARACTER_DESC), arrpTowerWarriorsDesc[i], sizeof(CHARACTER_DESC));
-			memcpy_s(pAniMap, sizeof(CHARACTER_ANI_MAP), arrpTowerWarriorsDesc[i]->ptAniMap, sizeof(CHARACTER_ANI_MAP));
+			memcpy_s(pSpDesc, sizeof(CHARACTER_DESC), ptWarriors->arrpTowerWarriorsDesc[i], sizeof(CHARACTER_DESC));
+			memcpy_s(pAniMap, sizeof(CHARACTER_ANI_MAP), ptWarriors->arrpTowerWarriorsDesc[i]->ptAniMap, sizeof(CHARACTER_ANI_MAP));
 
-			m_arrpWarriorsDesc[emLevel][i] = pSpDesc;
 			pSpDesc->ptAniMap = pAniMap;
+			m_arrpWarriorsDesc[ptWarriors->emLevel][i] = pSpDesc;
 		}
 		else
 		{
-			m_arrpWarriorsDesc[emLevel][i] = NULL;
+			m_arrpWarriorsDesc[ptWarriors->emLevel][i] = NULL;
 		}
 	}
 
@@ -138,25 +142,30 @@ Exit0:
 	return bRet;
 }
 
-thBool CThDefTower::initBaiscAnimate(CHARACTER_ANI_DESC_PTR* arrpAniDesc)
+thBool CThDefTower::initBaiscAnimate(const char** cszarrpAniDesc, const short csSize)
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
 	CHARACTER_ANI_DESC_PTR ptmpAniDesc = NULL;
 	CHARACTER_ANI_FRAMEINFO_PTR pResAni = NULL;
 
-	for (int i = 0; i < THMAX_ANI_COUNT; i++)
+	TH_PROCESS_SUCCESS(THMAX_ANI_COUNT < csSize);
+	for (int i = 0; i < csSize; i++)
 	{
-		ptmpAniDesc = arrpAniDesc[i];
-		if (NULL != ptmpAniDesc)
+		if (NULL != cszarrpAniDesc[i])
 		{
+			bFnRet = CThCharacterLoadHandler::getInstance()->getCharacterAniDescFromIni(cszarrpAniDesc[i], &ptmpAniDesc);
+			TH_PROCESS_ERROR(bFnRet);
 			pResAni = THMALLOC(CHARACTER_ANI_FRAMEINFO, sizeof(CHARACTER_ANI_FRAMEINFO));
+			TH_PROCESS_ERROR(pResAni);
 			pResAni->pAnimate = NULL;
 			strcpy_s(pResAni->szarrDesc, strlen(ptmpAniDesc->szarrAniDesc) + 1, ptmpAniDesc->szarrAniDesc);
 			m_arrpAniGroup[i] = pResAni;
 
 			bFnRet = initCharacterAnimate(ptmpAniDesc, i);
 			TH_PROCESS_ERROR(bFnRet);
+
+			CThCharacterLoadHandler::getInstance()->uninitCharacterAniDesc(ptmpAniDesc);
 		}
 	}
 
@@ -167,12 +176,12 @@ Exit0:
 
 thBool CThDefTower::initWarriors(const short csCnt, short sSpArrVacantPos)
 {
-	thBool bRet									= THFALSE;
-	thBool bFnRet								= THFALSE;
-	short sWarriorType							= 0;
-	CHARACTER_DESC_PTR ptSpDesc					= NULL;
-	CHARACTER_ANI_FRAMEINFO_PTR ptAniMoveTo		= NULL;
-	CThDefTowerWarrior* ptmpWarrior				= NULL;
+	thBool bRet = THFALSE;
+	thBool bFnRet = THFALSE;
+	short sWarriorType = 0;
+	CHARACTER_DESC_PTR ptSpDesc = NULL;
+	CHARACTER_ANI_FRAMEINFO_PTR ptAniMoveTo = NULL;
+	CThDefTowerWarrior* ptmpWarrior = NULL;
 
 	/* debug use */
 	static float fWarriorsBirthAngle = 270.f;
@@ -184,12 +193,12 @@ thBool CThDefTower::initWarriors(const short csCnt, short sSpArrVacantPos)
 		while (NULL == ptSpDesc)
 		{
 			sWarriorType = (rand() % THMAX_DEFTOWER_TARLEVEL_WARRIORS);
-			ptSpDesc = m_arrpWarriorsDesc[m_ptTowerStatus->emCurLevel][sWarriorType];
+			ptSpDesc = m_arrpWarriorsDesc[m_pTower->emCurLevel][sWarriorType];
 		}
 		bFnRet = _getWarArrayVacantPos(&sSpArrVacantPos);
 		/* 检查是否满容量. */
 		TH_PROCESS_SUCCESS(bFnRet);
-		getAniFrameInfoByTag(ptSpDesc->ptAniMap->cszpAniMoveTransverse, &ptAniMoveTo);
+		getAniFrameInfoByTag(ptSpDesc->ptAniMap->szarrAniMoveTransverse, &ptAniMoveTo);
 		TH_PROCESS_ERROR(ptAniMoveTo);
 		getWarriorExistsByAngle(fWarriorsBirthAngle, &bFnRet);
 		if (THTRUE == bFnRet)
@@ -201,18 +210,20 @@ thBool CThDefTower::initWarriors(const short csCnt, short sSpArrVacantPos)
 		ptmpWarrior = new CThDefTowerWarrior;
 		TH_PROCESS_ERROR(ptmpWarrior);
 		bFnRet = ptmpWarrior->init(
-			ptSpDesc, 
+			ptSpDesc,
 			sSpArrVacantPos,
 			fWarriorsBirthAngle,
 			m_pTower->pSpCharacter->getPositionX(),
-			m_pTower->pSpCharacter->getPositionY(), 
-			m_ptTowerStatus->sActionRadius, ptAniMoveTo
+			m_pTower->pSpCharacter->getPositionY(),
+			m_pTower->nAttackRadius, ptAniMoveTo
 		);
 		TH_PROCESS_ERROR(bFnRet);
 		this->addChild(ptmpWarrior);
 
 		m_arrpWarriors[sSpArrVacantPos] = ptmpWarrior;
 		m_dLastSummonWarriors = time(NULL);
+
+		m_ptTowerStatus->sCurWarriors++;
 	}
 
 	bRet = THTRUE;
@@ -243,8 +254,8 @@ thBool CThDefTower::initBullet(float fShootAngle)
 	ptFrBullet->pSpCharacter->setPosition(m_pTower->pSpCharacter->getPositionX(), m_pTower->pSpCharacter->getPositionY());
 	m_pBatchNodeBullet->addChild(ptFrBullet->pSpCharacter);
 
-	fMoveDstX = m_pTower->pSpCharacter->getPositionX() + m_ptTowerStatus->sActionRadius * cos(fShootAngle * (M_PI / 180));
-	fMoveDstY = m_pTower->pSpCharacter->getPositionY() + m_ptTowerStatus->sActionRadius * sin(fShootAngle * (M_PI / 180));
+	fMoveDstX = m_pTower->pSpCharacter->getPositionX() + m_pTower->nAttackRadius * cos(fShootAngle * (M_PI / 180));
+	fMoveDstY = m_pTower->pSpCharacter->getPositionY() + m_pTower->nAttackRadius * sin(fShootAngle * (M_PI / 180));
 
 	arrpActionCallback[0] = CallFuncN::create(CC_CALLBACK_1(CThDefTower::uninitBullet, this, sVancantPos));
 	getCharacterMoveSpeed(m_pTower->pSpCharacter->getPositionX(), m_pTower->pSpCharacter->getPositionY(), fMoveDstX, fMoveDstY, ptFrBullet->emMoveSpeed, &fMoveTime);
@@ -555,7 +566,7 @@ void CThDefTower::update(float dt)
 	bFnRet = globalMonitoring();
 	ASSERT(bFnRet);
 
-	bFnRet = execTowerShoot(m_ptTowerStatus->sCurBullets);
+	bFnRet = execTowerShoot(m_ptTowerStatus->sMaxBullets);
 	ASSERT(bFnRet);
 	
 	return;
@@ -579,7 +590,7 @@ thBool CThDefTower::globalMonitoringWarriors()
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
 	CThDefTowerWarrior_ptr ptmpSpWarr = NULL;
-	const thBool bIsNeedSummon = m_ptTowerStatus->csMaxWarriors > m_ptTowerStatus->sCurWarriors;
+	const thBool bIsNeedSummon = m_ptTowerStatus->sMaxBullets > m_ptTowerStatus->sCurWarriors;
 	short arrnAniTag[THMAX_DEFTOWER_SYNC_ANI] = { m_sVacantPos, };
 
 	bFnRet = setPlayAniTowerSummon(arrnAniTag, THMAX_DEFTOWER_SYNC_ANI, THFALSE);
