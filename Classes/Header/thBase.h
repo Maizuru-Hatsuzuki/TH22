@@ -55,9 +55,6 @@
 #define THMOVESPEED_HIGH_PLAYER 3.5
 #define THMOVESPEED_HIGHEX_PLAYER 3.0
 
-#define fn
-#define var
-
 
 #ifdef __cplusplus
 

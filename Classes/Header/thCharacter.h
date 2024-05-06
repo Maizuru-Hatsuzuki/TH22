@@ -23,10 +23,12 @@ enum THEM_BULLET_TYPE
 
 enum THEM_CHARARCTERLEVEL_MOVESPEED
 {
+	MOVESPEED_LOWEX,
 	MOVESPEED_LOW,
 	MOVESPEED_NARMAL,
 	MOVESPEED_HIGH,
-	MOVESPEED_HIGHEX
+	MOVESPEED_HIGHEX,
+	MOVESPEED_NOTMOVE
 };
 
 enum THEM_CHARACTER_TYPE
@@ -34,7 +36,7 @@ enum THEM_CHARACTER_TYPE
 	CHARACTER_UNKNOW,
 	CHARACTER_PLAYER,
 	CHARACTER_DEFTOWER,
-	CHARACTER_TOWER_WARRIOR,
+	CHARACTER_DEFTOWER_WARRIOR,
 	CHARACTER_SUPPORT_WARRIOR,
 	CHARACTER_ENEMY,
 	CHARACTER_ENEMY_DEFTOWER,
@@ -46,7 +48,7 @@ enum THEM_CHARACTER_TYPE
 
 enum THEM_CHARACTER_LEVEL
 {
-	CHARACTER_LEVEL_1,
+	CHARACTER_LEVEL_1 = 1,
 	CHARACTER_LEVEL_2,
 	CHARACTER_LEVEL_3,
 	CHARACTER_LEVEL_4,
@@ -66,21 +68,21 @@ struct _tAniTag
 
 struct _tCharacterAniMap
 {
-	const char* cszpAniStandby;
-	const char* cszpAniMoveTransverse;
-	const char* cszpAniMoveUp;
-	const char* cszpAniMoveDown;
-	const char* cszpAniMoveAttack;
-	const char* cszpAniMoveSkill;
-	const char* cszpAniMoveDie;
-	const char* cszpAniOpenTheDoor;
-	const char* cszpAniCloseTheDoor;
+	char szarrAniStandby[MAX_PATH];
+	char szarrAniMoveTransverse[MAX_PATH];
+	char szarrAniMoveUp[MAX_PATH];
+	char szarrAniMoveDown[MAX_PATH];
+	char szarrAniAttack[MAX_PATH];
+	char szarrAniSkill[MAX_PATH];
+	char szarrAniDie[MAX_PATH];
+	char szarrAniOpenTheDoor[MAX_PATH];
+	char szarrAniCloseTheDoor[MAX_PATH];
 };
 
 struct _tCharacterDesc
 {
-	const char* cszpSpriteName;
-	const char* cszpSpriteTexPath;
+	char szarrSpriteName[32];
+	char szarrSpriteTexPath[MAX_PATH];
 	float fPosX;
 	float fPosY;
 	float fScale;
@@ -90,12 +92,13 @@ struct _tCharacterDesc
 	int nMP;
 	int nAttack;
 	int nAttackCD;
+	int nAttackRadius;
 	int nDefense;
 	int nCDResurrection;
-	int nDuration;
-	DWORD nLastestDieTime;
+	int nSupportDuration;
 	enum THEM_CHARARCTERLEVEL_MOVESPEED emMoveSpeed;
 	enum THEM_CHARACTER_TYPE emCharacterType;
+	enum THEM_CHARACTER_LEVEL emMaxLevel;
 	struct _tCharacterAniMap* ptAniMap;
 };
 
@@ -118,12 +121,15 @@ struct _tCharacterFrameInfo
 	int nMP;
 	int nAttack;
 	int nAttackCD;
+	int nAttackRadius;
 	int nDefense;
 	int nCDResurrection;
-	int nDuration;
+	int nSupportDuration;
 	DWORD nLastestDieTime;
 	enum THEM_CHARARCTERLEVEL_MOVESPEED emMoveSpeed;
 	enum THEM_CHARACTER_TYPE emCharacterType;
+	enum THEM_CHARACTER_LEVEL emMaxLevel;
+	enum THEM_CHARACTER_LEVEL emCurLevel;
 	Sprite* pSpCharacter;
 	char szarrDesc[THMAX_CHAR_DESC];
 };
@@ -136,15 +142,18 @@ struct _tCharacterAnimateFrameInfo
 
 struct _tDefTowerDesc
 {
-	const short csMaxWarriors;
-	const short csMaxLevel;
-	int nAttack;
+	short sMaxWarriors;
 	short sCurWarriors;
-	short sCurBullets;
 	short sSummonWarriorsCD;
-	short sActionRadius;
-	enum THEM_CHARACTER_LEVEL emCurLevel;
+	short sMaxBullets;
 	enum THEM_BULLET_TYPE emBulletType;
+};
+
+struct _tTowerWarriors
+{
+	struct _tCharacterDesc** arrpTowerWarriorsDesc;
+	enum THEM_CHARACTER_LEVEL emLevel;
+	const short csSize;
 };
 
 typedef struct _tAniTag						CHARACTER_ANI_TAG, * CHARACTER_ANI_TAG_PTR;
@@ -154,6 +163,7 @@ typedef struct _tCharacterAnimationDesc		CHARACTER_ANI_DESC, * CHARACTER_ANI_DES
 typedef struct _tCharacterFrameInfo			CHARACTER_FRAMEINFO, * CHARACTER_FRAMEINFO_PTR;
 typedef struct _tCharacterAnimateFrameInfo	CHARACTER_ANI_FRAMEINFO, * CHARACTER_ANI_FRAMEINFO_PTR;
 typedef struct _tDefTowerDesc				DEFTOWER_DESC, * DEFTOWER_DESC_PTR;
+typedef struct _tTowerWarriors				DEFTOWER_WARRIORS, * DEFTOWER_WARRIORS_PTR;
 
 
 class CThBaseCharacter:
@@ -202,6 +212,30 @@ private:
 
 private:
 	static CThBaseCharacterAction* m_pSelf;
+};
+
+
+class CThCharacterLoadHandler
+{
+public:
+	static CThCharacterLoadHandler* getInstance();
+
+	thBool getCharaterDescFromIni(const char* cszpFilename, CHARACTER_DESC_PTR* ppRet);
+	thBool getCharacterAniDescFromIni(const char* cszpFilename, CHARACTER_ANI_DESC_PTR* ppRet);
+	thBool getDefTowerDescFromIni(const char* cszpFilename, DEFTOWER_DESC_PTR* ppRet);
+
+	void uninitCharacterDesc(CHARACTER_DESC_PTR p);
+	void uninitCharacterAniDesc(CHARACTER_ANI_DESC_PTR P);
+	void uninitDefTowerDesc(DEFTOWER_DESC_PTR p);
+
+private:
+	CThCharacterLoadHandler();
+	~CThCharacterLoadHandler();
+	CThCharacterLoadHandler(const CThCharacterLoadHandler& pSelf);
+	const CThCharacterLoadHandler& operator=(const CThCharacterLoadHandler& pSelf);
+
+private:
+	static CThCharacterLoadHandler* m_pSelf;
 };
 
 

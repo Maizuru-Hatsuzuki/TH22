@@ -37,6 +37,15 @@
     <Filter Include="Src\THDeviceCtrl">
       <UniqueIdentifier>{547e7486-e28f-4c10-9a19-f49189f26139}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Config">
+      <UniqueIdentifier>{a9aed02f-425f-45f2-86f3-778b9b2cbce7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Config\Character">
+      <UniqueIdentifier>{aa9a9322-8433-41e5-809f-fb034c4208cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Config\Character\SaigyoSakura">
+      <UniqueIdentifier>{d762286d-2462-41f4-be06-0feb85984e69}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -127,5 +136,25 @@
     <ResourceCompile Include="game.rc">
       <Filter>resource</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Resources\data\CharacterConfig\SaigyoSakura\AniCloseTheDoor.ini">
+      <Filter>Config\Character\SaigyoSakura</Filter>
+    </None>
+    <None Include="..\Resources\data\CharacterConfig\SaigyoSakura\AniOpenTheDoor.ini">
+      <Filter>Config\Character\SaigyoSakura</Filter>
+    </None>
+    <None Include="..\Resources\data\CharacterConfig\SaigyoSakura\AniWarriorsMove.ini">
+      <Filter>Config\Character\SaigyoSakura</Filter>
+    </None>
+    <None Include="..\Resources\data\CharacterConfig\SaigyoSakura\ChacBullet.ini">
+      <Filter>Config\Character\SaigyoSakura</Filter>
+    </None>
+    <None Include="..\Resources\data\CharacterConfig\SaigyoSakura\ChacSaigyoSakura.ini">
+      <Filter>Config\Character\SaigyoSakura</Filter>
+    </None>
+    <None Include="..\Resources\data\CharacterConfig\SaigyoSakura\ChacWarrior.ini">
+      <Filter>Config\Character\SaigyoSakura</Filter>
+    </None>
   </ItemGroup>
 </Project>

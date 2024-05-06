@@ -88,9 +88,9 @@ thBool CThPlayer::init(PLAYER_DESC_PTR ptPlayer)
 	TH_PROCESS_ERROR(bFnRet);
 
 	/* Init cocos. 
-	sprintf_s(szarrPListPath, "image\\sprite\\%s\\cocos2d\\%s.plist", ptPlayer->cszpSpriteName, ptPlayer->cszpPListName);
-	sprintf_s(szarrPListPngPath, "image\\sprite\\%s\\cocos2d\\%s.png", ptPlayer->cszpSpriteName, ptPlayer->cszpPListName);
-	sprintf_s(szarrBasicSpritePath, "image\\sprite\\%s\\cocos2d\\%s.png", ptPlayer->cszpSpriteName, ptPlayer->cszpFirstFrame);
+	sprintf_s(szarrPListPath, "image\\sprite\\%s\\cocos2d\\%s.plist", ptPlayer->szarrSpriteName, ptPlayer->cszpPListName);
+	sprintf_s(szarrPListPngPath, "image\\sprite\\%s\\cocos2d\\%s.png", ptPlayer->szarrSpriteName, ptPlayer->cszpPListName);
+	sprintf_s(szarrBasicSpritePath, "image\\sprite\\%s\\cocos2d\\%s.png", ptPlayer->szarrSpriteName, ptPlayer->cszpFirstFrame);
 
 	pSpFrameCache->addSpriteFramesWithFile(szarrPListPath, szarrPListPngPath);
 

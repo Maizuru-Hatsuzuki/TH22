@@ -50,7 +50,7 @@ private:
 
 //struct _tPlayerDesc
 //{
-//	const char* cszpSpriteName;
+//	const char* szarrSpriteName;
 //	char* cszpPListName;
 //	const char* cszpFirstFrame;
 //	float fPosX;
