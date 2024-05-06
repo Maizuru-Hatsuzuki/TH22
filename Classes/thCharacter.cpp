@@ -20,7 +20,7 @@ CThBaseCharacter::~CThBaseCharacter()
 {
 }
 
-thBool CThBaseCharacter::initCharater(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR* ppRet, thBool bInitSp) const
+thBool CThBaseCharacter::initCharacter(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR* ppRet, thBool bInitSp) const
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
@@ -60,7 +60,7 @@ Exit0:
 	return bRet;
 }
 
-thBool CThBaseCharacter::initCharaterAnimation(CHARACTER_ANI_DESC_PTR pAniDesc, Animate** ppRet) const
+thBool CThBaseCharacter::initCharacterAnimation(CHARACTER_ANI_DESC_PTR pAniDesc, Animate** ppRet) const
 {
 	thBool bRet = THFALSE;
 	char szarrPlistPath[MAX_PATH] = { 0 };
@@ -82,7 +82,7 @@ Exit0:
 	return bRet;
 }
 
-void CThBaseCharacter::uninitCharater(CHARACTER_FRAMEINFO_PTR pCharater)
+void CThBaseCharacter::uninitCharacter(CHARACTER_FRAMEINFO_PTR pCharater)
 {
 	if (0 != pCharater->pSpCharacter->getReferenceCount())
 	{
@@ -104,8 +104,32 @@ void CThBaseCharacter::setPlayerStopAllAction(Sprite* pSp)
 	return;
 }
 
+void CThBaseCharacter::getCharacterMoveSpeed(const float cfPlayerX, const float cfPlayerY, const float cfDstX, const float cfDstY, enum THEM_CHARARCTERLEVEL_MOVESPEED emSpeed, float* pfRet)
+{
+	float fRet = 0.f;
+	float fSpeed = 80.f;
+	const float cfMoveDis = sqrt(pow(cfDstX - cfPlayerX, 2) + pow(cfDstY - cfPlayerY, 2));
 
-thBool CThBaseCharacter::getCharaterAnimateFrameInfo(CHARACTER_ANI_DESC_PTR pAniDesc, CHARACTER_ANI_FRAMEINFO_PTR pRet) const
+	switch (emSpeed)
+	{
+	case THEM_CHARARCTERLEVEL_MOVESPEED::MOVESPEED_HIGH:
+		fSpeed = 90.f;
+		break;
+
+	case THEM_CHARARCTERLEVEL_MOVESPEED::MOVESPEED_HIGHEX:
+		fSpeed = 100.f;
+		break;
+
+	default:
+		break;
+	}
+
+	fRet = cfMoveDis / fSpeed;
+	*pfRet = fRet;
+	return;
+}
+
+thBool CThBaseCharacter::getCharacterAnimateFrameInfo(CHARACTER_ANI_DESC_PTR pAniDesc, CHARACTER_ANI_FRAMEINFO_PTR pRet) const
 {
 	thBool bRet = THFALSE;
 	pRet->pAnimate = NULL;

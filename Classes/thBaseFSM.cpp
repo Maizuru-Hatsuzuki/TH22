@@ -10,98 +10,109 @@
 #include "thBaseMacro.h"
 
 
-CThFSMCtrl::CThFSMCtrl()
+CThFSM::CThFSM()
 {
 }
 
-CThFSMCtrl::~CThFSMCtrl()
+CThFSM::~CThFSM()
 {
 }
 
 
-thBool CThFSMCtrl::init()
+CThFSMCharacter::CThFSMCharacter()
+{
+}
+
+CThFSMCharacter::~CThFSMCharacter()
+{
+}
+
+thBool CThFSMCharacter::init(THFSM_CHARACTER_DESC_PTR* parrtFsmEvent, const short csSize)
 {
 	thBool bRet = THFALSE;
-	
-	bRet = THTRUE;
-Exit0:
-	return bRet;
-}
+	m_bPause = THFALSE;
+	m_sArrFsmEventSize = csSize;
 
-thBool CThFSMCtrl::thFsmDriver() noexcept
-{
-	thBool bRet = THFALSE;
-
-	bRet = THTRUE;
-Exit0:
-	return bRet;
-}
-
-thBool CThFSMCtrl::thFsmSwitch(PLAYER_FSM_DESC_PTR pFsmDesc) noexcept
-{
-	thBool bRet = THFALSE;
-	THCHARACTERFSM_DESC_PTR pCurFsmEvent = NULL;
-	THCALLBACK_CFE fnRelease = NULL;
-	THCALLBACK_CFE fnInit = NULL;
-
-	for (int i = 0; i < THMAX_PLAYERFSMSTATUS; i++)
+	memset(m_parrtFsmEvent, 0, sizeof(THFSM_CHARACTER_DESC_PTR) * THMAX_CHARACTER_FSMSTATUS);
+	for (short s = 0; s < csSize; s++)
 	{
-		pCurFsmEvent = pFsmDesc->arrpFsmEvent[i];
-		if (NULL != pFsmDesc->arrpFsmEvent[i] && pFsmDesc->emLastPlayerStatus == pCurFsmEvent->emStatus)
-		{
-			fnRelease = pCurFsmEvent->fnFsmRelease;
-		}
-		else if (NULL != pFsmDesc->arrpFsmEvent[i] && pFsmDesc->emCurPlayerStatus == pCurFsmEvent->emStatus)
-		{
-			fnInit = pCurFsmEvent->fnFsmInit;
-		}
+		m_parrtFsmEvent[s] = THMALLOC(THFSM_CHARACTER_DESC, sizeof(THFSM_CHARACTER_DESC));
+		TH_PROCESS_ERROR(m_parrtFsmEvent[s]);
+		memcpy_s(m_parrtFsmEvent[s], sizeof(THFSM_CHARACTER_DESC), parrtFsmEvent[s], sizeof(THFSM_CHARACTER_DESC));
 	}
 	
-	bRet = fnRelease(pFsmDesc->vpEnv);
-	TH_PROCESS_ERROR(bRet);
-	bRet = fnInit(pFsmDesc->vpEnv);
-	TH_PROCESS_ERROR(bRet);
-
-	pFsmDesc->emLastPlayerStatus = pFsmDesc->emCurPlayerStatus;
-
 	bRet = THTRUE;
 Exit0:
 	return bRet;
 }
 
-thBool CThFSMCtrl::thFsmPause() noexcept
+thBool CThFSMCharacter::uninit()
 {
 	thBool bRet = THFALSE;
+	
+	for (short s = 0; s < m_sArrFsmEventSize; s++)
+	{
+		THFREE(m_parrtFsmEvent[s]);
+	}
 
 	bRet = THTRUE;
 Exit0:
 	return bRet;
 }
 
-void CThFSMCtrl::thFsmMain(PLAYER_FSM_DESC_PTR pFsmDesc)
+thBool CThFSMCharacter::main(enum THEM_CHARACTER_FSM_EVENT emCurEvent)
 {
+	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
-	THCHARACTERFSM_DESC_PTR pCurFsmEvent = NULL;
+	THFSM_CHARACTER_DESC_PTR pCurFsmEvent = NULL;
 
-	if (pFsmDesc->emLastPlayerStatus != pFsmDesc->emCurPlayerStatus)
+	for (short i = 0; i < m_sArrFsmEventSize; i++)
 	{
-		/* Switch status. */
-		thFsmSwitch(pFsmDesc);
-	}
-
-	for (int i = 0; i < THMAX_PLAYERFSMSTATUS; i++)
-	{
-		pCurFsmEvent = pFsmDesc->arrpFsmEvent[i];
-		if (NULL != pFsmDesc->arrpFsmEvent[i] && pFsmDesc->emCurPlayerStatus == pCurFsmEvent->emStatus)
+		pCurFsmEvent = m_parrtFsmEvent[i];
+		if (NULL != pCurFsmEvent && pCurFsmEvent->emStatus == emCurEvent)
 		{
-			bFnRet = pFsmDesc->arrpFsmEvent[i]->fnFsmUpdate(pFsmDesc->vpEnv);
+			bFnRet = pCurFsmEvent->fnUpdate(NULL);
 			ASSERT(bFnRet);
 			break;
 		}
 	}
 
-
-
+	bRet = THTRUE;
 Exit0:
-	return;
+	return bRet;
 }
+
+thBool CThFSMCharacter::switchEvent(enum THEM_CHARACTER_FSM_EVENT emCurEvent, enum THEM_CHARACTER_FSM_EVENT emNextEvent)
+{
+	thBool bRet = THFALSE;
+	THFSM_CHARACTER_DESC_PTR pCurFsmEvent = NULL;
+	THCALLBACK_CFE fnRelease = NULL;
+	THCALLBACK_CFE fnInit = NULL;
+
+	for (short i = 0; i < m_sArrFsmEventSize; i++)
+	{
+		pCurFsmEvent = m_parrtFsmEvent[i];
+		if (NULL != pCurFsmEvent && pCurFsmEvent->emStatus == emCurEvent)
+		{
+			fnRelease = pCurFsmEvent->fnRelease;
+		}
+		else if (NULL != pCurFsmEvent && pCurFsmEvent->emStatus == emNextEvent)
+		{
+			fnInit = pCurFsmEvent->fnInit;
+		}
+	}
+
+	bRet = fnRelease(NULL);
+	TH_PROCESS_ERROR(bRet);
+	bRet = fnInit(NULL);
+	TH_PROCESS_ERROR(bRet);
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+
+
+
+

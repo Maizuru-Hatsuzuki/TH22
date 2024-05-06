@@ -14,18 +14,6 @@
 #include "thCharacter.h"
 
 
-namespace TFC
-{
-	thBool initPlayerFSMAllEvent(PLAYER_FSM_DESC_PTR* ppRet);
-	void uninitPlayerFSMAllEvent(PLAYER_FSM_DESC_PTR pRet);
-	void getCharacterFsmArrayVacantPos(THCHARACTERFSM_DESC_PTR* arrpArray, short* psRet);
-
-	thBool createPlayerFSMUnknow(THCHARACTERFSM_DESC_PTR* ppRet);
-	thBool createPlayerFSMStandby(THCHARACTERFSM_DESC_PTR* ppRet);
-	thBool createPlayerFSMLeftMove(THCHARACTERFSM_DESC_PTR* ppRet);
-	thBool createPlayerFSMRightMove(THCHARACTERFSM_DESC_PTR* ppRet);
-}
-
 
 
 

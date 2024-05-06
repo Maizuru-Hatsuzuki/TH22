@@ -36,7 +36,7 @@ Exit0:
 	return bRet;
 }
 
-thBool CThPlayer::initCharaterAnimation(CHARACTER_ANI_DESC_PTR pAniDesc, Animate** ppRet)
+thBool CThPlayer::initCharacterAnimation(CHARACTER_ANI_DESC_PTR pAniDesc, Animate** ppRet)
 {
 
 }
@@ -46,12 +46,12 @@ void CThPlayer::uninit()
 
 }
 
-void CThPlayer::getCharaterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet)
+void CThPlayer::getCharacterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet)
 {
 
 }
 
-void CThPlayer::getCharaterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet)
+void CThPlayer::getCharacterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet)
 {
 
 }

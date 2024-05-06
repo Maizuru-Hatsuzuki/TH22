@@ -61,7 +61,7 @@ thBool CThDefTower::init(
 	memset(m_arrpAniGroup, 0, sizeof(CHARACTER_ANI_FRAMEINFO_PTR) * THMAX_ANI_COUNT);
 	memset(m_arrpWarriors, 0, sizeof(CThDefTowerWarrior_ptr) * THMAX_DEFTOWER_TARLEVEL_WARRIORS);
 
-	bFnRet = initCharater(ptCharacterDesc, &m_pTower, THTRUE);
+	bFnRet = initCharacter(ptCharacterDesc, &m_pTower, THTRUE);
 	TH_PROCESS_ERROR(bFnRet);
 	bFnRet = initBaiscAnimate(arrpAniDesc);
 	TH_PROCESS_ERROR(bFnRet);
@@ -92,11 +92,11 @@ Exit0:
 	return bRet;
 }
 
-thBool CThDefTower::initCharaterAnimate(CHARACTER_ANI_DESC_PTR pAniDesc, const int cnGroupPos)
+thBool CThDefTower::initCharacterAnimate(CHARACTER_ANI_DESC_PTR pAniDesc, const int cnGroupPos)
 {
 	thBool bRet = THFALSE;
 
-	bRet = initCharaterAnimation(pAniDesc, &m_arrpAniGroup[cnGroupPos]->pAnimate);
+	bRet = initCharacterAnimation(pAniDesc, &m_arrpAniGroup[cnGroupPos]->pAnimate);
 	TH_PROCESS_ERROR(bRet);
 	
 	bRet = THTRUE;
@@ -155,7 +155,7 @@ thBool CThDefTower::initBaiscAnimate(CHARACTER_ANI_DESC_PTR* arrpAniDesc)
 			strcpy_s(pResAni->szarrDesc, strlen(ptmpAniDesc->szarrAniDesc) + 1, ptmpAniDesc->szarrAniDesc);
 			m_arrpAniGroup[i] = pResAni;
 
-			bFnRet = initCharaterAnimate(ptmpAniDesc, i);
+			bFnRet = initCharacterAnimate(ptmpAniDesc, i);
 			TH_PROCESS_ERROR(bFnRet);
 		}
 	}
@@ -227,40 +227,28 @@ thBool CThDefTower::initBullet(float fShootAngle)
 	CHARACTER_FRAMEINFO_PTR ptFrBullet = NULL;
 	Sequence* pSeBulletMove = NULL;
 	FiniteTimeAction* arrpActionCallback[2] = { 0 };
-	float fMoveDstX = 0;
-	float fMoveDstY = 0;
-	float fMoveSpeed = 1.f;
+	float fMoveDstX = 0.f;
+	float fMoveDstY = 0.f;
+	float fMoveTime = 0.f;
 	short sVancantPos = 0;
 
 	bFnRet = _getSpArrayVacantPos(&sVancantPos);
 	/* ¼ì²éÊÇ·ñÂúÈÝÁ¿. */
 	TH_PROCESS_SUCCESS(bFnRet);
 
-	bFnRet = initCharater(m_ptBulletDesc, &ptFrBullet, THTRUE);
+	bFnRet = initCharacter(m_ptBulletDesc, &ptFrBullet, THTRUE);
 	TH_PROCESS_ERROR(bFnRet);
+	m_arrpSpGroup[sVancantPos] = ptFrBullet;
+
 	ptFrBullet->pSpCharacter->setPosition(m_pTower->pSpCharacter->getPositionX(), m_pTower->pSpCharacter->getPositionY());
 	m_pBatchNodeBullet->addChild(ptFrBullet->pSpCharacter);
 
 	fMoveDstX = m_pTower->pSpCharacter->getPositionX() + m_ptTowerStatus->sActionRadius * cos(fShootAngle * (M_PI / 180));
 	fMoveDstY = m_pTower->pSpCharacter->getPositionY() + m_ptTowerStatus->sActionRadius * sin(fShootAngle * (M_PI / 180));
-	switch (m_ptBulletDesc->emMoveSpeed)
-	{
-	case THEM_CHARARCTERLEVEL_MOVESPEED::MOVESPEED_HIGH:
-		fMoveSpeed = 0.7f;
-		break;
 
-	case THEM_CHARARCTERLEVEL_MOVESPEED::MOVESPEED_HIGHEX:
-		fMoveSpeed = 0.5f;
-		break;
-
-	default:
-		break;
-	}
 	arrpActionCallback[0] = CallFuncN::create(CC_CALLBACK_1(CThDefTower::uninitBullet, this, sVancantPos));
-
-	m_arrpSpGroup[sVancantPos] = ptFrBullet;
-
-	bFnRet = CThBaseCharacterAction::getInstance()->createActionMoveTo(0.5f, fMoveDstX, fMoveDstY, arrpActionCallback, 1, &pSeBulletMove);
+	getCharacterMoveSpeed(m_pTower->pSpCharacter->getPositionX(), m_pTower->pSpCharacter->getPositionY(), fMoveDstX, fMoveDstY, ptFrBullet->emMoveSpeed, &fMoveTime);
+	bFnRet = CThBaseCharacterAction::getInstance()->createActionMoveTo(fMoveTime, fMoveDstX, fMoveDstY, arrpActionCallback, 1, &pSeBulletMove);
 	TH_PROCESS_ERROR(bFnRet);
 	ptFrBullet->pSpCharacter->runAction(pSeBulletMove);
 
@@ -316,13 +304,13 @@ void CThDefTower::getAniTagByDesc(const char* cszpDesc, int* pnRet)
 	return;
 }
 
-void CThDefTower::getCharaterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet)
+void CThDefTower::getCharacterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet)
 {
 	*ppRet = m_pTower;
 	return;
 }
 
-void CThDefTower::getCharaterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet)
+void CThDefTower::getCharacterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet)
 {
 	for (int i = 0; i < THMAX_SP_COUNT; i++)
 	{
@@ -506,7 +494,6 @@ thBool CThDefTower::execTowerShoot(const short csBulletCnt)
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
-
 	static float s_fAngle = 300.f;
 	static short s_sShot = 0;
 
@@ -630,7 +617,7 @@ thBool CThDefTower::_monitoringWarriorsHealthy(CThDefTowerWarrior_ptr pSp)
 	thBool bFnRet = THFALSE;
 	CHARACTER_FRAMEINFO_PTR pSpFrame = NULL;
 
-	pSp->getCharaterFrameInfo(&pSpFrame);
+	pSp->getCharacterFrameInfo(&pSpFrame);
 	TH_PROCESS_ERROR(pSpFrame);
 
 	if (0 >= pSpFrame->nHP)
@@ -672,13 +659,41 @@ thBool CThDefTowerWarrior::init(
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
+	THFSM_CHARACTER_DESC tFsmEvnStand =
+	{
+		THEM_CHARACTER_FSM_EVENT::FSM_EVENT_STAND,
+		"defTower warrior stand.",
+		fsmEventInitStand,
+		fsmEventUpdateStand,
+		fsmEventReleaseStand
+	};
+	THFSM_CHARACTER_DESC tFsmEvnMove =
+	{
+		THEM_CHARACTER_FSM_EVENT::FSM_EVENT_MOVE,
+		"defTower warrior move.",
+		fsmEventInitMove,
+		fsmEventUpdateMove,
+		fsmEventReleaseMove
+	};
+	THFSM_CHARACTER_DESC tFsmEvnDie =
+	{
+		THEM_CHARACTER_FSM_EVENT::FSM_EVENT_DIE,
+		"defTower warrior die.",
+		fsmEventInitDie,
+		fsmEventUpdateDie,
+		fsmEventReleaseDie
+	};
+	THFSM_CHARACTER_DESC_PTR arrptCharacterFsmEvent[3] = { &tFsmEvnStand, &tFsmEvnMove, &tFsmEvnDie };
 
 	m_ptWarriorFrameInfo = NULL;
 	m_fWarriorBirthMoveAngle = cfWarriorsBirthAngle;
 	m_fWarriorBirthX = cfWarriorsBirthX;
 	m_fWarriorBirthY = cfWarriorsBirthY;
 	m_sActionRadius = csActionRadius;
-	
+	m_fsmWarriorObject = THNEW_CLASS(CThFSMCharacter);
+
+	bFnRet = m_fsmWarriorObject->init(arrptCharacterFsmEvent, 3);
+	TH_PROCESS_ERROR(bFnRet);
 	bFnRet = initWarriors(cptSpDesc, csSpArrVacantPos, cptAniMoveTo);
 	TH_PROCESS_ERROR(bFnRet);
 
@@ -693,14 +708,23 @@ thBool CThDefTowerWarrior::initWarriors(const CHARACTER_DESC_PTR cptSpDesc, cons
 	thBool bFnRet = THFALSE;
 	float fReinitPosX = 0.f;
 	float fReinitPosY = 0.f;
+	float fMoveTime = 0.f;
 	Sequence* pSeMoveTo = NULL;
 
-	bFnRet = initCharater(cptSpDesc, &m_ptWarriorFrameInfo, THTRUE);
+	bFnRet = initCharacter(cptSpDesc, &m_ptWarriorFrameInfo, THTRUE);
 	TH_PROCESS_ERROR(bFnRet);
 
 	fReinitPosX = m_fWarriorBirthX + m_sActionRadius * cos(m_fWarriorBirthMoveAngle * (M_PI / 180));
 	fReinitPosY = m_fWarriorBirthY + m_sActionRadius * sin(m_fWarriorBirthMoveAngle * (M_PI / 180));
-	bFnRet = CThBaseCharacterAction::getInstance()->createActionMoveTo(1.f, fReinitPosX, fReinitPosY, NULL, 0, &pSeMoveTo);
+	getCharacterMoveSpeed(
+		m_ptWarriorFrameInfo->pSpCharacter->getPositionX(),
+		m_ptWarriorFrameInfo->pSpCharacter->getPositionY(),
+		fReinitPosX,
+		fReinitPosY,
+		m_ptWarriorFrameInfo->emMoveSpeed,
+		&fMoveTime
+	);
+	bFnRet = CThBaseCharacterAction::getInstance()->createActionMoveTo(fMoveTime, fReinitPosX, fReinitPosY, NULL, 0, &pSeMoveTo);
 	TH_PROCESS_ERROR(bFnRet);
 
 	// ÅÐ¶Ï×óÒÆ»¹ÊÇÓÒÒÆ
@@ -725,15 +749,16 @@ Exit0:
 	return bRet;
 }
 
-
 void CThDefTowerWarrior::uninit()
 {
+	m_fsmWarriorObject->uninit();
+	THDELETE(m_fsmWarriorObject);
 	this->removeAllChildrenWithCleanup(THTRUE);
 	THFREE(m_ptWarriorFrameInfo);
 	return;
 }
 
-void CThDefTowerWarrior::getCharaterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet)
+void CThDefTowerWarrior::getCharacterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet)
 {
 	*ppRet = m_ptWarriorFrameInfo;
 	return;
@@ -744,12 +769,18 @@ const float CThDefTowerWarrior::getWarriorBirthMoveAngle() const
 	return m_fWarriorBirthMoveAngle;
 }
 
-void CThDefTowerWarrior::getCharaterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet)
+void CThDefTowerWarrior::getCharacterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet)
 {}
 
 void CThDefTowerWarrior::setWarriorBirthMoveAngle(const float fAngle)
 {
 	m_fWarriorBirthMoveAngle = fAngle;
+	return;
+}
+
+void CThDefTowerWarrior::setCurFsmStatus(enum THEM_CHARACTER_FSM_EVENT emStatus)
+{
+	m_emCurFsmStatus = emStatus;
 	return;
 }
 
@@ -771,4 +802,102 @@ void CThDefTowerWarrior::onMouseMove(EventMouse* pEvent)
 thBool CThDefTowerWarrior::globalMonitoring()
 {
 	return THTRUE;
+}
+
+void CThDefTowerWarrior::update(float dt)
+{
+	return;
+}
+
+thBool CThDefTowerWarrior::fsmEventInitStand(void* vpEnv)
+{
+	thBool bRet = THFALSE;
+	thBool bFnRet = THFALSE;
+
+
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+thBool CThDefTowerWarrior::fsmEventUpdateStand(void* vpEnv)
+{
+	thBool bRet = THFALSE;
+	thBool bFnRet = THFALSE;
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+thBool CThDefTowerWarrior::fsmEventReleaseStand(void* vpEnv)
+{
+	thBool bRet = THFALSE;
+	thBool bFnRet = THFALSE;
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+thBool CThDefTowerWarrior::fsmEventInitMove(void* vpEnv)
+{
+	thBool bRet = THFALSE;
+	thBool bFnRet = THFALSE;
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+thBool CThDefTowerWarrior::fsmEventUpdateMove(void* vpEnv)
+{
+	thBool bRet = THFALSE;
+	thBool bFnRet = THFALSE;
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+thBool CThDefTowerWarrior::fsmEventReleaseMove(void* vpEnv)
+{
+	thBool bRet = THFALSE;
+	thBool bFnRet = THFALSE;
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+thBool CThDefTowerWarrior::fsmEventInitDie(void* vpEnv)
+{
+	thBool bRet = THFALSE;
+	thBool bFnRet = THFALSE;
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+
+}
+
+thBool CThDefTowerWarrior::fsmEventUpdateDie(void* vpEnv)
+{
+	thBool bRet = THFALSE;
+	thBool bFnRet = THFALSE;
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+thBool CThDefTowerWarrior::fsmEventReleaseDie(void* vpEnv)
+{
+	thBool bRet = THFALSE;
+	thBool bFnRet = THFALSE;
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
 }

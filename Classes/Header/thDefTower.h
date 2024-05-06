@@ -33,24 +33,37 @@ public:
 	void uninit();
 
 	const float getWarriorBirthMoveAngle() const;
-	virtual void getCharaterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet);
-	virtual void getCharaterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet);
+	virtual void getCharacterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet);
+	virtual void getCharacterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet);
 
+	void setCurFsmStatus(enum THEM_CHARACTER_FSM_EVENT emStatus);
 	void setWarriorBirthMoveAngle(const float fAngle);
 
 	virtual void onMouseUp(EventMouse* pEvent);
 	virtual void onMouseDown(EventMouse* pEvent);
 	virtual void onMouseMove(EventMouse* pEvent);
+	virtual void update(float dt);
 
 	virtual thBool globalMonitoring();
 
+	static thBool fsmEventInitStand(void* vpEnv);
+	static thBool fsmEventUpdateStand(void* vpEnv);
+	static thBool fsmEventReleaseStand(void* vpEnv);
+	static thBool fsmEventInitMove(void* vpEnv);
+	static thBool fsmEventUpdateMove(void* vpEnv);
+	static thBool fsmEventReleaseMove(void* vpEnv);
+	static thBool fsmEventInitDie(void* vpEnv);
+	static thBool fsmEventUpdateDie(void* vpEnv);
+	static thBool fsmEventReleaseDie(void* vpEnv);
 
 private:
 	float m_fWarriorBirthMoveAngle;
 	float m_fWarriorBirthX;
 	float m_fWarriorBirthY;
 	short m_sActionRadius;
+	enum THEM_CHARACTER_FSM_EVENT m_emCurFsmStatus;
 	CHARACTER_FRAMEINFO_PTR m_ptWarriorFrameInfo;
+	CThFSMCharacter* m_fsmWarriorObject;
 };
 typedef CThDefTowerWarrior* CThDefTowerWarrior_ptr;
 
@@ -71,7 +84,7 @@ public:
 		enum THEM_CHARACTER_LEVEL emLevel, 
 		const short csTowerWarriosSize
 	);
-	thBool initCharaterAnimate(CHARACTER_ANI_DESC_PTR pAniDesc, const int cnGroupPos);
+	thBool initCharacterAnimate(CHARACTER_ANI_DESC_PTR pAniDesc, const int cnGroupPos);
 	thBool initBaiscAnimate(CHARACTER_ANI_DESC_PTR* arrpAniDesc);
 	thBool initWarriors(const short csCnt, short sSpArrVacantPos);
 	thBool initDefTowerWarriorsDesc(const CHARACTER_DESC_PTR* arrpTowerWarriorsDesc, enum THEM_CHARACTER_LEVEL emLevel, const short csSize);
@@ -79,8 +92,8 @@ public:
 	virtual void uninit();
 	void uninitBullet(Node* pNode, const short csBullet);
 
-	virtual void getCharaterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet);
-	virtual void getCharaterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet);
+	virtual void getCharacterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet);
+	virtual void getCharacterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet);
 	void getAniTagByDesc(const char* cszpDesc, int* pnRet);
 	void getAniFrameInfoByTag(const char* cszpTag, CHARACTER_ANI_FRAMEINFO_PTR* ppRet);
 	void getWarriorExistsByAngle(const float cfAngle, thBool* pbRet);

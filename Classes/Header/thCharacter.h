@@ -163,13 +163,14 @@ public:
 	CThBaseCharacter();
 	virtual ~CThBaseCharacter();
 
-	thBool	initCharater(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR* ppRet, thBool bInitSp) const;
-	void	uninitCharater(CHARACTER_FRAMEINFO_PTR pCharater);
-	thBool	initCharaterAnimation(CHARACTER_ANI_DESC_PTR pAniDesc, Animate** ppRet) const ;
+	thBool	initCharacter(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR* ppRet, thBool bInitSp) const;
+	void	uninitCharacter(CHARACTER_FRAMEINFO_PTR pCharater);
+	thBool	initCharacterAnimation(CHARACTER_ANI_DESC_PTR pAniDesc, Animate** ppRet) const ;
 
-	thBool getCharaterAnimateFrameInfo(CHARACTER_ANI_DESC_PTR pAniDesc, CHARACTER_ANI_FRAMEINFO_PTR ppRet) const;
-	virtual void getCharaterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet)								= 0;
-	virtual void getCharaterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet)	= 0;
+	thBool getCharacterAnimateFrameInfo(CHARACTER_ANI_DESC_PTR pAniDesc, CHARACTER_ANI_FRAMEINFO_PTR ppRet) const;
+	void getCharacterMoveSpeed(const float cfPlayerX, const float cfPlayerY, const float cfDstX, const float cfDstY, enum THEM_CHARARCTERLEVEL_MOVESPEED emSpeed, float* pfRet);
+	virtual void getCharacterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet)								= 0;
+	virtual void getCharacterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet)	= 0;
 
 	void setPlayerRunAction(Action* pAction, Sprite* pSp);
 	void setPlayerStopAllAction(Sprite* pSp);

@@ -38,7 +38,7 @@
 #define TH_DLLEXPORT __declspec(dllimport)
 #endif
 
-#define THMAX_PLAYERFSMSTATUS				16
+#define THMAX_CHARACTER_FSMSTATUS			16
 #define THMAX_SEQACTION						16
 #define THMAX_ANI_COUNT						32
 #define THMAX_ANI_TAG						16

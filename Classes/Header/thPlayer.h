@@ -19,11 +19,11 @@ public:
 	~CThPlayer();
 
 	virtual thBool init(CHARACTER_DESC_PTR pDesc);
-	virtual thBool initCharaterAnimation(CHARACTER_ANI_DESC_PTR pAniDesc, Animate** ppRet);
+	virtual thBool initCharacterAnimation(CHARACTER_ANI_DESC_PTR pAniDesc, Animate** ppRet);
 	virtual void uninit();
 
-	virtual void getCharaterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet);
-	virtual void getCharaterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet);
+	virtual void getCharacterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet);
+	virtual void getCharacterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet);
 
 	virtual void onMouseUp(EventMouse* pEvent);
 	virtual void onMouseDown(EventMouse* pEvent);
