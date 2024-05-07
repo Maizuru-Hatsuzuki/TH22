@@ -30,6 +30,7 @@ public:
 		const CHARACTER_ANI_FRAMEINFO_PTR cptAniMoveTo
 	);
 	thBool initWarriors(const CHARACTER_DESC_PTR cptSpDesc, const short csSpArrVacantPos, const CHARACTER_ANI_FRAMEINFO_PTR cptAniMoveTo);
+	thBool initFsmEvent();
 	void uninit();
 
 	const float getWarriorBirthMoveAngle() const;
@@ -38,6 +39,7 @@ public:
 
 	void setCurFsmStatus(enum THEM_CHARACTER_FSM_EVENT emStatus);
 	void setWarriorBirthMoveAngle(const float fAngle);
+	thBool setWarriorMove(const float cfDstX, const float cfDstY, const short csSpArrVacantPos, Sequence** ppRet, const CHARACTER_ANI_FRAMEINFO_PTR cptAniMoveTo, void** varrpFsmRet);
 
 	virtual void onMouseUp(EventMouse* pEvent);
 	virtual void onMouseDown(EventMouse* pEvent);
@@ -46,21 +48,22 @@ public:
 
 	virtual thBool globalMonitoring();
 
-	static thBool fsmEventInitStand(void* vpEnv);
-	static thBool fsmEventUpdateStand(void* vpEnv);
-	static thBool fsmEventReleaseStand(void* vpEnv);
-	static thBool fsmEventInitMove(void* vpEnv);
-	static thBool fsmEventUpdateMove(void* vpEnv);
-	static thBool fsmEventReleaseMove(void* vpEnv);
-	static thBool fsmEventInitDie(void* vpEnv);
-	static thBool fsmEventUpdateDie(void* vpEnv);
-	static thBool fsmEventReleaseDie(void* vpEnv);
+	static thBool fsmEventInitStand(void* vpEnv, void** parrArgs);
+	static thBool fsmEventUpdateStand(void* vpEnv, void** parrArgs);
+	static thBool fsmEventReleaseStand(void* vpEnv, void** parrArgs);
+	static thBool fsmEventInitMove(void* vpEnv, void** parrArgs);
+	static thBool fsmEventUpdateMove(void* vpEnv, void** parrArgs);
+	static thBool fsmEventReleaseMove(void* vpEnv, void** parrArgs);
+	static thBool fsmEventInitDie(void* vpEnv, void** parrArgs);
+	static thBool fsmEventUpdateDie(void* vpEnv, void** parrArgs);
+	static thBool fsmEventReleaseDie(void* vpEnv, void** parrArgs);
 
 private:
 	float m_fWarriorBirthMoveAngle;
 	float m_fWarriorBirthX;
 	float m_fWarriorBirthY;
 	short m_sActionRadius;
+	short m_csSpArrVacantPos;
 	enum THEM_CHARACTER_FSM_EVENT m_emCurFsmStatus;
 	CHARACTER_FRAMEINFO_PTR m_ptWarriorFrameInfo;
 	CThFSMCharacter* m_fsmWarriorObject;

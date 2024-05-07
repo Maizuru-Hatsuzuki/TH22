@@ -27,11 +27,12 @@ CThFSMCharacter::~CThFSMCharacter()
 {
 }
 
-thBool CThFSMCharacter::init(THFSM_CHARACTER_DESC_PTR* parrtFsmEvent, const short csSize)
+thBool CThFSMCharacter::init(THFSM_CHARACTER_DESC_PTR* parrtFsmEvent, const short csSize, void* vpEnv)
 {
 	thBool bRet = THFALSE;
 	m_bPause = THFALSE;
 	m_sArrFsmEventSize = csSize;
+	m_vpEnv = vpEnv;
 
 	memset(m_parrtFsmEvent, 0, sizeof(THFSM_CHARACTER_DESC_PTR) * THMAX_CHARACTER_FSMSTATUS);
 	for (short s = 0; s < csSize; s++)
@@ -71,7 +72,7 @@ thBool CThFSMCharacter::main(enum THEM_CHARACTER_FSM_EVENT emCurEvent)
 		pCurFsmEvent = m_parrtFsmEvent[i];
 		if (NULL != pCurFsmEvent && pCurFsmEvent->emStatus == emCurEvent)
 		{
-			bFnRet = pCurFsmEvent->fnUpdate(NULL);
+			bFnRet = pCurFsmEvent->fnUpdate(m_vpEnv, NULL);
 			ASSERT(bFnRet);
 			break;
 		}
@@ -82,7 +83,7 @@ Exit0:
 	return bRet;
 }
 
-thBool CThFSMCharacter::switchEvent(enum THEM_CHARACTER_FSM_EVENT emCurEvent, enum THEM_CHARACTER_FSM_EVENT emNextEvent)
+thBool CThFSMCharacter::switchEvent(enum THEM_CHARACTER_FSM_EVENT emCurEvent, enum THEM_CHARACTER_FSM_EVENT emNextEvent, void** parrArgs)
 {
 	thBool bRet = THFALSE;
 	THFSM_CHARACTER_DESC_PTR pCurFsmEvent = NULL;
@@ -102,10 +103,13 @@ thBool CThFSMCharacter::switchEvent(enum THEM_CHARACTER_FSM_EVENT emCurEvent, en
 		}
 	}
 
-	bRet = fnRelease(NULL);
-	TH_PROCESS_ERROR(bRet);
-	bRet = fnInit(NULL);
-	TH_PROCESS_ERROR(bRet);
+	if (NULL != fnRelease && NULL != fnInit)
+	{
+		bRet = fnRelease(m_vpEnv, parrArgs);
+		TH_PROCESS_ERROR(bRet);
+		bRet = fnInit(m_vpEnv, parrArgs);
+		TH_PROCESS_ERROR(bRet);
+	}
 
 	bRet = THTRUE;
 Exit0:

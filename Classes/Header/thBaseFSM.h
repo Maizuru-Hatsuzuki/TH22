@@ -23,7 +23,8 @@ enum THEM_CHARACTER_FSM_EVENT
 
 /* CFE -> character fsm event */
 typedef thBool(*THCALLBACK_CFE)(
-	void* vpEnv
+	void* vpEnv,
+	void** parrArgs
 	);
 
 struct _tThCharacterFsmDesc
@@ -55,14 +56,15 @@ public:
 	CThFSMCharacter();
 	~CThFSMCharacter();
 
-	virtual thBool init(THFSM_CHARACTER_DESC_PTR* parrtFsmEvent, const short csSize);
+	virtual thBool init(THFSM_CHARACTER_DESC_PTR* parrtFsmEvent, const short csSize, void* vpEnv);
 	virtual thBool uninit();
 	virtual thBool main(enum THEM_CHARACTER_FSM_EVENT emCurEvent);
-	thBool switchEvent(enum THEM_CHARACTER_FSM_EVENT emCurEvent, enum THEM_CHARACTER_FSM_EVENT emNextEvent);
+	thBool switchEvent(enum THEM_CHARACTER_FSM_EVENT emCurEvent, enum THEM_CHARACTER_FSM_EVENT emNextEvent, void** parrArgs);
 
 private:
 	thBool m_bPause;
 	short m_sArrFsmEventSize;
+	void* m_vpEnv;
 	THFSM_CHARACTER_DESC_PTR m_parrtFsmEvent[THMAX_CHARACTER_FSMSTATUS];
 };
 
