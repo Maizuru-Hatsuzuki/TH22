@@ -12,6 +12,13 @@
 #include "thBase.h"
 
 
+#define CHACFSM_SWITCH_STAND(p, fo) \
+do \
+{	\
+	p->fo->switchEvent(p->m_emCurFsmStatus, THEM_CHARACTER_FSM_EVENT::FSM_EVENT_STAND, NULL); \
+	p->setCurFsmStatus(THEM_CHARACTER_FSM_EVENT::FSM_EVENT_STAND); \
+} while (0);
+
 enum THEM_CHARACTER_FSM_EVENT
 {
 	FSM_EVENT_UNKNOW,
@@ -23,6 +30,8 @@ enum THEM_CHARACTER_FSM_EVENT
 
 /* CFE -> character fsm event */
 typedef thBool(*THCALLBACK_CFE)(
+	/* vpEnv: 类指针. 一般传 this. */
+	/* parrArgs: 函数参数，2 个参数; 0: CC Sequence action; 1: CHARACTER_ANI_FRAMEINFO_PTR  */
 	void* vpEnv,
 	void** parrArgs
 	);

@@ -34,12 +34,16 @@ public:
 	void uninit();
 
 	const float getWarriorBirthMoveAngle() const;
+	const float getWarriorInPositionTime() const;
 	virtual void getCharacterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet);
 	virtual void getCharacterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet);
 
 	void setCurFsmStatus(enum THEM_CHARACTER_FSM_EVENT emStatus);
 	void setWarriorBirthMoveAngle(const float fAngle);
-	thBool setWarriorMove(const float cfDstX, const float cfDstY, const short csSpArrVacantPos, Sequence** ppRet, const CHARACTER_ANI_FRAMEINFO_PTR cptAniMoveTo, void** varrpFsmRet);
+
+	/* us 前缀, 用户接口, 能够直接切换状态机状态, 暴露给其他逻辑用接口. */
+	thBool usSetWarriorMove(const float cfDstX, const float cfDstY, const short csSpArrVacantPos, const CHARACTER_ANI_FRAMEINFO_PTR cptAniMoveTo);
+	thBool usSetWarriorDie(const short csSpArrVacantPos, const CHARACTER_ANI_FRAMEINFO_PTR cptAniMoveTo);
 
 	virtual void onMouseUp(EventMouse* pEvent);
 	virtual void onMouseDown(EventMouse* pEvent);
@@ -62,6 +66,7 @@ private:
 	float m_fWarriorBirthMoveAngle;
 	float m_fWarriorBirthX;
 	float m_fWarriorBirthY;
+	double m_dInPositionTime;
 	short m_sActionRadius;
 	short m_csSpArrVacantPos;
 	enum THEM_CHARACTER_FSM_EVENT m_emCurFsmStatus;
@@ -117,13 +122,14 @@ private:
 	thBool _getWarArrayVacantPos(short* psRet);
 	thBool _setPlayAniOpenTheDoor();
 	thBool _setPlayAniCloseTheDoor();
-	thBool _setPlayAniWarriorsDie();
+	thBool _setPlayAniWarriorsDie(const short sPos, CThDefTowerWarrior_ptr pSp);
 
-	thBool _monitoringWarriorsHealthy(CThDefTowerWarrior_ptr pSp);
+	thBool _monitoringWarriorsHealthy(const short sPos, CThDefTowerWarrior_ptr pSp);
 
 private:
 	short							m_sVacantPos;
 	double							m_dLastSummonWarriors;
+	double							m_dLastDieWarriors;
 	double							m_dLastAttack;
 	CHARACTER_ANI_TAG				m_tAniTag;
 	CHARACTER_FRAMEINFO_PTR			m_pTower;
