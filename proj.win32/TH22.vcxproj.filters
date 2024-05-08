@@ -66,7 +66,7 @@
     <ClCompile Include="..\Classes\thBaseAnimation.cpp">
       <Filter>Src\THBase</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\thCharacterFSM.cpp">
+    <ClCompile Include="..\Classes\thDefTowerWarrior.cpp">
       <Filter>Src\THCharacter</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\thBaseFSM.cpp">
@@ -154,6 +154,9 @@
       <Filter>Config\Character\SaigyoSakura</Filter>
     </None>
     <None Include="..\Resources\data\CharacterConfig\SaigyoSakura\ChacWarrior.ini">
+      <Filter>Config\Character\SaigyoSakura</Filter>
+    </None>
+    <None Include="..\Resources\data\CharacterConfig\SaigyoSakura\AniTagWarriorsDie.ini">
       <Filter>Config\Character\SaigyoSakura</Filter>
     </None>
   </ItemGroup>

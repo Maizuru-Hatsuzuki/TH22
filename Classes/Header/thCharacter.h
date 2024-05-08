@@ -58,11 +58,11 @@ enum THEM_CHARACTER_LEVEL
 
 struct _tAniTag
 {
-	int nOffset;
+	short sOffset;
 	struct _tTag
 	{
 		const char* cszpDesc;
-		int nTag;
+		short sTag;
 	} arrTag[THMAX_ANI_TAG];
 };
 
@@ -183,7 +183,7 @@ public:
 	virtual void getCharacterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet)	= 0;
 
 	void setPlayerRunAction(Action* pAction, Sprite* pSp);
-	void setPlayerStopAllAction(Sprite* pSp);
+	static void setPlayerStopAllAction(Sprite* pSp);
 
 	virtual void onMouseUp(EventMouse* pEvent)													= 0;
 	virtual void onMouseDown(EventMouse* pEvent)												= 0;

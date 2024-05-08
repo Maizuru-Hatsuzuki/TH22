@@ -52,11 +52,13 @@ bool thSceneDungeon::init()
 {
 	bool bRet = THFALSE;
 	bool bFnRet = THFALSE;
-	const char* szarrpAni[3] =
+	const short csMaxAni = 4;
+	const char* szarrpAni[csMaxAni] =
 	{
 		"data\\CharacterConfig\\SaigyoSakura\\AniWarriorsMove.ini",
 		"data\\CharacterConfig\\SaigyoSakura\\AniOpenTheDoor.ini",
-		"data\\CharacterConfig\\SaigyoSakura\\AniCloseTheDoor.ini"
+		"data\\CharacterConfig\\SaigyoSakura\\AniCloseTheDoor.ini",
+		"data\\CharacterConfig\\SaigyoSakura\\AniTagWarriorsDie.ini"
 	};
 	CHARACTER_DESC_PTR arrpChacWarrios[2] = { 0 };
 	DEFTOWER_WARRIORS tWarrior = { arrpChacWarrios, THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, 2 };
@@ -72,7 +74,7 @@ bool thSceneDungeon::init()
 		"data\\CharacterConfig\\SaigyoSakura\\ChacSaigyoSakura.ini",
 		"data\\CharacterConfig\\SaigyoSakura\\ChacBullet.ini",
 		szarrpAni,
-		3,
+		csMaxAni,
 		&tWarrior
 		);
 	TH_PROCESS_ERROR(bFnRet);

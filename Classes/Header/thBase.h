@@ -38,6 +38,7 @@
 #define TH_DLLEXPORT __declspec(dllimport)
 #endif
 
+/* CC use. */
 #define THMAX_CHARACTER_FSMSTATUS			16
 #define THMAX_SEQACTION						16
 #define THMAX_ANI_COUNT						32
@@ -47,18 +48,21 @@
 #define THMAX_DEFTOWER_TARLEVEL_WARRIORS	4
 #define THMAX_DEFTOWER_SYNC_ANI				32
 
-#define THMALLOC(t, s) (t*)malloc(s)
-#define THFREE(p) { if (p) { free(p); (p) = NULL; }}
-
 #define THMOVESPEED_LOW_PLAYER 5.0
 #define THMOVESPEED_NORMAL_PLAYER 4.5
 #define THMOVESPEED_HIGH_PLAYER 3.5
 #define THMOVESPEED_HIGHEX_PLAYER 3.0
 
+#define THSP_FLAG_DIE 0
+#define THSP_FLAG_CLEAN -1
+
+#define THMALLOC(t, s) (t*)malloc(s)
+#define THFREE(p) { if (p) { free(p); (p) = NULL; }}
 
 #ifdef __cplusplus
 
 typedef bool thBool;
+
 #define THTRUE true
 #define THFALSE false
 #define THNEW_CLASS(p) new p()
@@ -67,11 +71,13 @@ typedef bool thBool;
 #else
 
 typedef int thBool;
+
 #define THTRUE 1
 #define THFALSE 0
 
 #endif	
 
+typedef thBool* pthBool;
 
 
 #endif

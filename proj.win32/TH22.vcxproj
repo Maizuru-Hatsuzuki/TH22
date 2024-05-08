@@ -160,7 +160,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\thBaseAnimation.cpp" />
     <ClCompile Include="..\Classes\thBaseFSM.cpp" />
     <ClCompile Include="..\Classes\thCharacter.cpp" />
-    <ClCompile Include="..\Classes\thCharacterFSM.cpp" />
+    <ClCompile Include="..\Classes\thDefTowerWarrior.cpp" />
     <ClCompile Include="..\Classes\thDefTower.cpp" />
     <ClCompile Include="..\Classes\thKeyboards.cpp" />
     <ClCompile Include="..\Classes\thPlayer.cpp" />
@@ -200,6 +200,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
   <ItemGroup>
     <None Include="..\Resources\data\CharacterConfig\SaigyoSakura\AniCloseTheDoor.ini" />
     <None Include="..\Resources\data\CharacterConfig\SaigyoSakura\AniOpenTheDoor.ini" />
+    <None Include="..\Resources\data\CharacterConfig\SaigyoSakura\AniTagWarriorsDie.ini" />
     <None Include="..\Resources\data\CharacterConfig\SaigyoSakura\AniWarriorsMove.ini" />
     <None Include="..\Resources\data\CharacterConfig\SaigyoSakura\ChacBullet.ini" />
     <None Include="..\Resources\data\CharacterConfig\SaigyoSakura\ChacSaigyoSakura.ini" />
