@@ -1,5 +1,5 @@
 /********************************************************
-* Filename		: thDefTower.h
+* Filename		: thCcDefTower.h
 * Creator		: ac
 * Date time		: 2024.04.21
 * Description	: def tower header.
@@ -9,7 +9,7 @@
 #ifndef __THDEFTOWER_H__
 #define __THDEFTOWER_H__
 
-#include "thPlayer.h"
+#include "thCcPlayer.h"
 #include "thBase.h"
 
 

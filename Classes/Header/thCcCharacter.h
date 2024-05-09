@@ -1,13 +1,13 @@
 /********************************************************
-* Filename		: thCharacter.h
+* Filename		: thCcCharacter.h
 * Creator		: ac
 * Date time		: 2024.04.14
 * Description	: base character.
 ********************************************************/
 
 
-#ifndef __THCHARACTER_H__
-#define __THCHARACTER_H__
+#ifndef __thCcCharacter_H__
+#define __thCcCharacter_H__
 
 #include "stdafx.h"
 #include "thBase.h"
@@ -215,10 +215,10 @@ private:
 };
 
 
-class CThCharacterLoadHandler
+class CthCcCharacterLoadHandler
 {
 public:
-	static CThCharacterLoadHandler* getInstance();
+	static CthCcCharacterLoadHandler* getInstance();
 
 	thBool getCharaterDescFromIni(const char* cszpFilename, CHARACTER_DESC_PTR* ppRet);
 	thBool getCharacterAniDescFromIni(const char* cszpFilename, CHARACTER_ANI_DESC_PTR* ppRet);
@@ -229,15 +229,15 @@ public:
 	void uninitDefTowerDesc(DEFTOWER_DESC_PTR p);
 
 private:
-	CThCharacterLoadHandler();
-	~CThCharacterLoadHandler();
-	CThCharacterLoadHandler(const CThCharacterLoadHandler& pSelf);
-	const CThCharacterLoadHandler& operator=(const CThCharacterLoadHandler& pSelf);
+	CthCcCharacterLoadHandler();
+	~CthCcCharacterLoadHandler();
+	CthCcCharacterLoadHandler(const CthCcCharacterLoadHandler& pSelf);
+	const CthCcCharacterLoadHandler& operator=(const CthCcCharacterLoadHandler& pSelf);
 
 private:
-	static CThCharacterLoadHandler* m_pSelf;
+	static CthCcCharacterLoadHandler* m_pSelf;
 };
 
 
 
-#endif // !__THCHARACTER_H__
+#endif // !__thCcCharacter_H__

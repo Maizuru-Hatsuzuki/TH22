@@ -6,7 +6,7 @@
 ********************************************************/
 
 
-#include "thDeviceControl.h"
+#include "thCcDeviceControl.h"
 #include "thBaseMacro.h"
 /*
 CThKeyboard* CThKeyboard::m_pSelf;

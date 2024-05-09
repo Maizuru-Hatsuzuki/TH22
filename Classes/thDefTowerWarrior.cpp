@@ -1,13 +1,14 @@
 /********************************************************
 * Filename		: thDefTowerWarrior.cpp
 * Creator		: ac
-* Date time		: 2024.04.11
+* Date time		: 2024.05.08
 * Description	: def tower warrior event.
 ********************************************************/
 
 
-#include "thDefTower.h"
-#include "thBaseAnimation.h"
+#include "thCcDefTower.h"
+#include "thCcAnimation.h"
+#include "thCcDbg.h"
 #include "thBaseMacro.h"
 
 
@@ -257,8 +258,16 @@ void CThDefTowerWarrior::onMouseUp(EventMouse* pEvent)
 	bRet = pEvent->getCurrentTarget()->getBoundingBox().containsPoint(pEvent->getLocationInView());
 	if (bRet)
 	{
+
+#ifdef _DEBUG
+		bRet = TDBG_CHARACTER::getInstance()->setDbgFrameInfo(m_ptWarriorFrameInfo);
+		ASSERT(bRet);
+#endif // _DEBUG
+
+		/*
 		m_ptWarriorFrameInfo->nHP = 0;
 		CCLOG("%s, die", m_ptWarriorFrameInfo->szarrDesc);
+		*/
 	}
 
 	return;

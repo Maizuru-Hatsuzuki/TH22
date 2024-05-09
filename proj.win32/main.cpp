@@ -1,5 +1,5 @@
 /********************************************************
-* Filename		: thCharacter.cpp
+* Filename		: thCcCharacter.cpp
 * Creator		: ac
 * Date time		: 2024.04.14
 * Description	: main.

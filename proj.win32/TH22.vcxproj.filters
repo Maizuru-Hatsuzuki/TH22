@@ -46,6 +46,12 @@
     <Filter Include="Config\Character\SaigyoSakura">
       <UniqueIdentifier>{d762286d-2462-41f4-be06-0feb85984e69}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\THDbg">
+      <UniqueIdentifier>{5c1ff550-f493-49f4-974c-ba8924e8d658}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header\THCCDbg">
+      <UniqueIdentifier>{1628a49f-e83d-4ded-b1b0-b510e09d0ff4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -78,11 +84,11 @@
     <ClCompile Include="..\Classes\thKeyboards.cpp">
       <Filter>Src\THDeviceCtrl</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\thPlayerFSM.cpp">
-      <Filter>Src\THCharacter</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\thDefTower.cpp">
       <Filter>Src\THCharacter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\thCcDbg.cpp">
+      <Filter>Src\THDbg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -104,32 +110,29 @@
     <ClInclude Include="..\Classes\Header\thSceneDungeon.h">
       <Filter>Header\THMainScene</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Header\thPlayer.h">
+    <ClInclude Include="..\Classes\Header\thCcPlayer.h">
       <Filter>Header\THCharacter</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Header\thBaseAnimation.h">
+    <ClInclude Include="..\Classes\Header\thCcAnimation.h">
       <Filter>Header\THBase</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Header\thCharacterFSM.h">
-      <Filter>Header\THCharacter</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Header\thBaseFSM.h">
       <Filter>Header\THBase</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Header\thCharacter.h">
+    <ClInclude Include="..\Classes\Header\thCcCharacter.h">
       <Filter>Header\THCharacter</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Header\thPlayerFSM.h">
-      <Filter>Header\THCharacter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Header\thDeviceControl.h">
+    <ClInclude Include="..\Classes\Header\thCcDeviceControl.h">
       <Filter>Header\THDeviceCtrl</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Header\stdafx.h">
       <Filter>Header</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Header\thDefTower.h">
+    <ClInclude Include="..\Classes\Header\thCcDefTower.h">
       <Filter>Header\THCharacter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Header\thCcDbg.h">
+      <Filter>Header\THCCDbg</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

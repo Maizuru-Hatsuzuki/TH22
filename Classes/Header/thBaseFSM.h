@@ -1,5 +1,5 @@
 /********************************************************
-* Filename		: thBaseAnimation.h
+* Filename		: thCcAnimation.h
 * Creator		: ac
 * Date time		: 2024.04.11
 * Description	: base fsm header.
@@ -36,7 +36,7 @@ typedef thBool(*THCALLBACK_CFE)(
 	void** parrArgs
 	);
 
-struct _tThCharacterFsmDesc
+struct _tthCcCharacterFsmDesc
 {
 	enum THEM_CHARACTER_FSM_EVENT emStatus;
 	char szarrDesc[THMAX_CHAR_DESC];
@@ -44,7 +44,7 @@ struct _tThCharacterFsmDesc
 	THCALLBACK_CFE fnUpdate;
 	THCALLBACK_CFE fnRelease;
 };
-typedef _tThCharacterFsmDesc THFSM_CHARACTER_DESC, * THFSM_CHARACTER_DESC_PTR;
+typedef _tthCcCharacterFsmDesc THFSM_CHARACTER_DESC, * THFSM_CHARACTER_DESC_PTR;
 
 
 class CThFSM

@@ -159,26 +159,25 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
     <ClCompile Include="..\Classes\thBaseAnimation.cpp" />
     <ClCompile Include="..\Classes\thBaseFSM.cpp" />
+    <ClCompile Include="..\Classes\thCcDbg.cpp" />
     <ClCompile Include="..\Classes\thCharacter.cpp" />
     <ClCompile Include="..\Classes\thDefTowerWarrior.cpp" />
     <ClCompile Include="..\Classes\thDefTower.cpp" />
     <ClCompile Include="..\Classes\thKeyboards.cpp" />
     <ClCompile Include="..\Classes\thPlayer.cpp" />
-    <ClCompile Include="..\Classes\thPlayerFSM.cpp" />
     <ClCompile Include="..\Classes\thSceneDungeon.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Classes\AppDelegate.h" />
     <ClInclude Include="..\Classes\Header\stdafx.h" />
-    <ClInclude Include="..\Classes\Header\thBaseAnimation.h" />
+    <ClInclude Include="..\Classes\Header\thCcAnimation.h" />
     <ClInclude Include="..\Classes\Header\thBaseFSM.h" />
-    <ClInclude Include="..\Classes\Header\thCharacter.h" />
-    <ClInclude Include="..\Classes\Header\thCharacterFSM.h" />
-    <ClInclude Include="..\Classes\Header\thDefTower.h" />
-    <ClInclude Include="..\Classes\Header\thDeviceControl.h" />
-    <ClInclude Include="..\Classes\Header\thPlayer.h" />
-    <ClInclude Include="..\Classes\Header\thPlayerFSM.h" />
+    <ClInclude Include="..\Classes\Header\thCcDbg.h" />
+    <ClInclude Include="..\Classes\Header\thCcCharacter.h" />
+    <ClInclude Include="..\Classes\Header\thCcDefTower.h" />
+    <ClInclude Include="..\Classes\Header\thCcDeviceControl.h" />
+    <ClInclude Include="..\Classes\Header\thCcPlayer.h" />
     <ClInclude Include="..\Classes\Header\thSceneDungeon.h" />
     <ClInclude Include="..\Classes\Header\thBase.h" />
     <ClInclude Include="..\Classes\Header\thBaseMacro.h" />

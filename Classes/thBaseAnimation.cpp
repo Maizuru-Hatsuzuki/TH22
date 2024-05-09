@@ -1,34 +1,34 @@
 /********************************************************
-* Filename		: thBaseAnimation.cpp
+* Filename		: thCcAnimation.cpp
 * Creator		: ac
 * Date time		: 2024.04.11
 * Description	: base animation module.
 ********************************************************/
 
 #include "thBaseMacro.h"
-#include "thBaseAnimation.h"
+#include "thCcAnimation.h"
 
 
-CThBaseAnimation* CThBaseAnimation::m_pSelf;
+CthCcAnimation* CthCcAnimation::m_pSelf;
 
-CThBaseAnimation::CThBaseAnimation()
+CthCcAnimation::CthCcAnimation()
 {
 }
 
-CThBaseAnimation::~CThBaseAnimation()
+CthCcAnimation::~CthCcAnimation()
 {
 }
 
-CThBaseAnimation* CThBaseAnimation::getInstance()
+CthCcAnimation* CthCcAnimation::getInstance()
 {
 	if (NULL == m_pSelf)
 	{
-		m_pSelf = new (std::nothrow) CThBaseAnimation();
+		m_pSelf = new (std::nothrow) CthCcAnimation();
 	}
 	return m_pSelf;
 }
 
-thBool CThBaseAnimation::createPlayAnimationWithPList(CHARACTER_ANI_DESC_PTR ptAniDesc, Animate** ppRet)
+thBool CthCcAnimation::createPlayAnimationWithPList(CHARACTER_ANI_DESC_PTR ptAniDesc, Animate** ppRet)
 {
 	thBool bRet = THFALSE;
 	int nFrameCount = 0;

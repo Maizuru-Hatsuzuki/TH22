@@ -8,8 +8,9 @@
 
 #include "thBaseMacro.h"
 #include "thSceneDungeon.h"
-#include "thDeviceControl.h"
-#include "thDefTower.h"
+#include "thCcDeviceControl.h"
+#include "thCcDbg.h"
+#include "thCcDefTower.h"
 
 
 thSceneDungeon::thSceneDungeon()
@@ -53,6 +54,7 @@ bool thSceneDungeon::init()
 	bool bRet = THFALSE;
 	bool bFnRet = THFALSE;
 	const short csMaxAni = 4;
+	const int cnDbgTag = 1;
 	const char* szarrpAni[csMaxAni] =
 	{
 		"data\\CharacterConfig\\SaigyoSakura\\AniWarriorsMove.ini",
@@ -64,7 +66,7 @@ bool thSceneDungeon::init()
 	DEFTOWER_WARRIORS tWarrior = { arrpChacWarrios, THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, 2 };
 	CThDefTower* pHunterCabinObject = new CThDefTower;
 
-	bFnRet = CThCharacterLoadHandler::getInstance()->getCharaterDescFromIni(
+	bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(
 		"data\\CharacterConfig\\SaigyoSakura\\ChacWarrior.ini", &(tWarrior.arrpTowerWarriorsDesc[0])
 	);
 	TH_PROCESS_ERROR(bFnRet);
@@ -79,14 +81,20 @@ bool thSceneDungeon::init()
 		);
 	TH_PROCESS_ERROR(bFnRet);
 
-	bFnRet = initBgMap();
-	TH_PROCESS_ERROR(bFnRet);
+#ifdef _DEBUG
+	/* 初始化角色 debug 信息. */
+	if (NULL == this->getChildByTag(cnDbgTag))
+	{
+		TDBG_CHARACTER::getInstance()->createShowCharacterDbgFrameInfo();
+		this->addChild(TDBG_CHARACTER::getInstance(), 0, cnDbgTag);
+	}
+#endif // _DEBUG
 
 	this->addChild(pHunterCabinObject);
 
 	bRet = THTRUE;
 Exit0:
-	CThCharacterLoadHandler::getInstance()->uninitCharacterDesc(tWarrior.arrpTowerWarriorsDesc[0]);
+	CthCcCharacterLoadHandler::getInstance()->uninitCharacterDesc(tWarrior.arrpTowerWarriorsDesc[0]);
 	return bRet;
 }
 

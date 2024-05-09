@@ -1,16 +1,16 @@
 /********************************************************
-* Filename		: thCharacter.cpp
+* Filename		: thCcCharacter.cpp
 * Creator		: ac
 * Date time		: 2024.04.14
 * Description	: base character.
 ********************************************************/
 
 #include "thBaseMacro.h"
-#include "thBaseAnimation.h"
+#include "thCcAnimation.h"
 
 
 CThBaseCharacterAction* CThBaseCharacterAction::m_pSelf;
-CThCharacterLoadHandler* CThCharacterLoadHandler::m_pSelf;
+CthCcCharacterLoadHandler* CthCcCharacterLoadHandler::m_pSelf;
 
 
 CThBaseCharacter::CThBaseCharacter()
@@ -55,6 +55,7 @@ thBool CThBaseCharacter::initCharacter(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAME
 	ptCharFrame->emCharacterType = pDesc->emCharacterType;
 	ptCharFrame->emMoveSpeed = pDesc->emMoveSpeed;
 	ptCharFrame->emMaxLevel = pDesc->emMaxLevel;
+	ptCharFrame->emCurLevel = THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1;
 	strcpy_s(ptCharFrame->szarrDesc, strlen(pDesc->szarrSpriteName) + 1, pDesc->szarrSpriteName);
 
 	*ppRet = ptCharFrame;
@@ -75,7 +76,7 @@ thBool CThBaseCharacter::initCharacterAnimation(CHARACTER_ANI_DESC_PTR pAniDesc,
 	sprintf_s(szarrPlistPngPath, "%s.png", pAniDesc->szarrBasicFrameAniPlistPath);
 
 	pSpFrameCache->addSpriteFramesWithFile(szarrPlistPath, szarrPlistPngPath);
-	bRet = CThBaseAnimation::getInstance()->createPlayAnimationWithPList(pAniDesc, ppRet);
+	bRet = CthCcAnimation::getInstance()->createPlayAnimationWithPList(pAniDesc, ppRet);
 	TH_PROCESS_ERROR(bRet);
 
 	(*ppRet)->retain();
@@ -136,7 +137,7 @@ thBool CThBaseCharacter::getCharacterAnimateFrameInfo(CHARACTER_ANI_DESC_PTR pAn
 {
 	thBool bRet = THFALSE;
 	pRet->pAnimate = NULL;
-	bRet = CThBaseAnimation::getInstance()->createPlayAnimationWithPList(pAniDesc, &pRet->pAnimate);
+	bRet = CthCcAnimation::getInstance()->createPlayAnimationWithPList(pAniDesc, &pRet->pAnimate);
 	TH_PROCESS_ERROR(pRet->pAnimate);
 
 	bRet = THTRUE;
@@ -195,22 +196,22 @@ Exit0:
 }
 
 
-CThCharacterLoadHandler::CThCharacterLoadHandler()
+CthCcCharacterLoadHandler::CthCcCharacterLoadHandler()
 {}
 
-CThCharacterLoadHandler::~CThCharacterLoadHandler()
+CthCcCharacterLoadHandler::~CthCcCharacterLoadHandler()
 {}
 
-CThCharacterLoadHandler* CThCharacterLoadHandler::getInstance()
+CthCcCharacterLoadHandler* CthCcCharacterLoadHandler::getInstance()
 {
 	if (NULL == m_pSelf)
 	{
-		m_pSelf = THNEW_CLASS(CThCharacterLoadHandler);
+		m_pSelf = THNEW_CLASS(CthCcCharacterLoadHandler);
 	}
 	return m_pSelf;
 }
 
-thBool CThCharacterLoadHandler::getCharaterDescFromIni(const char* cszpFilename, CHARACTER_DESC_PTR* ppRet)
+thBool CthCcCharacterLoadHandler::getCharaterDescFromIni(const char* cszpFilename, CHARACTER_DESC_PTR* ppRet)
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
@@ -291,7 +292,7 @@ Exit0:
 	return bRet;
 }
 
-thBool CThCharacterLoadHandler::getCharacterAniDescFromIni(const char* cszpFilename, CHARACTER_ANI_DESC_PTR* ppRet)
+thBool CthCcCharacterLoadHandler::getCharacterAniDescFromIni(const char* cszpFilename, CHARACTER_ANI_DESC_PTR* ppRet)
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
@@ -320,7 +321,7 @@ Exit0:
 	return bRet;
 }
 
-thBool CThCharacterLoadHandler::getDefTowerDescFromIni(const char* cszpFilename, DEFTOWER_DESC_PTR* ppRet)
+thBool CthCcCharacterLoadHandler::getDefTowerDescFromIni(const char* cszpFilename, DEFTOWER_DESC_PTR* ppRet)
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
@@ -344,20 +345,20 @@ Exit0:
 	return bRet;
 }
 
-void CThCharacterLoadHandler::uninitCharacterDesc(CHARACTER_DESC_PTR p)
+void CthCcCharacterLoadHandler::uninitCharacterDesc(CHARACTER_DESC_PTR p)
 {
 	THFREE(p->ptAniMap);
 	THFREE(p);
 	return;
 }
 
-void CThCharacterLoadHandler::uninitCharacterAniDesc(CHARACTER_ANI_DESC_PTR p)
+void CthCcCharacterLoadHandler::uninitCharacterAniDesc(CHARACTER_ANI_DESC_PTR p)
 {
 	THFREE(p);
 	return;
 }
 
-void CThCharacterLoadHandler::uninitDefTowerDesc(DEFTOWER_DESC_PTR p)
+void CthCcCharacterLoadHandler::uninitDefTowerDesc(DEFTOWER_DESC_PTR p)
 {
 	THFREE(p);
 	return;

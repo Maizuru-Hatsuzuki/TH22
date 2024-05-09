@@ -5,8 +5,8 @@
 * Description	: def tower.
 ********************************************************/
 
-#include "thDefTower.h"
-#include "thBaseAnimation.h"
+#include "thCcDefTower.h"
+#include "thCcAnimation.h"
 #include "thBaseMacro.h"
 
 
@@ -45,11 +45,11 @@ thBool CThDefTower::init(
 	m_tAniTag.arrTag[1].sTag = m_tAniTag.sOffset + 2;
 	m_tAniTag.arrTag[1].cszpDesc = "AniTagWarriorsDie";
 
-	bFnRet = CThCharacterLoadHandler::getInstance()->getCharaterDescFromIni(cszpBasicCharacterDescPath, &ptCharacterDesc);
+	bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(cszpBasicCharacterDescPath, &ptCharacterDesc);
 	TH_PROCESS_ERROR(bFnRet);
-	bFnRet = CThCharacterLoadHandler::getInstance()->getCharaterDescFromIni(cszpBulletDescPath, &m_ptBulletDesc);
+	bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(cszpBulletDescPath, &m_ptBulletDesc);
 	TH_PROCESS_ERROR(bFnRet);
-	bFnRet = CThCharacterLoadHandler::getInstance()->getDefTowerDescFromIni(cszpBasicCharacterDescPath, &m_ptTowerStatus);
+	bFnRet = CthCcCharacterLoadHandler::getInstance()->getDefTowerDescFromIni(cszpBasicCharacterDescPath, &m_ptTowerStatus);
 	TH_PROCESS_ERROR(bFnRet);
 
 	m_arrpSpGroup = THMALLOC(CHARACTER_FRAMEINFO_PTR, sizeof(CHARACTER_FRAMEINFO_PTR) * THMAX_SP_COUNT);
@@ -65,7 +65,6 @@ thBool CThDefTower::init(
 
 	bFnRet = initCharacter(ptCharacterDesc, &m_pTower, THTRUE);
 	TH_PROCESS_ERROR(bFnRet);
-	m_pTower->emCurLevel = THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1;
 	bFnRet = initBaiscAnimate(cszarrpAniDesc, csAniDescSize);
 	TH_PROCESS_ERROR(bFnRet);
 	bFnRet = initDefTowerWarriorsDesc(ptWarriors);
@@ -92,7 +91,7 @@ thBool CThDefTower::init(
 
 	bRet = THTRUE;
 Exit0:
-	CThCharacterLoadHandler::getInstance()->uninitCharacterDesc(ptCharacterDesc);
+	CthCcCharacterLoadHandler::getInstance()->uninitCharacterDesc(ptCharacterDesc);
 	return bRet;
 }
 
@@ -200,7 +199,7 @@ thBool CThDefTower::initBaiscAnimate(const char** cszarrpAniDesc, const short cs
 	{
 		if (NULL != cszarrpAniDesc[i])
 		{
-			bFnRet = CThCharacterLoadHandler::getInstance()->getCharacterAniDescFromIni(cszarrpAniDesc[i], &ptmpAniDesc);
+			bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharacterAniDescFromIni(cszarrpAniDesc[i], &ptmpAniDesc);
 			TH_PROCESS_ERROR(bFnRet);
 			pResAni = THMALLOC(CHARACTER_ANI_FRAMEINFO, sizeof(CHARACTER_ANI_FRAMEINFO));
 			TH_PROCESS_ERROR(pResAni);
@@ -211,7 +210,7 @@ thBool CThDefTower::initBaiscAnimate(const char** cszarrpAniDesc, const short cs
 			bFnRet = initCharacterAnimate(ptmpAniDesc, i);
 			TH_PROCESS_ERROR(bFnRet);
 
-			CThCharacterLoadHandler::getInstance()->uninitCharacterAniDesc(ptmpAniDesc);
+			CthCcCharacterLoadHandler::getInstance()->uninitCharacterAniDesc(ptmpAniDesc);
 		}
 	}
 
