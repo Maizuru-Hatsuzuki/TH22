@@ -19,7 +19,7 @@ CThDefTower::~CThDefTower()
 }
 
 thBool CThDefTower::init(
-	const char* cszpBasicCharacterDescPath,
+	const char* cszpDefTowerCharacterDescPath,
 	const char* cszpBulletDescPath,
 	const char** cszarrpAniDesc,
 	const short csAniDescSize,
@@ -45,11 +45,11 @@ thBool CThDefTower::init(
 	m_tAniTag.arrTag[1].sTag = m_tAniTag.sOffset + 2;
 	m_tAniTag.arrTag[1].cszpDesc = "AniTagWarriorsDie";
 
-	bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(cszpBasicCharacterDescPath, &ptCharacterDesc);
+	bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(cszpDefTowerCharacterDescPath, &ptCharacterDesc);
 	TH_PROCESS_ERROR(bFnRet);
 	bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(cszpBulletDescPath, &m_ptBulletDesc);
 	TH_PROCESS_ERROR(bFnRet);
-	bFnRet = CthCcCharacterLoadHandler::getInstance()->getDefTowerDescFromIni(cszpBasicCharacterDescPath, &m_ptTowerStatus);
+	bFnRet = CthCcCharacterLoadHandler::getInstance()->getDefTowerDescFromIni(cszpDefTowerCharacterDescPath, &m_ptTowerStatus);
 	TH_PROCESS_ERROR(bFnRet);
 
 	m_arrpSpGroup = THMALLOC(CHARACTER_FRAMEINFO_PTR, sizeof(CHARACTER_FRAMEINFO_PTR) * THMAX_SP_COUNT);
@@ -63,7 +63,7 @@ thBool CThDefTower::init(
 	memset(m_arrpAniGroup, 0, sizeof(CHARACTER_ANI_FRAMEINFO_PTR) * THMAX_ANI_COUNT);
 	memset(m_arrpWarriors, 0, sizeof(CThDefTowerWarrior_ptr) * THMAX_DEFTOWER_TARLEVEL_WARRIORS);
 
-	bFnRet = initCharacter(ptCharacterDesc, &m_pTower, THTRUE);
+	bFnRet = initCharacter(ptCharacterDesc, &m_ptTower, THTRUE);
 	TH_PROCESS_ERROR(bFnRet);
 	bFnRet = initBaiscAnimate(cszarrpAniDesc, csAniDescSize);
 	TH_PROCESS_ERROR(bFnRet);
@@ -79,14 +79,14 @@ thBool CThDefTower::init(
 	pMouse->onMouseUp = CC_CALLBACK_1(CThDefTower::onMouseUp, this);
 	pMouse->onMouseMove = CC_CALLBACK_1(CThDefTower::onMouseMove, this);
 	pMouse->onMouseDown = CC_CALLBACK_1(CThDefTower::onMouseDown, this);
-	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(pMouse, m_pTower->pSpCharacter);
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(pMouse, m_ptTower->pSpCharacter);
 
-	m_pBatchNodeBullet = SpriteBatchNode::create(m_ptBulletDesc->szarrSpriteTexPath);
+	m_pBatchNodeBullet = SpriteBatchNode::create(m_ptBulletDesc->szarrSpritePlistPath);
 	TH_PROCESS_ERROR(m_pBatchNodeBullet);
 
 	scheduleUpdate();
 
-	this->addChild(m_pTower->pSpCharacter);
+	this->addChild(m_ptTower->pSpCharacter);
 	this->addChild(m_pBatchNodeBullet);
 
 	bRet = THTRUE;
@@ -239,7 +239,7 @@ thBool CThDefTower::initWarriors(const short csCnt, short sSpArrVacantPos)
 		while (NULL == ptSpDesc)
 		{
 			sWarriorType = (rand() % THMAX_DEFTOWER_TARLEVEL_WARRIORS);
-			ptSpDesc = m_arrpWarriorsDesc[m_pTower->emCurLevel][sWarriorType];
+			ptSpDesc = m_arrpWarriorsDesc[m_ptTower->emCurLevel][sWarriorType];
 		}
 		bFnRet = _getWarArrayVacantPos(&sSpArrVacantPos);
 		/* 检查是否满容量. */
@@ -259,9 +259,9 @@ thBool CThDefTower::initWarriors(const short csCnt, short sSpArrVacantPos)
 			ptSpDesc,
 			sSpArrVacantPos,
 			fWarriorsBirthAngle,
-			m_pTower->pSpCharacter->getPositionX(),
-			m_pTower->pSpCharacter->getPositionY(),
-			m_pTower->nAttackRadius,
+			m_ptTower->pSpCharacter->getPositionX(),
+			m_ptTower->pSpCharacter->getPositionY(),
+			m_ptTower->nAttackRadius,
 			ptSpDesc->ptAniMap,
 			ptAniMoveTo
 		);
@@ -299,14 +299,14 @@ thBool CThDefTower::initBullet(float fShootAngle)
 	TH_PROCESS_ERROR(bFnRet);
 	m_arrpSpGroup[sVancantPos] = ptFrBullet;
 
-	ptFrBullet->pSpCharacter->setPosition(m_pTower->pSpCharacter->getPositionX(), m_pTower->pSpCharacter->getPositionY());
+	ptFrBullet->pSpCharacter->setPosition(m_ptTower->pSpCharacter->getPositionX(), m_ptTower->pSpCharacter->getPositionY());
 	m_pBatchNodeBullet->addChild(ptFrBullet->pSpCharacter);
 
-	fMoveDstX = m_pTower->pSpCharacter->getPositionX() + m_pTower->nAttackRadius * cos(fShootAngle * (M_PI / 180));
-	fMoveDstY = m_pTower->pSpCharacter->getPositionY() + m_pTower->nAttackRadius * sin(fShootAngle * (M_PI / 180));
+	fMoveDstX = m_ptTower->pSpCharacter->getPositionX() + m_ptTower->nAttackRadius * cos(fShootAngle * (M_PI / 180));
+	fMoveDstY = m_ptTower->pSpCharacter->getPositionY() + m_ptTower->nAttackRadius * sin(fShootAngle * (M_PI / 180));
 
 	arrpActionCallback[0] = CallFuncN::create(CC_CALLBACK_1(CThDefTower::uninitBullet, this, sVancantPos));
-	getCharacterMoveSpeed(m_pTower->pSpCharacter->getPositionX(), m_pTower->pSpCharacter->getPositionY(), fMoveDstX, fMoveDstY, ptFrBullet->emMoveSpeed, &fMoveTime);
+	getCharacterMoveSpeed(m_ptTower->pSpCharacter->getPositionX(), m_ptTower->pSpCharacter->getPositionY(), fMoveDstX, fMoveDstY, ptFrBullet->emMoveSpeed, &fMoveTime);
 	bFnRet = CThBaseCharacterAction::getInstance()->createActionMoveTo(fMoveTime, fMoveDstX, fMoveDstY, arrpActionCallback, 1, &pSeBulletMove);
 	TH_PROCESS_ERROR(bFnRet);
 	ptFrBullet->pSpCharacter->runAction(pSeBulletMove);
@@ -338,7 +338,7 @@ void CThDefTower::getAniTagByDesc(const char* cszpDesc, int* pnRet)
 
 void CThDefTower::getCharacterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet)
 {
-	*ppRet = m_pTower;
+	*ppRet = m_ptTower;
 	return;
 }
 
@@ -441,7 +441,7 @@ thBool CThDefTower::setPlayAniTowerSummon(const short* arrnCondAniTag, const sho
 	/* 检查开门动画是否播放完. */
 	getAniTagByDesc("AniTagTowerSummon", &nAniSummonTag);
 	TH_PROCESS_ERROR(nAniSummonTag);
-	if (NULL != m_pTower->pSpCharacter->getActionByTag(nAniSummonTag))
+	if (NULL != m_ptTower->pSpCharacter->getActionByTag(nAniSummonTag))
 	{
 		bIsPlayEnd = THFALSE;
 	}
@@ -478,7 +478,7 @@ thBool CThDefTower::_setPlayAniOpenTheDoor()
 	TH_PROCESS_ERROR(nAniSummonTag);
 	getAniFrameInfoByTag("TowerInitWarriorsOpenDoor", &pAniOpDor);
 	TH_PROCESS_ERROR(pAniOpDor);
-	m_pTower->pSpCharacter->runAction(pAniOpDor->pAnimate);
+	m_ptTower->pSpCharacter->runAction(pAniOpDor->pAnimate);
 	pAniOpDor->pAnimate->setTag(nAniSummonTag);
 
 	bRet = THTRUE;
@@ -496,7 +496,7 @@ thBool CThDefTower::_setPlayAniCloseTheDoor()
 	TH_PROCESS_ERROR(nAniSummonTag);
 	getAniFrameInfoByTag("TowerInitWarriorsCloseDoor", &pAniClDor);
 	TH_PROCESS_ERROR(pAniClDor);
-	m_pTower->pSpCharacter->runAction(pAniClDor->pAnimate);
+	m_ptTower->pSpCharacter->runAction(pAniClDor->pAnimate);
 	pAniClDor->pAnimate->setTag(nAniSummonTag);
 
 	bRet = THTRUE;
@@ -533,7 +533,7 @@ thBool CThDefTower::execTowerShoot(const short csBulletCnt)
 	static float s_fAngle = 300.f;
 	static short s_sShot = 0;
 
-	if (m_pTower->nAttackCD < time(NULL) - m_dLastAttack)
+	if (m_ptTower->nAttackCD < time(NULL) - m_dLastAttack)
 	{
 		switch (m_ptTowerStatus->emBulletType)
 		{

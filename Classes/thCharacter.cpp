@@ -21,7 +21,7 @@ CThBaseCharacter::~CThBaseCharacter()
 {
 }
 
-thBool CThBaseCharacter::initCharacter(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR* ppRet, thBool bInitSp) const
+thBool CThBaseCharacter::initCharacter(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR* ppRet, thBool bInitSp)
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
@@ -30,7 +30,7 @@ thBool CThBaseCharacter::initCharacter(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAME
 	
 	if (THTRUE == bInitSp)
 	{
-		ptCharFrame->pSpCharacter = Sprite::create(pDesc->szarrSpriteTexPath);
+		ptCharFrame->pSpCharacter = Sprite::create(pDesc->szarrSpritePlistPath);
 		TH_PROCESS_ERROR(ptCharFrame->pSpCharacter);
 		ptCharFrame->pSpCharacter->setFlippedX(pDesc->bFlipX);
 		ptCharFrame->pSpCharacter->setFlippedY(pDesc->bFlipY);
@@ -43,6 +43,37 @@ thBool CThBaseCharacter::initCharacter(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAME
 		ptCharFrame->pSpCharacter = NULL;
 	}
 
+	_initCharacterDescInfo(pDesc, ptCharFrame);
+
+	*ppRet = ptCharFrame;
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+thBool CThBaseCharacter::initCharacterWithPlist(const char* cszpSpName, const int cnPos, CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR* ppRet)
+{
+	thBool bRet = THFALSE;
+	thBool bFnRet = THFALSE;
+	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::sharedSpriteFrameCache();
+	SpriteFrame* pSpFrame = NULL;
+	char szarrSp[128] = { 0 };
+
+	sprintf_s(szarrSp, "%s%d.png", cszpSpName, cnPos);
+	pSpFrame = pSpFrameCache->spriteFrameByName(szarrSp);
+	TH_PROCESS_ERROR(pSpFrame);
+	(*ppRet)->pSpCharacter = Sprite::createWithSpriteFrame(pSpFrame);
+	TH_PROCESS_ERROR((*ppRet)->pSpCharacter);
+
+	_initCharacterDescInfo(pDesc, *ppRet);
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+void CThBaseCharacter::_initCharacterDescInfo(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR ptCharFrame)
+{
 	ptCharFrame->nHP = pDesc->nHP;
 	ptCharFrame->nMP = pDesc->nMP;
 	ptCharFrame->nAttack = pDesc->nAttack;
@@ -57,11 +88,7 @@ thBool CThBaseCharacter::initCharacter(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAME
 	ptCharFrame->emMaxLevel = pDesc->emMaxLevel;
 	ptCharFrame->emCurLevel = THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1;
 	strcpy_s(ptCharFrame->szarrDesc, strlen(pDesc->szarrSpriteName) + 1, pDesc->szarrSpriteName);
-
-	*ppRet = ptCharFrame;
-	bRet = THTRUE;
-Exit0:
-	return bRet;
+	return;
 }
 
 thBool CThBaseCharacter::initCharacterAnimation(CHARACTER_ANI_DESC_PTR pAniDesc, Animate** ppRet) const
@@ -228,11 +255,14 @@ thBool CthCcCharacterLoadHandler::getCharaterDescFromIni(const char* cszpFilenam
 	memset(pAniMap, 0, sizeof(CHARACTER_ANI_MAP));
 
 	/* ╪сть CHARACTER_DESC */
-	GetPrivateProfileStringA(cszpSelCharacterDesc, "szarrSpriteName", "NA", szarrTmpStr, 32, cszpFilename);
+	GetPrivateProfileStringA(cszpSelCharacterDesc, "szarrSpriteName", "NA", szarrTmpStr, 64, cszpFilename);
 	strcpy_s(pRet->szarrSpriteName, strlen(szarrTmpStr) + 1, szarrTmpStr);
 
-	GetPrivateProfileStringA(cszpSelCharacterDesc, "szarrSpriteTexPath", "NA", szarrTmpStr, MAX_PATH, cszpFilename);
-	strcpy_s(pRet->szarrSpriteTexPath, strlen(szarrTmpStr) + 1, szarrTmpStr);
+	GetPrivateProfileStringA(cszpSelCharacterDesc, "szarrSpritePlistPath", "NA", szarrTmpStr, MAX_PATH, cszpFilename);
+	strcpy_s(pRet->szarrSpritePlistPath, strlen(szarrTmpStr) + 1, szarrTmpStr);
+
+	GetPrivateProfileStringA(cszpSelCharacterDesc, "szarrSpriteTex", "NA", szarrTmpStr, 64, cszpFilename);
+	strcpy_s(pRet->szarrSpritePlistTex, strlen(szarrTmpStr) + 1, szarrTmpStr);
 
 	GetPrivateProfileStringA(cszpSelCharacterDesc, "fPosX", "0.0", szarrTmpFloat, 32, cszpFilename);
 	pRet->fPosX = (float)atof(szarrTmpFloat);
@@ -340,6 +370,17 @@ thBool CthCcCharacterLoadHandler::getDefTowerDescFromIni(const char* cszpFilenam
 	pRet->emBulletType = (enum THEM_BULLET_TYPE)GetPrivateProfileIntA(cszpSel, "nBulletType", THEM_BULLET_TYPE::SHOOTCHAT_TRACKING, cszpFilename);
 
 	*ppRet = pRet;
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+thBool CthCcCharacterLoadHandler::getSubsoilFromIni(const char* cszpFilename, SUBSOIL_DESC_PTR* ppRet)
+{
+	thBool bRet = THFALSE;
+	SUBSOIL_DESC_PTR pRet = THMALLOC(SUBSOIL_DESC, sizeof(SUBSOIL_DESC));
+	TH_PROCESS_ERROR(pRet);
+
 	bRet = THTRUE;
 Exit0:
 	return bRet;

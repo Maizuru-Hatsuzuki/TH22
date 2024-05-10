@@ -77,7 +77,33 @@ private:
 	CHARACTER_ANI_MAP_PTR m_ptAniMap;
 	CThFSMCharacter* m_fsmWarriorObject;
 };
+
 typedef CThDefTowerWarrior* CThDefTowerWarrior_ptr;
+
+
+class CThDefTowerSubsoil :
+	public CThBaseCharacter
+{
+public:
+	CThDefTowerSubsoil();
+	~CThDefTowerSubsoil();
+
+	thBool init(const char* cszpSubsoilCharacterDescPath, const float cfFacingEnemyAngle);
+	thBool initDefTower();
+	void uninitDefTower();
+	virtual void getCharacterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet);
+	virtual void getCharacterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet);
+
+	virtual void onMouseUp(EventMouse* pEvent);
+	virtual void onMouseDown(EventMouse* pEvent);
+	virtual void onMouseMove(EventMouse* pEvent);
+
+	virtual thBool globalMonitoring();
+
+private:
+	float m_arrfDefTowerWarriorPos[THMAX_DEFTOWER_TARLEVEL_WARRIORS][2];
+	CHARACTER_FRAMEINFO_PTR m_ptSubsoil;
+};
 
 
 class CThDefTower:
@@ -88,7 +114,7 @@ public:
 	~CThDefTower();
 
 	thBool init(
-		const char* cszpBasicCharacterDescPath,
+		const char* cszpDefTowerCharacterDescPath,
 		const char* cszpBulletDescPath,
 		const char** cszarrpAniDesc,
 		const short csAniDescSize,
@@ -137,7 +163,7 @@ private:
 	double							m_dLastDieWarriors;
 	double							m_dLastAttack;
 	CHARACTER_ANI_TAG				m_tAniTag;
-	CHARACTER_FRAMEINFO_PTR			m_pTower;
+	CHARACTER_FRAMEINFO_PTR			m_ptTower;
 	DEFTOWER_DESC_PTR				m_ptTowerStatus;
 	CHARACTER_FRAMEINFO_PTR*		m_arrpSpGroup;
 	CHARACTER_ANI_FRAMEINFO_PTR*	m_arrpAniGroup;
@@ -149,6 +175,6 @@ private:
 	CHARACTER_DESC_PTR				m_ptBulletDesc;
 };
 
-
+typedef CThDefTower* CThDefTower_ptr;
 
 #endif // !__THDEFTOWER_H__

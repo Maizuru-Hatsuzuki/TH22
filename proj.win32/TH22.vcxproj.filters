@@ -52,6 +52,9 @@
     <Filter Include="Header\THCCDbg">
       <UniqueIdentifier>{1628a49f-e83d-4ded-b1b0-b510e09d0ff4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Config\Character\DefTowerSubsoil">
+      <UniqueIdentifier>{a77e0f59-4afa-426f-9ac1-83a323d97a24}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -89,6 +92,9 @@
     </ClCompile>
     <ClCompile Include="..\Classes\thCcDbg.cpp">
       <Filter>Src\THDbg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\thDefTowerSubsoil.cpp">
+      <Filter>Src\THCharacter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -161,6 +167,9 @@
     </None>
     <None Include="..\Resources\data\CharacterConfig\SaigyoSakura\AniTagWarriorsDie.ini">
       <Filter>Config\Character\SaigyoSakura</Filter>
+    </None>
+    <None Include="..\Resources\data\CharacterConfig\DefTowerSubsoil\ChacGrasslandA.ini">
+      <Filter>Config\Character\DefTowerSubsoil</Filter>
     </None>
   </ItemGroup>
 </Project>

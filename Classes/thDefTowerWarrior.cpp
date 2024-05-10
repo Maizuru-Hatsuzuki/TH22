@@ -263,11 +263,6 @@ void CThDefTowerWarrior::onMouseUp(EventMouse* pEvent)
 		bRet = TDBG_CHARACTER::getInstance()->setDbgFrameInfo(m_ptWarriorFrameInfo);
 		ASSERT(bRet);
 #endif // _DEBUG
-
-		/*
-		m_ptWarriorFrameInfo->nHP = 0;
-		CCLOG("%s, die", m_ptWarriorFrameInfo->szarrDesc);
-		*/
 	}
 
 	return;

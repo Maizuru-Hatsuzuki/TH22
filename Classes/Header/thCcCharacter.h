@@ -36,6 +36,7 @@ enum THEM_CHARACTER_TYPE
 	CHARACTER_UNKNOW,
 	CHARACTER_PLAYER,
 	CHARACTER_DEFTOWER,
+	CHARACTER_DEFTOWER_SUBSOIL,
 	CHARACTER_DEFTOWER_WARRIOR,
 	CHARACTER_SUPPORT_WARRIOR,
 	CHARACTER_ENEMY,
@@ -81,13 +82,15 @@ struct _tCharacterAniMap
 
 struct _tCharacterDesc
 {
-	char szarrSpriteName[32];
-	char szarrSpriteTexPath[MAX_PATH];
+	char szarrSpriteName[64];
+	char szarrSpritePlistTex[64];
+	char szarrSpritePlistPath[MAX_PATH];
 	float fPosX;
 	float fPosY;
 	float fScale;
 	bool bFlipX;
 	bool bFlipY;
+	int nDefaultTexPlistPos;
 	int nHP;
 	int nMP;
 	int nAttack;
@@ -140,6 +143,12 @@ struct _tCharacterAnimateFrameInfo
 	char szarrDesc[64];
 };
 
+struct _tSubsoilDesc
+{
+	int nDefaultTexPlistPos;
+	int nHoverTexPlistPos;
+};
+
 struct _tDefTowerDesc
 {
 	short sMaxWarriors;
@@ -162,6 +171,7 @@ typedef struct _tCharacterAniMap			CHARACTER_ANI_MAP, * CHARACTER_ANI_MAP_PTR;
 typedef struct _tCharacterAnimationDesc		CHARACTER_ANI_DESC, * CHARACTER_ANI_DESC_PTR;
 typedef struct _tCharacterFrameInfo			CHARACTER_FRAMEINFO, * CHARACTER_FRAMEINFO_PTR;
 typedef struct _tCharacterAnimateFrameInfo	CHARACTER_ANI_FRAMEINFO, * CHARACTER_ANI_FRAMEINFO_PTR;
+typedef struct _tSubsoilDesc				SUBSOIL_DESC, * SUBSOIL_DESC_PTR;
 typedef struct _tDefTowerDesc				DEFTOWER_DESC, * DEFTOWER_DESC_PTR;
 typedef struct _tTowerWarriors				DEFTOWER_WARRIORS, * DEFTOWER_WARRIORS_PTR;
 
@@ -173,7 +183,8 @@ public:
 	CThBaseCharacter();
 	virtual ~CThBaseCharacter();
 
-	thBool	initCharacter(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR* ppRet, thBool bInitSp) const;
+	thBool	initCharacter(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR* ppRet, thBool bInitSp);
+	thBool	initCharacterWithPlist(const char* cszpSpName, const int cnPos, CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR* ppRet);
 	void	uninitCharacter(CHARACTER_FRAMEINFO_PTR pCharater);
 	thBool	initCharacterAnimation(CHARACTER_ANI_DESC_PTR pAniDesc, Animate** ppRet) const ;
 
@@ -192,7 +203,7 @@ public:
 	virtual thBool globalMonitoring()															= 0;
 
 private:
-
+	void _initCharacterDescInfo(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR ptCharFrame);
 };
 
 
@@ -223,10 +234,12 @@ public:
 	thBool getCharaterDescFromIni(const char* cszpFilename, CHARACTER_DESC_PTR* ppRet);
 	thBool getCharacterAniDescFromIni(const char* cszpFilename, CHARACTER_ANI_DESC_PTR* ppRet);
 	thBool getDefTowerDescFromIni(const char* cszpFilename, DEFTOWER_DESC_PTR* ppRet);
+	thBool getSubsoilFromIni(const char* cszpFilename, SUBSOIL_DESC_PTR* ppRet);
 
 	void uninitCharacterDesc(CHARACTER_DESC_PTR p);
 	void uninitCharacterAniDesc(CHARACTER_ANI_DESC_PTR P);
 	void uninitDefTowerDesc(DEFTOWER_DESC_PTR p);
+	void uninitSubsoilDesc(SUBSOIL_DESC_PTR p);
 
 private:
 	CthCcCharacterLoadHandler();

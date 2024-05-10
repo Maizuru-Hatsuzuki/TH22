@@ -40,7 +40,7 @@ thBool CthCcAnimation::createPlayAnimationWithPList(CHARACTER_ANI_DESC_PTR ptAni
 	TH_PROCESS_ERROR(pAni);
 
 	for (
-		unsigned int i = ptAniDesc->nFrameAniBegin, j = 0;
+		int i = ptAniDesc->nFrameAniBegin, j = 0;
 		j < ptAniDesc->nFrameAniCount; 
 		ptAniDesc->nFrameAniBegin > ptAniDesc->nFrameAniEnd ? i-- : i++, j++
 		)

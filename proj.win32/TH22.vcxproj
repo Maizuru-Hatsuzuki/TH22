@@ -161,6 +161,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\thBaseFSM.cpp" />
     <ClCompile Include="..\Classes\thCcDbg.cpp" />
     <ClCompile Include="..\Classes\thCharacter.cpp" />
+    <ClCompile Include="..\Classes\thDefTowerSubsoil.cpp" />
     <ClCompile Include="..\Classes\thDefTowerWarrior.cpp" />
     <ClCompile Include="..\Classes\thDefTower.cpp" />
     <ClCompile Include="..\Classes\thKeyboards.cpp" />
@@ -197,6 +198,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ResourceCompile Include="game.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Resources\data\CharacterConfig\DefTowerSubsoil\ChacGrasslandA.ini" />
     <None Include="..\Resources\data\CharacterConfig\SaigyoSakura\AniCloseTheDoor.ini" />
     <None Include="..\Resources\data\CharacterConfig\SaigyoSakura\AniOpenTheDoor.ini" />
     <None Include="..\Resources\data\CharacterConfig\SaigyoSakura\AniTagWarriorsDie.ini" />
