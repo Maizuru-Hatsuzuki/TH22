@@ -16,6 +16,8 @@
 #define TH_MALLOC(ptrType)	(ptrType*)malloc(sizeof(ptrType))
 #define TH_RELEASE(p)		{ if (p) { free(p); (p) = NULL; } }
 
+#define TH_RUN_SUCCESS(Condition, c) { if ((Condition)) { c; }}
+
 #define TH_PROCESS_SUCCESS(Condition)		\
 do											\
 {											\

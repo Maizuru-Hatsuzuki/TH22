@@ -55,18 +55,26 @@ thBool CThBaseCharacter::initCharacterWithPlist(const char* cszpSpName, const in
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
-	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::sharedSpriteFrameCache();
 	SpriteFrame* pSpFrame = NULL;
+	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::sharedSpriteFrameCache();
+	CHARACTER_FRAMEINFO_PTR ptCharFrame = THMALLOC(CHARACTER_FRAMEINFO, sizeof(CHARACTER_FRAMEINFO));
 	char szarrSp[128] = { 0 };
 
 	sprintf_s(szarrSp, "%s%d.png", cszpSpName, cnPos);
 	pSpFrame = pSpFrameCache->spriteFrameByName(szarrSp);
 	TH_PROCESS_ERROR(pSpFrame);
-	(*ppRet)->pSpCharacter = Sprite::createWithSpriteFrame(pSpFrame);
-	TH_PROCESS_ERROR((*ppRet)->pSpCharacter);
+	ptCharFrame->pSpCharacter = Sprite::createWithSpriteFrame(pSpFrame);
+	TH_PROCESS_ERROR(ptCharFrame->pSpCharacter);
 
-	_initCharacterDescInfo(pDesc, *ppRet);
+	ptCharFrame->pSpCharacter->setFlippedX(pDesc->bFlipX);
+	ptCharFrame->pSpCharacter->setFlippedY(pDesc->bFlipY);
+	TH_RUN_SUCCESS(pDesc->fScale, ptCharFrame->pSpCharacter->setScale(pDesc->fScale));
+	ptCharFrame->pSpCharacter->setPositionX(pDesc->fPosX);
+	ptCharFrame->pSpCharacter->setPositionY(pDesc->fPosY);
 
+	_initCharacterDescInfo(pDesc, ptCharFrame);
+
+	*ppRet = ptCharFrame;
 	bRet = THTRUE;
 Exit0:
 	return bRet;
@@ -378,9 +386,16 @@ Exit0:
 thBool CthCcCharacterLoadHandler::getSubsoilFromIni(const char* cszpFilename, SUBSOIL_DESC_PTR* ppRet)
 {
 	thBool bRet = THFALSE;
+	const char* cszpSel = "SUBSOIL_DESC";
 	SUBSOIL_DESC_PTR pRet = THMALLOC(SUBSOIL_DESC, sizeof(SUBSOIL_DESC));
 	TH_PROCESS_ERROR(pRet);
 
+	pRet->nDefaultTexPlistPos = GetPrivateProfileIntA(cszpSel, "nDefaultTexPlistPos", 1, cszpFilename);
+	pRet->nHoverTexPlistPos = GetPrivateProfileIntA(cszpSel, "nHoverTexPlistPos", 1, cszpFilename);
+	pRet->nActiveDefaultTexPlistPos = GetPrivateProfileIntA(cszpSel, "nActiveDefaultTexPlistPos", 1, cszpFilename);
+	pRet->nActiveHoverTexPlistPos = GetPrivateProfileIntA(cszpSel, "nActiveHoverTexPlistPos", 1, cszpFilename);
+
+	*ppRet = pRet;
 	bRet = THTRUE;
 Exit0:
 	return bRet;
@@ -400,6 +415,12 @@ void CthCcCharacterLoadHandler::uninitCharacterAniDesc(CHARACTER_ANI_DESC_PTR p)
 }
 
 void CthCcCharacterLoadHandler::uninitDefTowerDesc(DEFTOWER_DESC_PTR p)
+{
+	THFREE(p);
+	return;
+}
+
+void CthCcCharacterLoadHandler::uninitSubsoilDesc(SUBSOIL_DESC_PTR p)
 {
 	THFREE(p);
 	return;

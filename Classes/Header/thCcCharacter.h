@@ -147,6 +147,9 @@ struct _tSubsoilDesc
 {
 	int nDefaultTexPlistPos;
 	int nHoverTexPlistPos;
+	int nActiveDefaultTexPlistPos;
+	int nActiveHoverTexPlistPos;
+	float fFacingEnemyAngle;
 };
 
 struct _tDefTowerDesc

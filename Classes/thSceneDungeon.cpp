@@ -53,8 +53,9 @@ bool thSceneDungeon::init()
 {
 	bool bRet = THFALSE;
 	bool bFnRet = THFALSE;
-	const short csMaxAni = 4;
 	const int cnDbgTag = 1;
+	/*
+	const short csMaxAni = 4;
 	const char* szarrpAni[csMaxAni] =
 	{
 		"data\\CharacterConfig\\SaigyoSakura\\AniWarriorsMove.ini",
@@ -80,6 +81,17 @@ bool thSceneDungeon::init()
 		&tWarrior
 		);
 	TH_PROCESS_ERROR(bFnRet);
+	this->addChild(pHunterCabinObject);
+	*/
+
+
+	const char* cszpSubSoilAPlistPath = "data\\CharacterConfig\\DefTowerSubsoil\\ChacGrasslandA.ini";
+	CThDefTowerSubsoil* pSubsoilA = new CThDefTowerSubsoil;
+
+
+
+	pSubsoilA->init(cszpSubSoilAPlistPath, 270.f);
+	this->addChild(pSubsoilA);
 
 #ifdef _DEBUG
 	/* 初始化角色 debug 信息. */
@@ -90,11 +102,11 @@ bool thSceneDungeon::init()
 	}
 #endif // _DEBUG
 
-	this->addChild(pHunterCabinObject);
+	
 
 	bRet = THTRUE;
 Exit0:
-	CthCcCharacterLoadHandler::getInstance()->uninitCharacterDesc(tWarrior.arrpTowerWarriorsDesc[0]);
+	// CthCcCharacterLoadHandler::getInstance()->uninitCharacterDesc(tWarrior.arrpTowerWarriorsDesc[0]);
 	return bRet;
 }
 

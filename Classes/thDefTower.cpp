@@ -21,7 +21,7 @@ CThDefTower::~CThDefTower()
 thBool CThDefTower::init(
 	const char* cszpDefTowerCharacterDescPath,
 	const char* cszpBulletDescPath,
-	const char** cszarrpAniDesc,
+	char** szarrpAniDesc,
 	const short csAniDescSize,
 	const DEFTOWER_WARRIORS_PTR ptWarriors
 )
@@ -65,7 +65,7 @@ thBool CThDefTower::init(
 
 	bFnRet = initCharacter(ptCharacterDesc, &m_ptTower, THTRUE);
 	TH_PROCESS_ERROR(bFnRet);
-	bFnRet = initBaiscAnimate(cszarrpAniDesc, csAniDescSize);
+	bFnRet = initBaiscAnimate(szarrpAniDesc, csAniDescSize);
 	TH_PROCESS_ERROR(bFnRet);
 	bFnRet = initDefTowerWarriorsDesc(ptWarriors);
 	TH_PROCESS_ERROR(bFnRet);
@@ -187,7 +187,7 @@ void CThDefTower::uninitDefTowerWarriorsDesc()
 	}
 }
 
-thBool CThDefTower::initBaiscAnimate(const char** cszarrpAniDesc, const short csSize)
+thBool CThDefTower::initBaiscAnimate(char** szarrpAniDesc, const short csSize)
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
@@ -197,9 +197,9 @@ thBool CThDefTower::initBaiscAnimate(const char** cszarrpAniDesc, const short cs
 	TH_PROCESS_SUCCESS(THMAX_ANI_COUNT < csSize);
 	for (int i = 0; i < csSize; i++)
 	{
-		if (NULL != cszarrpAniDesc[i])
+		if (NULL != szarrpAniDesc[i])
 		{
-			bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharacterAniDescFromIni(cszarrpAniDesc[i], &ptmpAniDesc);
+			bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharacterAniDescFromIni(szarrpAniDesc[i], &ptmpAniDesc);
 			TH_PROCESS_ERROR(bFnRet);
 			pResAni = THMALLOC(CHARACTER_ANI_FRAMEINFO, sizeof(CHARACTER_ANI_FRAMEINFO));
 			TH_PROCESS_ERROR(pResAni);
@@ -379,6 +379,40 @@ void CThDefTower::getWarriorExistsByAngle(const float cfAngle, thBool* pbRet)
 			break;
 		}
 	}
+	return;
+}
+
+void CThDefTower::getTowerInfoArcher(enum THEM_CHARACTER_LEVEL emLevel, char* szpArcherRet, char** arrpAniRet, short* psAniSizeRet, char** arrpWarriorsRet, short* psWarriorsCnt)
+{
+	strcpy_s(szpArcherRet, MAX_PATH, "data\\CharacterConfig\\SaigyoSakura\\ChacSaigyoSakura.ini");
+	switch (emLevel)
+	{
+	case CHARACTER_LEVEL_1:
+		strcpy_s(arrpAniRet[0], MAX_PATH, "data\\CharacterConfig\\SaigyoSakura\\AniWarriorsMove.ini");
+		strcpy_s(arrpAniRet[1], MAX_PATH, "data\\CharacterConfig\\SaigyoSakura\\AniOpenTheDoor.ini");
+		strcpy_s(arrpAniRet[2], MAX_PATH, "data\\CharacterConfig\\SaigyoSakura\\AniCloseTheDoor.ini");
+		strcpy_s(arrpAniRet[3], MAX_PATH, "data\\CharacterConfig\\SaigyoSakura\\AniTagWarriorsDie.ini");
+		*psAniSizeRet = 4;
+
+		strcpy_s(arrpWarriorsRet[0], MAX_PATH, "data\\CharacterConfig\\SaigyoSakura\\ChacWarrior.ini");
+		*psWarriorsCnt = 1;
+
+		break;
+
+	case CHARACTER_LEVEL_2:
+		break;
+	case CHARACTER_LEVEL_3:
+		break;
+	case CHARACTER_LEVEL_4:
+		break;
+	case CHARACTER_LEVEL_5:
+		break;
+	case CHARACTER_MAXLEVEL:
+		break;
+	default:
+		break;
+	}
+
 	return;
 }
 
