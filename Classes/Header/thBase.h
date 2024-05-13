@@ -56,6 +56,8 @@
 #define THSP_FLAG_DIE 0
 #define THSP_FLAG_CLEAN -1
 
+#define THINI_DEFAULT_STR "NA"
+
 #define THMALLOC(t, s) (t*)malloc(s)
 #define THFREE(p) { if (p) { free(p); (p) = NULL; }}
 

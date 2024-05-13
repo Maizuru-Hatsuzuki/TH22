@@ -171,5 +171,8 @@
     <None Include="..\Resources\data\CharacterConfig\DefTowerSubsoil\ChacGrasslandA.ini">
       <Filter>Config\Character\DefTowerSubsoil</Filter>
     </None>
+    <None Include="..\Resources\data\CharacterConfig\DefTowerSubsoil\TexDefTowerConstructionArcher.ini">
+      <Filter>Config\Character\DefTowerSubsoil</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -199,6 +199,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Resources\data\CharacterConfig\DefTowerSubsoil\ChacGrasslandA.ini" />
+    <None Include="..\Resources\data\CharacterConfig\DefTowerSubsoil\TexDefTowerConstructionArcher.ini" />
     <None Include="..\Resources\data\CharacterConfig\SaigyoSakura\AniCloseTheDoor.ini" />
     <None Include="..\Resources\data\CharacterConfig\SaigyoSakura\AniOpenTheDoor.ini" />
     <None Include="..\Resources\data\CharacterConfig\SaigyoSakura\AniTagWarriorsDie.ini" />

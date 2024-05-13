@@ -125,7 +125,9 @@ public:
 
 public:
 	/* static fn. get init defTower info. */
-	static void getTowerInfoArcher(enum THEM_CHARACTER_LEVEL emLevel, char* szpArcherRet, char** arrpAniRet, short* psAniSizeRet, char** arrpWarriorsRet, short* psWarriorsCnt);
+	static void getTowerInfoArcher(
+		enum THEM_CHARACTER_LEVEL emLevel, char* szpArcherRet, char** arrpAniRet, short* psAniSizeRet, char** arrpWarriorsRet, short* psWarriorsCnt, char* szpDefTowerConstruction
+	);
 
 private:
 	thBool _getSpArrayVacantPos(short* psRet);
@@ -165,6 +167,7 @@ public:
 	~CThDefTowerSubsoil();
 
 	thBool init(const char* cszpSubsoilCharacterDescPath, const float cfFacingEnemyAngle);
+	thBool initDefTowerConstruction(const char* cszpConstructionIni);
 	thBool initDefTower();
 	void uninit();
 	void uninitDefTower();
