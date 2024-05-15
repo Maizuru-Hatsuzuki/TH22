@@ -33,6 +33,7 @@ thBool CThDefTowerSubsoil::init(const char* cszpSubsoilCharacterDescPath, const 
 
 	m_ptSubSoilStatus = NULL;
 	m_pDefTower = NULL;
+	m_pLoading = NULL;
 
 	bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(cszpSubsoilCharacterDescPath, &ptCharacterDesc);
 	TH_PROCESS_ERROR(bFnRet);
@@ -86,13 +87,46 @@ void CThDefTowerSubsoil::uninit()
 	return;
 }
 
+thBool CThDefTowerSubsoil::initDefTowerConstructionLoadingBar()
+{
+	thBool bRet = THFALSE;
+	Sprite* pSpLoading = NULL;
+	Sprite* pSpLoadingBg = NULL;
+	ProgressTo* pActionLoading = NULL;
+	CHARACTER_DESC tLoadingDesc = {};
+	tLoadingDesc.fPosX = m_ptSubsoil->pSpCharacter->getPositionX();
+	tLoadingDesc.fPosY = m_ptSubsoil->pSpCharacter->getPositionY() + 50;
+	tLoadingDesc.fScale = m_ptSubsoil->pSpCharacter->getScale();
+
+	/* 创建进度条背景. */
+	pSpLoadingBg = Sprite::createWithSpriteFrameName("Tower Construction Material7.png");
+	TH_PROCESS_ERROR(pSpLoadingBg);
+	pSpLoadingBg->setPosition(m_ptSubsoil->pSpCharacter->getPositionX(), m_ptSubsoil->pSpCharacter->getPositionY() + 50);
+	pSpLoadingBg->setScale(m_ptSubsoil->pSpCharacter->getScale());
+
+	/* 创建进度条 */
+	pSpLoading = Sprite::createWithSpriteFrameName("Tower Construction Material8.png");
+	TH_PROCESS_ERROR(pSpLoading);
+	bRet = CthCcAnimation::getInstance()->createLoadingBar(pSpLoading, 2.f, 100, &tLoadingDesc, &pActionLoading, &m_pLoading);
+	TH_PROCESS_ERROR(bRet);
+
+	this->addChild(pSpLoadingBg);
+	this->addChild(m_pLoading);
+
+	m_pLoading->runAction(pActionLoading);
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
 thBool CThDefTowerSubsoil::initDefTowerConstruction(const char* cszpConstructionIni)
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
 	SpriteFrame* pSpFrameCons = NULL;
-	Sprite* pSp = NULL;
+	Sprite* pSpConstruction = NULL;
 	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::sharedSpriteFrameCache();
+
 	char szarrTexPath[MAX_PATH] = { 0 };
 	char szarrPlist[MAX_PATH] = { 0 };
 	char szarrPlistPng[MAX_PATH] = { 0 };
@@ -111,16 +145,19 @@ thBool CThDefTowerSubsoil::initDefTowerConstruction(const char* cszpConstruction
 
 	pSpFrameCache->addSpriteFramesWithFile(szarrPlist, szarrPlistPng);
 	pSpFrameCons = pSpFrameCache->getSpriteFrameByName(szarrSprite);
-	pSp = Sprite::createWithSpriteFrame(pSpFrameCons);
-	TH_PROCESS_ERROR(pSp);
+	pSpConstruction = Sprite::createWithSpriteFrame(pSpFrameCons);
+	TH_PROCESS_ERROR(pSpConstruction);
 
-	pSp->setPositionX(m_ptSubsoil->pSpCharacter->getPositionX());
-	pSp->setPositionY(m_ptSubsoil->pSpCharacter->getPositionY());
-	pSp->setScale(m_ptSubsoil->pSpCharacter->getScale());
-
+	/* 创建建造中建筑纹理. */
+	pSpConstruction->setPositionX(m_ptSubsoil->pSpCharacter->getPositionX());
+	pSpConstruction->setPositionY(m_ptSubsoil->pSpCharacter->getPositionY());
+	pSpConstruction->setScale(m_ptSubsoil->pSpCharacter->getScale());
 	m_ptSubsoil->pSpCharacter->setDisplayFrame(m_pActiveDefaultSubsoil);
-	
-	this->addChild(pSp);
+
+	bFnRet = initDefTowerConstructionLoadingBar();
+	TH_PROCESS_ERROR(bFnRet);
+
+	this->addChild(pSpConstruction);
 	bRet = THTRUE;
 Exit0:
 	return bRet;
@@ -141,10 +178,7 @@ thBool CThDefTowerSubsoil::initDefTower()
 	CHARACTER_DESC_PTR arrpChacWarrios[THMAX_DEFTOWER_TARLEVEL_WARRIORS] = { 0 };
 	DEFTOWER_WARRIORS tWarrior = { arrpChacWarrios, THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, sWarriorsRetSize };
 	/* loading banner. */
-	Sprite* pSpLoading = NULL;
-	Sprite* pSpLoadingBg = NULL;
-	ProgressTo* pLoading = ProgressTo::create(1.5f, 100);
-	ProgressTimer* pLoadingPic = NULL;
+	
 	m_pDefTower = new CThDefTower;
 
 	CThDefTower::getTowerInfoArcher(THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, szpArcher, arrszpAni, &sAniSize, arrszpWarriors, &sWarriorsRetSize, szarrConstruction);
@@ -160,22 +194,8 @@ thBool CThDefTowerSubsoil::initDefTower()
 	bFnRet = initDefTowerConstruction(szarrConstruction);
 	TH_PROCESS_ERROR(bFnRet);
 
-	pSpLoadingBg = Sprite::createWithSpriteFrameName("Tower Construction Material7.png");
-	pSpLoadingBg->setPosition(m_ptSubsoil->pSpCharacter->getPositionX(), m_ptSubsoil->pSpCharacter->getPositionY() + 50);
-	pSpLoading = Sprite::createWithSpriteFrameName("Tower Construction Material8.png");
-	TH_PROCESS_ERROR(pSpLoading);
-	pLoadingPic = ProgressTimer::create(pSpLoading);
-	TH_PROCESS_ERROR(pLoadingPic);
-	pLoadingPic->setType(kCCProgressTimerTypeBar);
-	pLoadingPic->setBarChangeRate(ccp(1, 0));
-	pLoadingPic->setMidpoint(ccp(0, 0));
-	pLoadingPic->setPosition(m_ptSubsoil->pSpCharacter->getPositionX() , m_ptSubsoil->pSpCharacter->getPositionY() + 50);
-	this->addChild(pSpLoadingBg);
-	this->addChild(pLoadingPic);
 
-	pLoadingPic->runAction(pLoading);
-	
-	pLoadingPic->getPercentage();
+
 	/*
 		1. 进度条播放
 		2. init塔加入队列

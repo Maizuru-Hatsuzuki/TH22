@@ -62,3 +62,25 @@ thBool CthCcAnimation::createPlayAnimationWithPList(CHARACTER_ANI_DESC_PTR ptAni
 Exit0:
 	return bRet;
 }
+
+thBool CthCcAnimation::createLoadingBar(Sprite* pSpLoading, const float cfInterval, const float cfPersent, CHARACTER_DESC_PTR ptSpLoading, ProgressTo** ppActionRet, ProgressTimer** ppLoadingPicRet)
+{
+	thBool bRet = THFALSE;
+	ProgressTo* pLoading = ProgressTo::create(cfInterval, cfPersent);
+	TH_PROCESS_ERROR(pLoading);
+	ProgressTimer* pLoadingPic = ProgressTimer::create(pSpLoading);;
+	TH_PROCESS_ERROR(pLoadingPic);
+
+	pLoadingPic->setScale(ptSpLoading->fScale);
+	pLoadingPic->setType(kCCProgressTimerTypeBar);
+	pLoadingPic->setBarChangeRate(ccp(1, 0));
+	pLoadingPic->setMidpoint(ccp(0, 0));
+	pLoadingPic->setPosition(ptSpLoading->fPosX, ptSpLoading->fPosY);
+
+	*ppActionRet = pLoading;
+	*ppLoadingPicRet = pLoadingPic;
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}

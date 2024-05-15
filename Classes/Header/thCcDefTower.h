@@ -167,6 +167,7 @@ public:
 	~CThDefTowerSubsoil();
 
 	thBool init(const char* cszpSubsoilCharacterDescPath, const float cfFacingEnemyAngle);
+	thBool initDefTowerConstructionLoadingBar();
 	thBool initDefTowerConstruction(const char* cszpConstructionIni);
 	thBool initDefTower();
 	void uninit();
@@ -189,6 +190,7 @@ private:
 	SpriteFrame* m_pHoverSubsoil;
 	SpriteFrame* m_pActiveDefaultSubsoil;
 	SpriteFrame* m_pActiveHoverSubsoil;
+	ProgressTimer* m_pLoading;
 };
 
 

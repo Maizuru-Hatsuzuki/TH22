@@ -58,6 +58,7 @@ thBool CThBaseCharacter::initCharacterWithPlist(const char* cszpSpName, const in
 	SpriteFrame* pSpFrame = NULL;
 	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::sharedSpriteFrameCache();
 	CHARACTER_FRAMEINFO_PTR ptCharFrame = THMALLOC(CHARACTER_FRAMEINFO, sizeof(CHARACTER_FRAMEINFO));
+	TH_PROCESS_ERROR(ptCharFrame);
 	char szarrSp[128] = { 0 };
 
 	sprintf_s(szarrSp, "%s%d.png", cszpSpName, cnPos);

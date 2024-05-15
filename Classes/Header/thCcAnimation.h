@@ -16,6 +16,7 @@ class CthCcAnimation
 public:
 	static CthCcAnimation* getInstance();
 	thBool createPlayAnimationWithPList(CHARACTER_ANI_DESC_PTR ptAniDesc, Animate** ppRet);
+	thBool createLoadingBar(Sprite* pSpLoading, const float cfInterval, const float cfPersent, CHARACTER_DESC_PTR ptSpLoading, ProgressTo** ppActionRet, ProgressTimer** ppLoadingPicRet);
 
 public:
 
