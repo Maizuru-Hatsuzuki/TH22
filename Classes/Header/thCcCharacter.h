@@ -83,8 +83,7 @@ struct _tCharacterAniMap
 struct _tCharacterDesc
 {
 	char szarrSpriteName[64];
-	char szarrSpritePlistTex[64];
-	char szarrSpritePlistPath[MAX_PATH];
+	int nDefaultSpPlistPos;
 	float fPosX;
 	float fPosY;
 	float fScale;
@@ -186,8 +185,8 @@ public:
 	CThBaseCharacter();
 	virtual ~CThBaseCharacter();
 
-	thBool	initCharacter(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR* ppRet, thBool bInitSp);
-	thBool	initCharacterWithPlist(const char* cszpSpName, const int cnPos, CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR* ppRet);
+	thBool	initCharacter(std::string strSpFile, CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR* ppRet, thBool bInitSp);
+	thBool	initCharacterWithPlist(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR* ppRet);
 	void	uninitCharacter(CHARACTER_FRAMEINFO_PTR pCharater);
 	thBool	initCharacterAnimation(CHARACTER_ANI_DESC_PTR pAniDesc, Animate** ppRet) const ;
 

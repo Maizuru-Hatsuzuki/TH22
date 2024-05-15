@@ -96,6 +96,9 @@
     <ClCompile Include="..\Classes\thDefTowerSubsoil.cpp">
       <Filter>Src\THCharacter</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\thCcBase.cpp">
+      <Filter>Src\THBase</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -139,6 +142,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Header\thCcDbg.h">
       <Filter>Header\THCCDbg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Header\dirent.h">
+      <Filter>Header\THBase</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

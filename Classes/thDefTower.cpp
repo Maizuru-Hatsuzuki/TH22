@@ -21,6 +21,7 @@ CThDefTower::~CThDefTower()
 thBool CThDefTower::init(
 	const char* cszpDefTowerCharacterDescPath,
 	const char* cszpBulletDescPath,
+	const char* cszpBulletPlistPng,
 	char** szarrpAniDesc,
 	const short csAniDescSize,
 	const DEFTOWER_WARRIORS_PTR ptWarriors
@@ -63,7 +64,7 @@ thBool CThDefTower::init(
 	memset(m_arrpAniGroup, 0, sizeof(CHARACTER_ANI_FRAMEINFO_PTR) * THMAX_ANI_COUNT);
 	memset(m_arrpWarriors, 0, sizeof(CThDefTowerWarrior_ptr) * THMAX_DEFTOWER_TARLEVEL_WARRIORS);
 
-	bFnRet = initCharacter(ptCharacterDesc, &m_ptTower, THTRUE);
+	bFnRet = initCharacterWithPlist(ptCharacterDesc, &m_ptTower);
 	TH_PROCESS_ERROR(bFnRet);
 	bFnRet = initBaiscAnimate(szarrpAniDesc, csAniDescSize);
 	TH_PROCESS_ERROR(bFnRet);
@@ -81,7 +82,8 @@ thBool CThDefTower::init(
 	pMouse->onMouseDown = CC_CALLBACK_1(CThDefTower::onMouseDown, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(pMouse, m_ptTower->pSpCharacter);
 
-	m_pBatchNodeBullet = SpriteBatchNode::create(m_ptBulletDesc->szarrSpritePlistPath);
+	/* ×Óµ¯ÌùÍ¼ */
+	m_pBatchNodeBullet = SpriteBatchNode::create(cszpBulletPlistPng);
 	TH_PROCESS_ERROR(m_pBatchNodeBullet);
 
 	scheduleUpdate();
@@ -295,7 +297,7 @@ thBool CThDefTower::initBullet(float fShootAngle)
 	/* ¼ì²éÊÇ·ñÂúÈÝÁ¿. */
 	TH_PROCESS_SUCCESS(bFnRet);
 
-	bFnRet = initCharacter(m_ptBulletDesc, &ptFrBullet, THTRUE);
+	bFnRet = initCharacterWithPlist(m_ptBulletDesc, &ptFrBullet);
 	TH_PROCESS_ERROR(bFnRet);
 	m_arrpSpGroup[sVancantPos] = ptFrBullet;
 
@@ -392,15 +394,6 @@ void CThDefTower::getTowerInfoArcher(
 	switch (emLevel)
 	{
 	case CHARACTER_LEVEL_1:
-		/*
-		strcpy_s(arrpAniRet[0], MAX_PATH, "data\\CharacterConfig\\SaigyoSakura\\AniWarriorsMove.ini");
-		strcpy_s(arrpAniRet[1], MAX_PATH, "data\\CharacterConfig\\SaigyoSakura\\AniOpenTheDoor.ini");
-		strcpy_s(arrpAniRet[2], MAX_PATH, "data\\CharacterConfig\\SaigyoSakura\\AniCloseTheDoor.ini");
-		strcpy_s(arrpAniRet[3], MAX_PATH, "data\\CharacterConfig\\SaigyoSakura\\AniTagWarriorsDie.ini");
-		
-		strcpy_s(arrpWarriorsRet[0], MAX_PATH, "data\\CharacterConfig\\SaigyoSakura\\ChacWarrior.ini");
-		
-		* */
 		arrpAniRet[0] = "data\\CharacterConfig\\SaigyoSakura\\AniWarriorsMove.ini";
 		arrpAniRet[1] = "data\\CharacterConfig\\SaigyoSakura\\AniOpenTheDoor.ini";
 		arrpAniRet[2] = "data\\CharacterConfig\\SaigyoSakura\\AniCloseTheDoor.ini";

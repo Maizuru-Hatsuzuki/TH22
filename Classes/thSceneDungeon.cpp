@@ -26,6 +26,15 @@ Scene* thSceneDungeon::createScene()
 	return thSceneDungeon::create();
 }
 
+thBool initSceneAllPlist()
+{
+	thBool bRet = THFALSE;
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
 thBool thSceneDungeon::initBgMap()
 {
 	thBool bRet = THFALSE;
@@ -84,13 +93,11 @@ bool thSceneDungeon::init()
 	this->addChild(pHunterCabinObject);
 	*/
 
-
-	const char* cszpSubSoilAPlistPath = "data\\CharacterConfig\\DefTowerSubsoil\\ChacGrasslandA.ini";
+	CTHCcBaseHandler::getInstance()->setSceneAllSpPlist(THEM_SCENE::THSCENE_DUNGEON, THTRUE);
+	char* szpSubSoilAPlistPath = "data\\CharacterConfig\\DefTowerSubsoil\\ChacGrasslandA.ini";
 	CThDefTowerSubsoil* pSubsoilA = new CThDefTowerSubsoil;
 
-
-
-	pSubsoilA->init(cszpSubSoilAPlistPath, 270.f);
+	pSubsoilA->init(szpSubSoilAPlistPath, 270.f);
 	this->addChild(pSubsoilA);
 
 #ifdef _DEBUG

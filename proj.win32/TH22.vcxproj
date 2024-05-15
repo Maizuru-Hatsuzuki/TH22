@@ -159,6 +159,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
     <ClCompile Include="..\Classes\thBaseAnimation.cpp" />
     <ClCompile Include="..\Classes\thBaseFSM.cpp" />
+    <ClCompile Include="..\Classes\thCcBase.cpp" />
     <ClCompile Include="..\Classes\thCcDbg.cpp" />
     <ClCompile Include="..\Classes\thCharacter.cpp" />
     <ClCompile Include="..\Classes\thDefTowerSubsoil.cpp" />
@@ -171,6 +172,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Classes\AppDelegate.h" />
+    <ClInclude Include="..\Classes\Header\dirent.h" />
     <ClInclude Include="..\Classes\Header\stdafx.h" />
     <ClInclude Include="..\Classes\Header\thCcAnimation.h" />
     <ClInclude Include="..\Classes\Header\thBaseFSM.h" />

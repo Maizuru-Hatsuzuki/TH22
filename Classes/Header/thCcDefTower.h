@@ -91,6 +91,7 @@ public:
 	thBool init(
 		const char* cszpDefTowerCharacterDescPath,
 		const char* cszpBulletDescPath,
+		const char* cszpBulletPlistPng,
 		char** szarrpAniDesc,
 		const short csAniDescSize,
 		const DEFTOWER_WARRIORS_PTR ptWarriors
@@ -166,7 +167,7 @@ public:
 	CThDefTowerSubsoil();
 	~CThDefTowerSubsoil();
 
-	thBool init(const char* cszpSubsoilCharacterDescPath, const float cfFacingEnemyAngle);
+	thBool init(char* szpSubsoilCharacterDescPath, const float cfFacingEnemyAngle);
 	thBool initDefTowerConstructionLoadingBar();
 	thBool initDefTowerConstruction(const char* cszpConstructionIni);
 	thBool initDefTower();

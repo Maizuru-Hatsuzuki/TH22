@@ -19,7 +19,7 @@ CThDefTowerSubsoil::~CThDefTowerSubsoil()
 {
 }
 
-thBool CThDefTowerSubsoil::init(const char* cszpSubsoilCharacterDescPath, const float cfFacingEnemyAngle)
+thBool CThDefTowerSubsoil::init(char* szpSubsoilCharacterDescPath, const float cfFacingEnemyAngle)
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
@@ -27,45 +27,37 @@ thBool CThDefTowerSubsoil::init(const char* cszpSubsoilCharacterDescPath, const 
 	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::sharedSpriteFrameCache();
 	SpriteFrame* pSpFrameExists = NULL;
 	char szarrSpFrame[64] = { 0 };
-	char szarrSpPlistPath[MAX_PATH] = { 0 };
-	char szarrSpPlistPngPath[MAX_PATH] = { 0 };
+	char szarrSpPlistTex[MAX_PATH] = { 0 };
 	EventListenerMouse* pMouse = EventListenerMouse::create();
 
 	m_ptSubSoilStatus = NULL;
 	m_pDefTower = NULL;
 	m_pLoading = NULL;
 
-	bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(cszpSubsoilCharacterDescPath, &ptCharacterDesc);
+	bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(szpSubsoilCharacterDescPath, &ptCharacterDesc);
 	TH_PROCESS_ERROR(bFnRet);
-	bFnRet = CthCcCharacterLoadHandler::getInstance()->getSubsoilFromIni(cszpSubsoilCharacterDescPath, &m_ptSubSoilStatus);
+	bFnRet = CthCcCharacterLoadHandler::getInstance()->getSubsoilFromIni(szpSubsoilCharacterDescPath, &m_ptSubSoilStatus);
 	TH_PROCESS_ERROR(bFnRet);
 	m_ptSubSoilStatus->fFacingEnemyAngle = cfFacingEnemyAngle;
 
-	sprintf_s(szarrSpFrame, "%s0.png", ptCharacterDesc->szarrSpritePlistTex);
-	pSpFrameExists = pSpFrameCache->getSpriteFrameByName(szarrSpFrame);
-	if (NULL == pSpFrameExists)
-	{
-		sprintf_s(szarrSpPlistPath, "%s.plist", ptCharacterDesc->szarrSpritePlistPath);
-		sprintf_s(szarrSpPlistPngPath, "%s.png", ptCharacterDesc->szarrSpritePlistPath);
-		pSpFrameCache->addSpriteFramesWithFile(szarrSpPlistPath, szarrSpPlistPngPath);
-	}
-
-	bFnRet = initCharacterWithPlist(ptCharacterDesc->szarrSpritePlistTex, m_ptSubSoilStatus->nDefaultTexPlistPos, ptCharacterDesc, &m_ptSubsoil);
+	bFnRet = initCharacterWithPlist(ptCharacterDesc, &m_ptSubsoil);
 	TH_PROCESS_ERROR(bFnRet);
 
-	sprintf_s(szarrSpFrame, "%s%d.png", ptCharacterDesc->szarrSpritePlistTex, m_ptSubSoilStatus->nHoverTexPlistPos);
+	CTHCcBaseHandler::getInstance()->splitFileSuffix(szpSubsoilCharacterDescPath, ".ini", szarrSpPlistTex);
+
+	sprintf_s(szarrSpFrame, "%s\\%s%d.png", szpSubsoilCharacterDescPath, ptCharacterDesc->szarrSpriteName, m_ptSubSoilStatus->nHoverTexPlistPos);
 	m_pHoverSubsoil = pSpFrameCache->getSpriteFrameByName(szarrSpFrame);
 	TH_PROCESS_ERROR(m_pHoverSubsoil);
 
-	sprintf_s(szarrSpFrame, "%s%d.png", ptCharacterDesc->szarrSpritePlistTex, m_ptSubSoilStatus->nActiveHoverTexPlistPos);
+	sprintf_s(szarrSpFrame, "%s\\%s%d.png", szpSubsoilCharacterDescPath, ptCharacterDesc->szarrSpriteName, m_ptSubSoilStatus->nActiveHoverTexPlistPos);
 	m_pActiveHoverSubsoil = pSpFrameCache->getSpriteFrameByName(szarrSpFrame);
 	TH_PROCESS_ERROR(m_pActiveHoverSubsoil);
 
-	sprintf_s(szarrSpFrame, "%s%d.png", ptCharacterDesc->szarrSpritePlistTex, m_ptSubSoilStatus->nDefaultTexPlistPos);
+	sprintf_s(szarrSpFrame, "%s\\%s%d.png", szpSubsoilCharacterDescPath, ptCharacterDesc->szarrSpriteName, m_ptSubSoilStatus->nDefaultTexPlistPos);
 	m_pDefaultSubsoil = pSpFrameCache->getSpriteFrameByName(szarrSpFrame);
 	TH_PROCESS_ERROR(m_pDefaultSubsoil);
 
-	sprintf_s(szarrSpFrame, "%s%d.png", ptCharacterDesc->szarrSpritePlistTex, m_ptSubSoilStatus->nActiveDefaultTexPlistPos);
+	sprintf_s(szarrSpFrame, "%s\\%s%d.png", szpSubsoilCharacterDescPath, ptCharacterDesc->szarrSpriteName, m_ptSubSoilStatus->nActiveDefaultTexPlistPos);
 	m_pActiveDefaultSubsoil = pSpFrameCache->getSpriteFrameByName(szarrSpFrame);
 	TH_PROCESS_ERROR(m_pActiveDefaultSubsoil);
 
@@ -143,7 +135,6 @@ thBool CThDefTowerSubsoil::initDefTowerConstruction(const char* cszpConstruction
 	sprintf_s(szarrPlistPng, "%s.png", szarrTexPath);
 	sprintf_s(szarrSprite, "%s%d.png", szarrSprite, nTexPos);
 
-	pSpFrameCache->addSpriteFramesWithFile(szarrPlist, szarrPlistPng);
 	pSpFrameCons = pSpFrameCache->getSpriteFrameByName(szarrSprite);
 	pSpConstruction = Sprite::createWithSpriteFrame(pSpFrameCons);
 	TH_PROCESS_ERROR(pSpConstruction);

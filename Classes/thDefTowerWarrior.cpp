@@ -123,7 +123,7 @@ thBool CThDefTowerWarrior::initWarriors(const CHARACTER_DESC_PTR cptSpDesc, cons
 	fDstX = m_fWarriorBirthX + m_sActionRadius * cos(m_fWarriorBirthMoveAngle * (M_PI / 180));
 	fDstY = m_fWarriorBirthY + m_sActionRadius * sin(m_fWarriorBirthMoveAngle * (M_PI / 180));
 
-	bFnRet = initCharacter(cptSpDesc, &m_ptWarriorFrameInfo, THTRUE);
+	bFnRet = initCharacterWithPlist(cptSpDesc, &m_ptWarriorFrameInfo);
 	TH_PROCESS_ERROR(bFnRet);
 	bFnRet = usSetWarriorMove(fDstX, fDstY, csSpArrVacantPos, cptAniMoveTo);
 	TH_PROCESS_ERROR(bFnRet);

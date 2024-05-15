@@ -82,4 +82,32 @@ typedef int thBool;
 typedef thBool* pthBool;
 
 
+enum THEM_SCENE
+{
+	THSCENE_DUNGEON
+};
+
+
+class CTHCcBaseHandler
+{
+public:
+	static CTHCcBaseHandler* getInstance();
+
+	thBool getSpriteFrameExists(const char* cszpSpName);
+	thBool setSceneAllSpPlist(enum THEM_SCENE emScene, thBool bIsLoad);
+
+	thBool scanPlistFiles(const char* cszpPath, int* pnPlistCnt, thBool bIsLoad);
+	void splitFileSuffix(char* szpFile, const char* cszpSuffix, char* szpFilenameRet);
+
+private:
+	CTHCcBaseHandler();
+	~CTHCcBaseHandler();
+	CTHCcBaseHandler(const CTHCcBaseHandler& pSelf);
+	const CTHCcBaseHandler& operator=(const CTHCcBaseHandler& pSelf);
+
+private:
+	static CTHCcBaseHandler* m_pSelf;
+};
+
+
 #endif

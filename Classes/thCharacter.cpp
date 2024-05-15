@@ -21,7 +21,7 @@ CThBaseCharacter::~CThBaseCharacter()
 {
 }
 
-thBool CThBaseCharacter::initCharacter(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR* ppRet, thBool bInitSp)
+thBool CThBaseCharacter::initCharacter(std::string strSpFile, CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR* ppRet, thBool bInitSp)
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
@@ -30,7 +30,7 @@ thBool CThBaseCharacter::initCharacter(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAME
 	
 	if (THTRUE == bInitSp)
 	{
-		ptCharFrame->pSpCharacter = Sprite::create(pDesc->szarrSpritePlistPath);
+		ptCharFrame->pSpCharacter = Sprite::create(strSpFile);
 		TH_PROCESS_ERROR(ptCharFrame->pSpCharacter);
 		ptCharFrame->pSpCharacter->setFlippedX(pDesc->bFlipX);
 		ptCharFrame->pSpCharacter->setFlippedY(pDesc->bFlipY);
@@ -51,7 +51,7 @@ Exit0:
 	return bRet;
 }
 
-thBool CThBaseCharacter::initCharacterWithPlist(const char* cszpSpName, const int cnPos, CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR* ppRet)
+thBool CThBaseCharacter::initCharacterWithPlist(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR* ppRet)
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
@@ -61,7 +61,7 @@ thBool CThBaseCharacter::initCharacterWithPlist(const char* cszpSpName, const in
 	TH_PROCESS_ERROR(ptCharFrame);
 	char szarrSp[128] = { 0 };
 
-	sprintf_s(szarrSp, "%s%d.png", cszpSpName, cnPos);
+	sprintf_s(szarrSp, "%s%d.png", pDesc->szarrSpriteName, pDesc->szarrSpriteName);
 	pSpFrame = pSpFrameCache->spriteFrameByName(szarrSp);
 	TH_PROCESS_ERROR(pSpFrame);
 	ptCharFrame->pSpCharacter = Sprite::createWithSpriteFrame(pSpFrame);
@@ -103,22 +103,14 @@ void CThBaseCharacter::_initCharacterDescInfo(CHARACTER_DESC_PTR pDesc, CHARACTE
 thBool CThBaseCharacter::initCharacterAnimation(CHARACTER_ANI_DESC_PTR pAniDesc, Animate** ppRet) const
 {
 	thBool bRet = THFALSE;
-	char szarrPlistPath[MAX_PATH] = { 0 };
-	char szarrPlistPngPath[MAX_PATH] = { 0 };
 	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::sharedSpriteFrameCache();
 	TH_PROCESS_ERROR(pSpFrameCache);
-
-	sprintf_s(szarrPlistPath, "%s.plist", pAniDesc->szarrBasicFrameAniPlistPath);
-	sprintf_s(szarrPlistPngPath, "%s.png", pAniDesc->szarrBasicFrameAniPlistPath);
-
-	pSpFrameCache->addSpriteFramesWithFile(szarrPlistPath, szarrPlistPngPath);
 	bRet = CthCcAnimation::getInstance()->createPlayAnimationWithPList(pAniDesc, ppRet);
 	TH_PROCESS_ERROR(bRet);
 
 	(*ppRet)->retain();
 	bRet = THTRUE;
 Exit0:
-	pSpFrameCache->removeSpriteFramesFromFile(szarrPlistPath);
 	return bRet;
 }
 
@@ -266,12 +258,6 @@ thBool CthCcCharacterLoadHandler::getCharaterDescFromIni(const char* cszpFilenam
 	/* ╪сть CHARACTER_DESC */
 	GetPrivateProfileStringA(cszpSelCharacterDesc, "szarrSpriteName", "NA", szarrTmpStr, 64, cszpFilename);
 	strcpy_s(pRet->szarrSpriteName, strlen(szarrTmpStr) + 1, szarrTmpStr);
-
-	GetPrivateProfileStringA(cszpSelCharacterDesc, "szarrSpritePlistPath", "NA", szarrTmpStr, MAX_PATH, cszpFilename);
-	strcpy_s(pRet->szarrSpritePlistPath, strlen(szarrTmpStr) + 1, szarrTmpStr);
-
-	GetPrivateProfileStringA(cszpSelCharacterDesc, "szarrSpriteTex", "NA", szarrTmpStr, 64, cszpFilename);
-	strcpy_s(pRet->szarrSpritePlistTex, strlen(szarrTmpStr) + 1, szarrTmpStr);
 
 	GetPrivateProfileStringA(cszpSelCharacterDesc, "fPosX", "0.0", szarrTmpFloat, 32, cszpFilename);
 	pRet->fPosX = (float)atof(szarrTmpFloat);

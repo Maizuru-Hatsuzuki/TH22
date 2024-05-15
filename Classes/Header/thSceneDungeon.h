@@ -22,6 +22,7 @@ public:
 	bool init() override;
 
 	thBool initBgMap();
+	thBool initSceneAllPlist();
 
 	CREATE_FUNC(thSceneDungeon);
 
