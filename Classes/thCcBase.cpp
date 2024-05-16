@@ -35,7 +35,7 @@ CTHCcBaseHandler* CTHCcBaseHandler::getInstance()
 thBool CTHCcBaseHandler::getSpriteFrameExists(const char* cszpSpName)
 {
 	thBool bRet = THFALSE;
-	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::sharedSpriteFrameCache();
+	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::getInstance();
 	SpriteFrame* pSpFrame = NULL;
 
 	pSpFrame = pSpFrameCache->getSpriteFrameByName(cszpSpName);
@@ -83,7 +83,7 @@ thBool CTHCcBaseHandler::scanPlistFiles(const char* cszpPath, int* pnPlistCnt, t
 	char szarrPlistPng[MAX_PATH] = { 0 };
 	struct dirent* ptFile = { 0 };
 	DIR* ptDir = opendir(cszpPath);
-	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::sharedSpriteFrameCache();
+	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::getInstance();
 
 	if (NULL != ptDir)
 	{

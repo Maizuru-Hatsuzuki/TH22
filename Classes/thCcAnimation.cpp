@@ -34,7 +34,7 @@ thBool CthCcAnimation::createPlayAnimationWithPList(CHARACTER_ANI_DESC_PTR ptAni
 	int nFrameCount = 0;
 	char szarrSprite[128] = { 0 };
 	SpriteFrame* pSpFrame = NULL;
-	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::sharedSpriteFrameCache();
+	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::getInstance();
 	TH_PROCESS_ERROR(pSpFrameCache);
 	Animation* pAni = Animation::create();
 	TH_PROCESS_ERROR(pAni);
@@ -46,7 +46,7 @@ thBool CthCcAnimation::createPlayAnimationWithPList(CHARACTER_ANI_DESC_PTR ptAni
 		)
 	{
 		sprintf_s(szarrSprite, "%s%d.png", ptAniDesc->szarrPlistPngPath, i);
-		pSpFrame = pSpFrameCache->spriteFrameByName(szarrSprite);
+		pSpFrame = pSpFrameCache->getSpriteFrameByName(szarrSprite);
 		TH_PROCESS_ERROR(pSpFrame);
 		
 		pAni->addSpriteFrame(pSpFrame);
@@ -72,9 +72,9 @@ thBool CthCcAnimation::createLoadingBar(Sprite* pSpLoading, const float cfInterv
 	TH_PROCESS_ERROR(pLoadingPic);
 
 	pLoadingPic->setScale(ptSpLoading->fScale);
-	pLoadingPic->setType(kCCProgressTimerTypeBar);
-	pLoadingPic->setBarChangeRate(ccp(1, 0));
-	pLoadingPic->setMidpoint(ccp(0, 0));
+	pLoadingPic->setType(ProgressTimer::Type::BAR);
+	pLoadingPic->setBarChangeRate(Vec2(1, 0));
+	pLoadingPic->setMidpoint(Vec2(0, 0));
 	pLoadingPic->setPosition(ptSpLoading->fPosX, ptSpLoading->fPosY);
 
 	*ppActionRet = pLoading;

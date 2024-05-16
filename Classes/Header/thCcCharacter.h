@@ -115,7 +115,7 @@ struct _tCharacterDesc
 
 struct _tCharacterAnimationDesc
 {
-	unsigned int nFrameAniCount;
+	int nFrameAniCount;
 	unsigned int nFrameAniBegin;
 	unsigned int nFrameAniEnd;
 	float fDelayPerUnit;

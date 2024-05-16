@@ -72,7 +72,7 @@
     <ClCompile Include="..\Classes\thPlayer.cpp">
       <Filter>Src\THCharacter</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\thBaseAnimation.cpp">
+    <ClCompile Include="..\Classes\thCcAnimation.cpp">
       <Filter>Src\THBase</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\thDefTowerWarrior.cpp">

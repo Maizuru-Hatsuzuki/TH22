@@ -24,12 +24,12 @@ CThCCDbg::~CThCCDbg()
 thBool CThCCDbg::getDbgInfoInScreenObject(const char* cszpText, Label** ppRet)
 {
 	thBool bRet = THFALSE;
-	Label* pFont = Label::createWithTTF(cszpText, "fonts\\Marker Felt.ttf", 18);
-	TH_PROCESS_ERROR(pFont);
 	Color3B tFontColor;
 	tFontColor.r = 255;
 	tFontColor.g = 255;
 	tFontColor.b = 255;
+	Label* pFont = Label::createWithTTF(cszpText, "fonts\\Marker Felt.ttf", 18);
+	TH_PROCESS_ERROR(pFont);
 
 	pFont->setAnchorPoint(Vec2(0, 1));
 	pFont->setPosition(20, Director::getInstance()->getVisibleSize().height);

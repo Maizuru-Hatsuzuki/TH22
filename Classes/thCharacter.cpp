@@ -56,7 +56,7 @@ thBool CThBaseCharacter::initCharacterWithPlist(CHARACTER_DESC_PTR pDesc, CHARAC
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
 	SpriteFrame* pSpFrame = NULL;
-	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::sharedSpriteFrameCache();
+	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::getInstance();
 	CHARACTER_FRAMEINFO_PTR ptCharFrame = THMALLOC(CHARACTER_FRAMEINFO, sizeof(CHARACTER_FRAMEINFO));
 	TH_PROCESS_ERROR(ptCharFrame);
 	char szarrSp[128] = { 0 };
@@ -70,7 +70,7 @@ thBool CThBaseCharacter::initCharacterWithPlist(CHARACTER_DESC_PTR pDesc, CHARAC
 		sprintf_s(szarrSp, "%s%d.png", pDesc->szarrSpriteTex, pDesc->nDefaultTexPlistPos);
 	}
 	
-	pSpFrame = pSpFrameCache->spriteFrameByName(szarrSp);
+	pSpFrame = pSpFrameCache->getSpriteFrameByName(szarrSp);
 	TH_PROCESS_ERROR(pSpFrame);
 	ptCharFrame->pSpCharacter = Sprite::createWithSpriteFrame(pSpFrame);
 	TH_PROCESS_ERROR(ptCharFrame->pSpCharacter);
@@ -111,7 +111,7 @@ void CThBaseCharacter::_initCharacterDescInfo(CHARACTER_DESC_PTR pDesc, CHARACTE
 thBool CThBaseCharacter::initCharacterAnimation(CHARACTER_ANI_DESC_PTR pAniDesc, Animate** ppRet) const
 {
 	thBool bRet = THFALSE;
-	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::sharedSpriteFrameCache();
+	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::getInstance();
 	TH_PROCESS_ERROR(pSpFrameCache);
 	bRet = CthCcAnimation::getInstance()->createPlayAnimationWithPList(pAniDesc, ppRet);
 	TH_PROCESS_ERROR(bRet);

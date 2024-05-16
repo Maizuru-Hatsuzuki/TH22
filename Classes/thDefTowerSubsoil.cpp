@@ -24,7 +24,7 @@ thBool CThDefTowerSubsoil::init(char* szpSubsoilCharacterDescPath, const float c
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
 	CHARACTER_DESC_PTR ptCharacterDesc = NULL;
-	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::sharedSpriteFrameCache();
+	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::getInstance();
 	SpriteFrame* pSpFrameExists = NULL;
 	char szarrSpFrame[64] = { 0 };
 	char szarrSpPlistTex[MAX_PATH] = { 0 };
@@ -120,11 +120,11 @@ thBool CThDefTowerSubsoil::initDefTowerConstruction()
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
-	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::sharedSpriteFrameCache();
+	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::getInstance();
 	CHARACTER_DESC_PTR ptSubsoilDesc = NULL;
 	char szarrConstructionIni[MAX_PATH] = { 0 };
 
-	m_ptSubsoil->pSpCharacter->setDisplayFrame(m_pActiveDefaultSubsoil);
+	m_ptSubsoil->pSpCharacter->setSpriteFrame(m_pActiveDefaultSubsoil);
 
 	CThDefTower::getTowerInfoArcher(THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, NULL, NULL, NULL, NULL, NULL, szarrConstructionIni);
 	TH_PROCESS_ERROR(0 != strcmp(szarrConstructionIni, "\0"));
@@ -149,7 +149,6 @@ void CThDefTowerSubsoil::uninitDefTowerConstruction()
 	this->removeChild(m_pSpLoadingBg);
 	this->removeChild(m_ptConstruction->pSpCharacter);
 	this->removeChild(m_pLoading);
-	m_ptSubsoil->pSpCharacter->setDisplayFrame(m_pActiveDefaultSubsoil);
 	return;
 }
 
@@ -252,22 +251,22 @@ void CThDefTowerSubsoil::onMouseMove(EventMouse* pEvent)
 	{
 		if (NULL == m_pLoading)
 		{
-			m_ptSubsoil->pSpCharacter->setDisplayFrame(m_pHoverSubsoil);
+			m_ptSubsoil->pSpCharacter->setSpriteFrame(m_pHoverSubsoil);
 		}
 		else
 		{
-			m_ptSubsoil->pSpCharacter->setDisplayFrame(m_pActiveHoverSubsoil);
+			m_ptSubsoil->pSpCharacter->setSpriteFrame(m_pActiveHoverSubsoil);
 		}
 	}
 	else
 	{
 		if (NULL == m_pLoading)
 		{
-			m_ptSubsoil->pSpCharacter->setDisplayFrame(m_pDefaultSubsoil);
+			m_ptSubsoil->pSpCharacter->setSpriteFrame(m_pDefaultSubsoil);
 		}
 		else
 		{
-			m_ptSubsoil->pSpCharacter->setDisplayFrame(m_pActiveDefaultSubsoil);
+			m_ptSubsoil->pSpCharacter->setSpriteFrame(m_pActiveDefaultSubsoil);
 		}
 	}
 
