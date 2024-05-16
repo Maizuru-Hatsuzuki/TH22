@@ -21,6 +21,14 @@ enum THEM_BULLET_TYPE
 	SHOOTCHAT_LASER
 };
 
+enum THEM_DEFTOWER_TYPE
+{
+	DEFTOWERTYPE_UNKNOW,
+	DEFTOWERTYPE_ARCHER,
+	DEFTOWERTYPE_WARRIORS,
+	DEFTOWERTYPE_ARCHER_WARRIORS
+};
+
 enum THEM_CHARARCTERLEVEL_MOVESPEED
 {
 	MOVESPEED_LOWEX,
@@ -84,6 +92,7 @@ struct _tCharacterDesc
 {
 	char szarrSpriteName[64];
 	char szarrSpriteTex[64];
+	char szarrDefaultTexPlistPos[64];
 	float fPosX;
 	float fPosY;
 	float fScale;
@@ -127,7 +136,7 @@ struct _tCharacterFrameInfo
 	int nDefense;
 	int nCDResurrection;
 	int nSupportDuration;
-	DWORD nLastestDieTime;
+	int nLastestDieTime;
 	enum THEM_CHARARCTERLEVEL_MOVESPEED emMoveSpeed;
 	enum THEM_CHARACTER_TYPE emCharacterType;
 	enum THEM_CHARACTER_LEVEL emMaxLevel;
@@ -157,6 +166,7 @@ struct _tDefTowerDesc
 	short sCurWarriors;
 	short sSummonWarriorsCD;
 	short sMaxBullets;
+	int nDefTowerProfessional;
 	enum THEM_BULLET_TYPE emBulletType;
 };
 

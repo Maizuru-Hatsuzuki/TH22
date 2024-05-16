@@ -33,8 +33,7 @@ thBool CThDefTowerSubsoil::init(char* szpSubsoilCharacterDescPath, const float c
 	m_ptSubSoilStatus = NULL;
 	m_pDefTower = NULL;
 	m_pLoading = NULL;
-	m_pSpFrameCons = NULL;
-	m_pSpConstruction = NULL;
+	m_ptConstruction = NULL;
 	m_pSpLoading = NULL;
 	m_pSpLoadingBg = NULL;
 
@@ -105,7 +104,7 @@ thBool CThDefTowerSubsoil::initDefTowerConstructionLoadingBar()
 	/* 创建进度条 */
 	m_pSpLoading = Sprite::createWithSpriteFrameName("Tower Construction Material8.png");
 	TH_PROCESS_ERROR(m_pSpLoading);
-	bRet = CthCcAnimation::getInstance()->createLoadingBar(m_pSpLoading, 2.f, 100, &tLoadingDesc, &pActionLoading, &m_pLoading);
+	bRet = CthCcAnimation::getInstance()->createLoadingBar(m_pSpLoading, 1.f, 100, &tLoadingDesc, &pActionLoading, &m_pLoading);
 	TH_PROCESS_ERROR(bRet);
 
 	this->addChild(m_pSpLoadingBg);
@@ -122,41 +121,23 @@ thBool CThDefTowerSubsoil::initDefTowerConstruction()
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
 	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::sharedSpriteFrameCache();
-
+	CHARACTER_DESC_PTR ptSubsoilDesc = NULL;
 	char szarrConstructionIni[MAX_PATH] = { 0 };
-	char szarrTexPath[MAX_PATH] = { 0 };
-	char szarrPlist[MAX_PATH] = { 0 };
-	char szarrPlistPng[MAX_PATH] = { 0 };
-	char szarrSprite[64] = { 0 };
-	int nTexPos = 0;
+
+	m_ptSubsoil->pSpCharacter->setDisplayFrame(m_pActiveDefaultSubsoil);
 
 	CThDefTower::getTowerInfoArcher(THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, NULL, NULL, NULL, NULL, NULL, szarrConstructionIni);
 	TH_PROCESS_ERROR(0 != strcmp(szarrConstructionIni, "\0"));
 
-	GetPrivateProfileStringA("TEX", "szPlistPath", THINI_DEFAULT_STR, szarrTexPath, MAX_PATH, szarrConstructionIni);
-	TH_PROCESS_SUCCESS(0 == strcmp(THINI_DEFAULT_STR, szarrTexPath));
-	GetPrivateProfileStringA("TEX", "szSpriteName", THINI_DEFAULT_STR, szarrSprite, 64, szarrConstructionIni);
-	TH_PROCESS_SUCCESS(0 == strcmp(THINI_DEFAULT_STR, szarrSprite));
-	nTexPos = GetPrivateProfileIntA("TEX", "nPos", 0, szarrConstructionIni);
-
-	sprintf_s(szarrPlist, "%s.plist", szarrTexPath);
-	sprintf_s(szarrPlistPng, "%s.png", szarrTexPath);
-	sprintf_s(szarrSprite, "%s%d.png", szarrSprite, nTexPos);
-
-	m_pSpFrameCons = pSpFrameCache->getSpriteFrameByName(szarrSprite);
-	m_pSpConstruction = Sprite::createWithSpriteFrame(m_pSpFrameCons);
-	TH_PROCESS_ERROR(m_pSpConstruction);
-
 	/* 创建建造中建筑纹理. */
-	m_pSpConstruction->setPositionX(m_ptSubsoil->pSpCharacter->getPositionX());
-	m_pSpConstruction->setPositionY(m_ptSubsoil->pSpCharacter->getPositionY());
-	m_pSpConstruction->setScale(m_ptSubsoil->pSpCharacter->getScale());
-	m_ptSubsoil->pSpCharacter->setDisplayFrame(m_pActiveDefaultSubsoil);
-
+	bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(szarrConstructionIni, &ptSubsoilDesc);
+	TH_PROCESS_ERROR(bFnRet);
+	bFnRet = initCharacterWithPlist(ptSubsoilDesc, &m_ptConstruction);
+	TH_PROCESS_ERROR(bFnRet);
 	bFnRet = initDefTowerConstructionLoadingBar();
 	TH_PROCESS_ERROR(bFnRet);
 
-	this->addChild(m_pSpConstruction);
+	this->addChild(m_ptConstruction->pSpCharacter);
 	bRet = THTRUE;
 Exit0:
 	return bRet;
@@ -166,8 +147,9 @@ void CThDefTowerSubsoil::uninitDefTowerConstruction()
 {
 	this->removeChild(m_pSpLoadingBg);
 	this->removeChild(m_pSpLoadingBg);
-	this->removeChild(m_pSpConstruction);
+	this->removeChild(m_ptConstruction->pSpCharacter);
 	this->removeChild(m_pLoading);
+	m_ptSubsoil->pSpCharacter->setDisplayFrame(m_pActiveDefaultSubsoil);
 	return;
 }
 
@@ -179,7 +161,7 @@ thBool CThDefTowerSubsoil::initDefTower()
 	/* debug use. init archer */
 	char szpArcher[MAX_PATH] = { 0 };
 	char* arrszpAni[9] = { 0 };
-	char* arrszpWarriors[THMAX_DEFTOWER_TARLEVEL_WARRIORS] = { 0 };
+	//char* arrszpWarriors[THMAX_DEFTOWER_TARLEVEL_WARRIORS] = { 0 };
 	short sAniSize = 0;
 	short sWarriorsRetSize = 0;
 	CHARACTER_DESC_PTR arrpChacWarrios[THMAX_DEFTOWER_TARLEVEL_WARRIORS] = { 0 };
@@ -187,8 +169,9 @@ thBool CThDefTowerSubsoil::initDefTower()
 	/* loading banner. */
 	
 	m_pDefTower = new CThDefTower;
-	CThDefTower::getTowerInfoArcher(THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, szpArcher, arrszpAni, &sAniSize, arrszpWarriors, &sWarriorsRetSize, NULL);
+	CThDefTower::getTowerInfoArcher(THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, szpArcher, arrszpAni, &sAniSize, NULL, &sWarriorsRetSize, NULL);
 
+	/*
 	for ( short j = 0; j < sWarriorsRetSize; j++ )
 	{
 		bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(
@@ -196,7 +179,7 @@ thBool CThDefTowerSubsoil::initDefTower()
 		);
 		TH_PROCESS_ERROR(bFnRet);
 	}
-
+	*/
 
 
 	/*
@@ -209,13 +192,13 @@ thBool CThDefTowerSubsoil::initDefTower()
 	bFnRet = m_pDefTower->init(
 		szpArcher,
 		"data\\CharacterConfig\\SaigyoSakura\\ChacBullet.ini",
-		"image\\sprite\\kr\\smallstar.png",
-		arrszpAni,
-		sAniSize,
-		&tWarrior
+		"image\\ScenePlist\\Dungeon\\defTowerBullet.png",
+		NULL,
+		0,
+		NULL
 	);
 	TH_PROCESS_ERROR(bFnRet);
-	
+	this->addChild(m_pDefTower);
 	bRet = THTRUE;
 Exit0:
 	return bRet;
@@ -267,7 +250,7 @@ void CThDefTowerSubsoil::onMouseMove(EventMouse* pEvent)
 	bRet = pEvent->getCurrentTarget()->getBoundingBox().containsPoint(pEvent->getLocationInView());
 	if (bRet)
 	{
-		if (NULL == m_pDefTower)
+		if (NULL == m_pLoading)
 		{
 			m_ptSubsoil->pSpCharacter->setDisplayFrame(m_pHoverSubsoil);
 		}
@@ -278,7 +261,7 @@ void CThDefTowerSubsoil::onMouseMove(EventMouse* pEvent)
 	}
 	else
 	{
-		if (NULL == m_pDefTower)
+		if (NULL == m_pLoading)
 		{
 			m_ptSubsoil->pSpCharacter->setDisplayFrame(m_pDefaultSubsoil);
 		}

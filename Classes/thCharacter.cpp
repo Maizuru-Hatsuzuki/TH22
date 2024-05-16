@@ -61,7 +61,15 @@ thBool CThBaseCharacter::initCharacterWithPlist(CHARACTER_DESC_PTR pDesc, CHARAC
 	TH_PROCESS_ERROR(ptCharFrame);
 	char szarrSp[128] = { 0 };
 
-	sprintf_s(szarrSp, "%s%d.png", pDesc->szarrSpriteTex, pDesc->nDefaultTexPlistPos);
+	if (0 != strcmp(pDesc->szarrDefaultTexPlistPos, "NA"))
+	{
+		sprintf_s(szarrSp, "%s.png", pDesc->szarrDefaultTexPlistPos);
+	}
+	else
+	{
+		sprintf_s(szarrSp, "%s%d.png", pDesc->szarrSpriteTex, pDesc->nDefaultTexPlistPos);
+	}
+	
 	pSpFrame = pSpFrameCache->spriteFrameByName(szarrSp);
 	TH_PROCESS_ERROR(pSpFrame);
 	ptCharFrame->pSpCharacter = Sprite::createWithSpriteFrame(pSpFrame);
@@ -262,6 +270,9 @@ thBool CthCcCharacterLoadHandler::getCharaterDescFromIni(const char* cszpFilenam
 	GetPrivateProfileStringA(cszpSelCharacterDesc, "szarrSpriteTex", "NA", szarrTmpStr, 64, cszpFilename);
 	strcpy_s(pRet->szarrSpriteTex, strlen(szarrTmpStr) + 1, szarrTmpStr);
 
+	GetPrivateProfileStringA(cszpSelCharacterDesc, "szarrDefaultTexPlistPos", "NA", szarrTmpStr, 64, cszpFilename);
+	strcpy_s(pRet->szarrDefaultTexPlistPos, strlen(szarrTmpStr) + 1, szarrTmpStr);
+
 	GetPrivateProfileStringA(cszpSelCharacterDesc, "fPosX", "0.0", szarrTmpFloat, 32, cszpFilename);
 	pRet->fPosX = (float)atof(szarrTmpFloat);
 
@@ -366,6 +377,7 @@ thBool CthCcCharacterLoadHandler::getDefTowerDescFromIni(const char* cszpFilenam
 		pRet->sMaxWarriors = THMAX_DEFTOWER_TARLEVEL_WARRIORS;
 	}
 	pRet->sSummonWarriorsCD = GetPrivateProfileIntA(cszpSel, "sSummonWarriorsCD", 10, cszpFilename);
+	pRet->nDefTowerProfessional = GetPrivateProfileIntA(cszpSel, "nDefTowerProfessional", 0, cszpFilename);
 	pRet->emBulletType = (enum THEM_BULLET_TYPE)GetPrivateProfileIntA(cszpSel, "nBulletType", THEM_BULLET_TYPE::SHOOTCHAT_TRACKING, cszpFilename);
 
 	*ppRet = pRet;

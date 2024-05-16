@@ -147,6 +147,7 @@ private:
 	CHARACTER_ANI_TAG				m_tAniTag;
 	CHARACTER_FRAMEINFO_PTR			m_ptTower;
 	DEFTOWER_DESC_PTR				m_ptTowerStatus;
+	enum THEM_DEFTOWER_TYPE			m_emTowerType;
 	CHARACTER_FRAMEINFO_PTR*		m_arrpSpGroup;
 	CHARACTER_ANI_FRAMEINFO_PTR*	m_arrpAniGroup;
 	/* 防御塔战士精灵描述，每个等级 4 种类型. */
@@ -187,6 +188,7 @@ public:
 private:
 	float m_arrfDefTowerWarriorPos[THMAX_DEFTOWER_TARLEVEL_WARRIORS][2];
 	CHARACTER_FRAMEINFO_PTR m_ptSubsoil;
+	CHARACTER_FRAMEINFO_PTR m_ptConstruction;
 	SUBSOIL_DESC_PTR m_ptSubSoilStatus;
 	CThDefTower_ptr m_pDefTower;
 	SpriteFrame* m_pDefaultSubsoil;
@@ -194,8 +196,6 @@ private:
 	SpriteFrame* m_pActiveDefaultSubsoil;
 	SpriteFrame* m_pActiveHoverSubsoil;
 	ProgressTimer* m_pLoading;
-	SpriteFrame* m_pSpFrameCons;
-	Sprite* m_pSpConstruction;
 	Sprite* m_pSpLoading;
 	Sprite* m_pSpLoadingBg;
 };

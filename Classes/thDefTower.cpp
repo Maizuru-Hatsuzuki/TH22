@@ -53,6 +53,8 @@ thBool CThDefTower::init(
 	bFnRet = CthCcCharacterLoadHandler::getInstance()->getDefTowerDescFromIni(cszpDefTowerCharacterDescPath, &m_ptTowerStatus);
 	TH_PROCESS_ERROR(bFnRet);
 
+	m_emTowerType = (THEM_DEFTOWER_TYPE)m_ptTowerStatus->nDefTowerProfessional;
+
 	m_arrpSpGroup = THMALLOC(CHARACTER_FRAMEINFO_PTR, sizeof(CHARACTER_FRAMEINFO_PTR) * THMAX_SP_COUNT);
 	TH_PROCESS_ERROR(m_arrpSpGroup);
 	m_arrpAniGroup = THMALLOC(CHARACTER_ANI_FRAMEINFO_PTR, sizeof(CHARACTER_ANI_FRAMEINFO_PTR) * THMAX_ANI_COUNT);
@@ -68,14 +70,16 @@ thBool CThDefTower::init(
 	TH_PROCESS_ERROR(bFnRet);
 	bFnRet = initBaiscAnimate(szarrpAniDesc, csAniDescSize);
 	TH_PROCESS_ERROR(bFnRet);
-	bFnRet = initDefTowerWarriorsDesc(ptWarriors);
-	TH_PROCESS_ERROR(bFnRet);
-
-	/* 播放开门动画并初始化战士精灵. */
-	bFnRet = setPlayAniTowerSummon(arrnAniTag, THMAX_DEFTOWER_SYNC_ANI, THTRUE);
-	TH_PROCESS_ERROR(bFnRet);
-	bFnRet = initWarriors(m_ptTowerStatus->sMaxWarriors, m_sVacantPos);
-	TH_PROCESS_ERROR(bFnRet);
+	if (THEM_DEFTOWER_TYPE::DEFTOWERTYPE_WARRIORS == m_emTowerType || THEM_DEFTOWER_TYPE::DEFTOWERTYPE_ARCHER_WARRIORS == m_emTowerType)
+	{
+		/* 播放开门动画并初始化战士精灵. */
+		bFnRet = initDefTowerWarriorsDesc(ptWarriors);
+		TH_PROCESS_ERROR(bFnRet);
+		bFnRet = setPlayAniTowerSummon(arrnAniTag, THMAX_DEFTOWER_SYNC_ANI, THTRUE);
+		TH_PROCESS_ERROR(bFnRet);
+		bFnRet = initWarriors(m_ptTowerStatus->sMaxWarriors, m_sVacantPos);
+		TH_PROCESS_ERROR(bFnRet);
+	}
 
 	pMouse->onMouseUp = CC_CALLBACK_1(CThDefTower::onMouseUp, this);
 	pMouse->onMouseMove = CC_CALLBACK_1(CThDefTower::onMouseMove, this);
@@ -302,6 +306,7 @@ thBool CThDefTower::initBullet(float fShootAngle)
 	m_arrpSpGroup[sVancantPos] = ptFrBullet;
 
 	ptFrBullet->pSpCharacter->setPosition(m_ptTower->pSpCharacter->getPositionX(), m_ptTower->pSpCharacter->getPositionY());
+	ptFrBullet->pSpCharacter->setRotation(-fShootAngle);
 	m_pBatchNodeBullet->addChild(ptFrBullet->pSpCharacter);
 
 	fMoveDstX = m_ptTower->pSpCharacter->getPositionX() + m_ptTower->nAttackRadius * cos(fShootAngle * (M_PI / 180));
@@ -389,23 +394,18 @@ void CThDefTower::getTowerInfoArcher(
 )
 {
 	TH_RUN_SUCCESS(NULL != szpArcherRet, strcpy_s(szpArcherRet, MAX_PATH, "data\\CharacterConfig\\SaigyoSakura\\ChacSaigyoSakura.ini"));
-	TH_RUN_SUCCESS(NULL != szpDefTowerConstruction, strcpy_s(szpDefTowerConstruction, MAX_PATH, "data\\CharacterConfig\\DefTowerSubsoil\\TexDefTowerConstructionArcher.ini"));
+	TH_RUN_SUCCESS(NULL != szpDefTowerConstruction, strcpy_s(szpDefTowerConstruction, MAX_PATH, "data\\CharacterConfig\\DefTowerSubsoil\\ChacDefTowerConstructionArcher.ini"));
 
 	switch (emLevel)
 	{
 	case CHARACTER_LEVEL_1:
 		if (NULL != arrpAniRet && NULL != psAniSizeRet)
 		{
-			arrpAniRet[0] = "data\\CharacterConfig\\SaigyoSakura\\AniWarriorsMove.ini";
-			arrpAniRet[1] = "data\\CharacterConfig\\SaigyoSakura\\AniOpenTheDoor.ini";
-			arrpAniRet[2] = "data\\CharacterConfig\\SaigyoSakura\\AniCloseTheDoor.ini";
-			arrpAniRet[3] = "data\\CharacterConfig\\SaigyoSakura\\AniTagWarriorsDie.ini";
-			*psAniSizeRet = 4;
+			*psAniSizeRet = 0;
 		}
 		if (NULL != arrpWarriorsRet && NULL != psWarriorsCnt)
 		{
-			arrpWarriorsRet[0] = "data\\CharacterConfig\\SaigyoSakura\\ChacWarrior.ini";
-			*psWarriorsCnt = 1;
+			*psWarriorsCnt = 0;
 		}
 		break;
 
@@ -645,8 +645,11 @@ thBool CThDefTower::globalMonitoring()
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
 	
-	bFnRet = globalMonitoringWarriors();
-	TH_PROCESS_ERROR(bFnRet);
+	if (THEM_DEFTOWER_TYPE::DEFTOWERTYPE_WARRIORS == m_emTowerType || THEM_DEFTOWER_TYPE::DEFTOWERTYPE_ARCHER_WARRIORS == m_emTowerType)
+	{
+		bFnRet = globalMonitoringWarriors();
+		TH_PROCESS_ERROR(bFnRet);
+	}
 
 	bRet = THTRUE;
 Exit0:
