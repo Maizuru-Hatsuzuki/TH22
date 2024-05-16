@@ -388,19 +388,25 @@ void CThDefTower::getTowerInfoArcher(
 	enum THEM_CHARACTER_LEVEL emLevel, char* szpArcherRet, char** arrpAniRet, short* psAniSizeRet, char** arrpWarriorsRet, short* psWarriorsCnt, char* szpDefTowerConstruction
 )
 {
-	strcpy_s(szpArcherRet, MAX_PATH, "data\\CharacterConfig\\SaigyoSakura\\ChacSaigyoSakura.ini");
-	strcpy_s(szpDefTowerConstruction, MAX_PATH, "data\\CharacterConfig\\DefTowerSubsoil\\TexDefTowerConstructionArcher.ini");
+	TH_RUN_SUCCESS(NULL != szpArcherRet, strcpy_s(szpArcherRet, MAX_PATH, "data\\CharacterConfig\\SaigyoSakura\\ChacSaigyoSakura.ini"));
+	TH_RUN_SUCCESS(NULL != szpDefTowerConstruction, strcpy_s(szpDefTowerConstruction, MAX_PATH, "data\\CharacterConfig\\DefTowerSubsoil\\TexDefTowerConstructionArcher.ini"));
 
 	switch (emLevel)
 	{
 	case CHARACTER_LEVEL_1:
-		arrpAniRet[0] = "data\\CharacterConfig\\SaigyoSakura\\AniWarriorsMove.ini";
-		arrpAniRet[1] = "data\\CharacterConfig\\SaigyoSakura\\AniOpenTheDoor.ini";
-		arrpAniRet[2] = "data\\CharacterConfig\\SaigyoSakura\\AniCloseTheDoor.ini";
-		arrpAniRet[3] = "data\\CharacterConfig\\SaigyoSakura\\AniTagWarriorsDie.ini";
-
-		*psAniSizeRet = 4;
-		*psWarriorsCnt = 1;
+		if (NULL != arrpAniRet && NULL != psAniSizeRet)
+		{
+			arrpAniRet[0] = "data\\CharacterConfig\\SaigyoSakura\\AniWarriorsMove.ini";
+			arrpAniRet[1] = "data\\CharacterConfig\\SaigyoSakura\\AniOpenTheDoor.ini";
+			arrpAniRet[2] = "data\\CharacterConfig\\SaigyoSakura\\AniCloseTheDoor.ini";
+			arrpAniRet[3] = "data\\CharacterConfig\\SaigyoSakura\\AniTagWarriorsDie.ini";
+			*psAniSizeRet = 4;
+		}
+		if (NULL != arrpWarriorsRet && NULL != psWarriorsCnt)
+		{
+			arrpWarriorsRet[0] = "data\\CharacterConfig\\SaigyoSakura\\ChacWarrior.ini";
+			*psWarriorsCnt = 1;
+		}
 		break;
 
 	case CHARACTER_LEVEL_2:

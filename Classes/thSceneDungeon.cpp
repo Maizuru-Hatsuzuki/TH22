@@ -94,10 +94,10 @@ bool thSceneDungeon::init()
 	*/
 
 	CTHCcBaseHandler::getInstance()->setSceneAllSpPlist(THEM_SCENE::THSCENE_DUNGEON, THTRUE);
-	char* szpSubSoilAPlistPath = "data\\CharacterConfig\\DefTowerSubsoil\\ChacGrasslandA.ini";
+	char szarrSubSoilAPlistPath[MAX_PATH] = "data\\CharacterConfig\\DefTowerSubsoil\\ChacGrasslandA.ini";
 	CThDefTowerSubsoil* pSubsoilA = new CThDefTowerSubsoil;
 
-	pSubsoilA->init(szpSubSoilAPlistPath, 270.f);
+	pSubsoilA->init(szarrSubSoilAPlistPath, 270.f);
 	this->addChild(pSubsoilA);
 
 #ifdef _DEBUG

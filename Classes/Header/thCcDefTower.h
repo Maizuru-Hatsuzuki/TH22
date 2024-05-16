@@ -169,7 +169,8 @@ public:
 
 	thBool init(char* szpSubsoilCharacterDescPath, const float cfFacingEnemyAngle);
 	thBool initDefTowerConstructionLoadingBar();
-	thBool initDefTowerConstruction(const char* cszpConstructionIni);
+	thBool initDefTowerConstruction();
+	void uninitDefTowerConstruction();
 	thBool initDefTower();
 	void uninit();
 	void uninitDefTower();
@@ -181,6 +182,7 @@ public:
 	virtual void onMouseMove(EventMouse* pEvent);
 
 	virtual thBool globalMonitoring();
+	virtual void update(float dt);
 
 private:
 	float m_arrfDefTowerWarriorPos[THMAX_DEFTOWER_TARLEVEL_WARRIORS][2];
@@ -192,6 +194,10 @@ private:
 	SpriteFrame* m_pActiveDefaultSubsoil;
 	SpriteFrame* m_pActiveHoverSubsoil;
 	ProgressTimer* m_pLoading;
+	SpriteFrame* m_pSpFrameCons;
+	Sprite* m_pSpConstruction;
+	Sprite* m_pSpLoading;
+	Sprite* m_pSpLoadingBg;
 };
 
 

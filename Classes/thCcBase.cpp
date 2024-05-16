@@ -91,21 +91,23 @@ thBool CTHCcBaseHandler::scanPlistFiles(const char* cszpPath, int* pnPlistCnt, t
 		{
 			if (0 != strcmp(ptFile->d_name, ".") && 0 != strcmp(ptFile->d_name, ".."))
 			{
-				splitFileSuffix(ptFile->d_name, ".plist", szarrFilename);
-				sprintf_s(szarrPlist, MAX_PATH, "%s\\%s.plist", cszpPath, szarrFilename);
-				sprintf_s(szarrPlistPng, MAX_PATH, "%s\\%s.png", cszpPath, szarrFilename);
-				if (bIsLoad == THTRUE)
+				bRet = splitFileSuffix(ptFile->d_name, ".plist", szarrFilename);
+				if (THTRUE == bRet)
 				{
-					pSpFrameCache->addSpriteFramesWithFile(szarrPlist, szarrPlistPng);
-					CCLOG("Loaded plist: %s.", szarrPlist);
+					sprintf_s(szarrPlist, MAX_PATH, "%s\\%s.plist", cszpPath, szarrFilename);
+					sprintf_s(szarrPlistPng, MAX_PATH, "%s\\%s.png", cszpPath, szarrFilename);
+					if (bIsLoad == THTRUE)
+					{
+						pSpFrameCache->addSpriteFramesWithFile(szarrPlist, szarrPlistPng);
+						CCLOG("Loaded plist: %s.", szarrPlist);
+					}
+					else
+					{
+						pSpFrameCache->removeSpriteFramesFromFile(szarrPlist);
+					}
+					nLoadingCnt++;
 				}
-				else
-				{
-					pSpFrameCache->removeSpriteFramesFromFile(szarrPlist);
-				}
-				
 			}
-			nLoadingCnt++;
 		}
 	}
 
@@ -115,8 +117,9 @@ Exit0:
 	return bRet;
 }
 
-void CTHCcBaseHandler::splitFileSuffix(char* szpFile, const char* cszpSuffix, char* szpFilenameRet)
+thBool CTHCcBaseHandler::splitFileSuffix(char* szpFile, const char* cszpSuffix, char* szpFilenameRet)
 {
+	thBool bRet = THFALSE;
 	char* filename = "";
 	char* szpSuffix = strstr(szpFile, cszpSuffix);
 	if (NULL != szpSuffix)
@@ -124,6 +127,8 @@ void CTHCcBaseHandler::splitFileSuffix(char* szpFile, const char* cszpSuffix, ch
 		/* 截断suffix后面的内容, 截断后缀 */
 		*szpSuffix = '\0';
 		strcpy_s(szpFilenameRet, strlen(szpFile) + 1, szpFile);
+		bRet = THTRUE;
 	}
-	return;
+
+	return bRet;
 }

@@ -97,7 +97,7 @@ public:
 	thBool setSceneAllSpPlist(enum THEM_SCENE emScene, thBool bIsLoad);
 
 	thBool scanPlistFiles(const char* cszpPath, int* pnPlistCnt, thBool bIsLoad);
-	void splitFileSuffix(char* szpFile, const char* cszpSuffix, char* szpFilenameRet);
+	thBool splitFileSuffix(char* szpFile, const char* cszpSuffix, char* szpFilenameRet);
 
 private:
 	CTHCcBaseHandler();

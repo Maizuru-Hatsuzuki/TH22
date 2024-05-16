@@ -83,7 +83,7 @@ struct _tCharacterAniMap
 struct _tCharacterDesc
 {
 	char szarrSpriteName[64];
-	int nDefaultSpPlistPos;
+	char szarrSpriteTex[64];
 	float fPosX;
 	float fPosY;
 	float fScale;

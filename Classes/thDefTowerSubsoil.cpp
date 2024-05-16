@@ -33,6 +33,10 @@ thBool CThDefTowerSubsoil::init(char* szpSubsoilCharacterDescPath, const float c
 	m_ptSubSoilStatus = NULL;
 	m_pDefTower = NULL;
 	m_pLoading = NULL;
+	m_pSpFrameCons = NULL;
+	m_pSpConstruction = NULL;
+	m_pSpLoading = NULL;
+	m_pSpLoadingBg = NULL;
 
 	bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(szpSubsoilCharacterDescPath, &ptCharacterDesc);
 	TH_PROCESS_ERROR(bFnRet);
@@ -45,19 +49,19 @@ thBool CThDefTowerSubsoil::init(char* szpSubsoilCharacterDescPath, const float c
 
 	CTHCcBaseHandler::getInstance()->splitFileSuffix(szpSubsoilCharacterDescPath, ".ini", szarrSpPlistTex);
 
-	sprintf_s(szarrSpFrame, "%s\\%s%d.png", szpSubsoilCharacterDescPath, ptCharacterDesc->szarrSpriteName, m_ptSubSoilStatus->nHoverTexPlistPos);
+	sprintf_s(szarrSpFrame, 64, "%s%d.png", ptCharacterDesc->szarrSpriteTex, m_ptSubSoilStatus->nHoverTexPlistPos);
 	m_pHoverSubsoil = pSpFrameCache->getSpriteFrameByName(szarrSpFrame);
 	TH_PROCESS_ERROR(m_pHoverSubsoil);
 
-	sprintf_s(szarrSpFrame, "%s\\%s%d.png", szpSubsoilCharacterDescPath, ptCharacterDesc->szarrSpriteName, m_ptSubSoilStatus->nActiveHoverTexPlistPos);
+	sprintf_s(szarrSpFrame, 64, "%s%d.png", ptCharacterDesc->szarrSpriteTex, m_ptSubSoilStatus->nActiveHoverTexPlistPos);
 	m_pActiveHoverSubsoil = pSpFrameCache->getSpriteFrameByName(szarrSpFrame);
 	TH_PROCESS_ERROR(m_pActiveHoverSubsoil);
 
-	sprintf_s(szarrSpFrame, "%s\\%s%d.png", szpSubsoilCharacterDescPath, ptCharacterDesc->szarrSpriteName, m_ptSubSoilStatus->nDefaultTexPlistPos);
+	sprintf_s(szarrSpFrame, 64, "%s%d.png", ptCharacterDesc->szarrSpriteTex, m_ptSubSoilStatus->nDefaultTexPlistPos);
 	m_pDefaultSubsoil = pSpFrameCache->getSpriteFrameByName(szarrSpFrame);
 	TH_PROCESS_ERROR(m_pDefaultSubsoil);
 
-	sprintf_s(szarrSpFrame, "%s\\%s%d.png", szpSubsoilCharacterDescPath, ptCharacterDesc->szarrSpriteName, m_ptSubSoilStatus->nActiveDefaultTexPlistPos);
+	sprintf_s(szarrSpFrame, 64, "%s%d.png", ptCharacterDesc->szarrSpriteTex, m_ptSubSoilStatus->nActiveDefaultTexPlistPos);
 	m_pActiveDefaultSubsoil = pSpFrameCache->getSpriteFrameByName(szarrSpFrame);
 	TH_PROCESS_ERROR(m_pActiveDefaultSubsoil);
 
@@ -65,6 +69,8 @@ thBool CThDefTowerSubsoil::init(char* szpSubsoilCharacterDescPath, const float c
 	pMouse->onMouseMove = CC_CALLBACK_1(CThDefTowerSubsoil::onMouseMove, this);
 	pMouse->onMouseDown = CC_CALLBACK_1(CThDefTowerSubsoil::onMouseDown, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(pMouse, m_ptSubsoil->pSpCharacter);
+
+	scheduleUpdate();
 
 	this->addChild(m_ptSubsoil->pSpCharacter);
 	bRet = THTRUE;
@@ -75,6 +81,8 @@ Exit0:
 
 void CThDefTowerSubsoil::uninit()
 {
+	unscheduleUpdate();
+	Director::getInstance()->getEventDispatcher()->removeAllEventListeners();
 	CthCcCharacterLoadHandler::getInstance()->uninitSubsoilDesc(m_ptSubSoilStatus);
 	return;
 }
@@ -82,8 +90,6 @@ void CThDefTowerSubsoil::uninit()
 thBool CThDefTowerSubsoil::initDefTowerConstructionLoadingBar()
 {
 	thBool bRet = THFALSE;
-	Sprite* pSpLoading = NULL;
-	Sprite* pSpLoadingBg = NULL;
 	ProgressTo* pActionLoading = NULL;
 	CHARACTER_DESC tLoadingDesc = {};
 	tLoadingDesc.fPosX = m_ptSubsoil->pSpCharacter->getPositionX();
@@ -91,18 +97,18 @@ thBool CThDefTowerSubsoil::initDefTowerConstructionLoadingBar()
 	tLoadingDesc.fScale = m_ptSubsoil->pSpCharacter->getScale();
 
 	/* 创建进度条背景. */
-	pSpLoadingBg = Sprite::createWithSpriteFrameName("Tower Construction Material7.png");
-	TH_PROCESS_ERROR(pSpLoadingBg);
-	pSpLoadingBg->setPosition(m_ptSubsoil->pSpCharacter->getPositionX(), m_ptSubsoil->pSpCharacter->getPositionY() + 50);
-	pSpLoadingBg->setScale(m_ptSubsoil->pSpCharacter->getScale());
+	m_pSpLoadingBg = Sprite::createWithSpriteFrameName("Tower Construction Material7.png");
+	TH_PROCESS_ERROR(m_pSpLoadingBg);
+	m_pSpLoadingBg->setPosition(m_ptSubsoil->pSpCharacter->getPositionX(), m_ptSubsoil->pSpCharacter->getPositionY() + 50);
+	m_pSpLoadingBg->setScale(m_ptSubsoil->pSpCharacter->getScale());
 
 	/* 创建进度条 */
-	pSpLoading = Sprite::createWithSpriteFrameName("Tower Construction Material8.png");
-	TH_PROCESS_ERROR(pSpLoading);
-	bRet = CthCcAnimation::getInstance()->createLoadingBar(pSpLoading, 2.f, 100, &tLoadingDesc, &pActionLoading, &m_pLoading);
+	m_pSpLoading = Sprite::createWithSpriteFrameName("Tower Construction Material8.png");
+	TH_PROCESS_ERROR(m_pSpLoading);
+	bRet = CthCcAnimation::getInstance()->createLoadingBar(m_pSpLoading, 2.f, 100, &tLoadingDesc, &pActionLoading, &m_pLoading);
 	TH_PROCESS_ERROR(bRet);
 
-	this->addChild(pSpLoadingBg);
+	this->addChild(m_pSpLoadingBg);
 	this->addChild(m_pLoading);
 
 	m_pLoading->runAction(pActionLoading);
@@ -111,47 +117,58 @@ Exit0:
 	return bRet;
 }
 
-thBool CThDefTowerSubsoil::initDefTowerConstruction(const char* cszpConstructionIni)
+thBool CThDefTowerSubsoil::initDefTowerConstruction()
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
-	SpriteFrame* pSpFrameCons = NULL;
-	Sprite* pSpConstruction = NULL;
 	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::sharedSpriteFrameCache();
 
+	char szarrConstructionIni[MAX_PATH] = { 0 };
 	char szarrTexPath[MAX_PATH] = { 0 };
 	char szarrPlist[MAX_PATH] = { 0 };
 	char szarrPlistPng[MAX_PATH] = { 0 };
 	char szarrSprite[64] = { 0 };
 	int nTexPos = 0;
 
-	GetPrivateProfileStringA("TEX", "szPlistPath", THINI_DEFAULT_STR, szarrTexPath, MAX_PATH, cszpConstructionIni);
+	CThDefTower::getTowerInfoArcher(THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, NULL, NULL, NULL, NULL, NULL, szarrConstructionIni);
+	TH_PROCESS_ERROR(0 != strcmp(szarrConstructionIni, "\0"));
+
+	GetPrivateProfileStringA("TEX", "szPlistPath", THINI_DEFAULT_STR, szarrTexPath, MAX_PATH, szarrConstructionIni);
 	TH_PROCESS_SUCCESS(0 == strcmp(THINI_DEFAULT_STR, szarrTexPath));
-	GetPrivateProfileStringA("TEX", "szSpriteName", THINI_DEFAULT_STR, szarrSprite, 64, cszpConstructionIni);
+	GetPrivateProfileStringA("TEX", "szSpriteName", THINI_DEFAULT_STR, szarrSprite, 64, szarrConstructionIni);
 	TH_PROCESS_SUCCESS(0 == strcmp(THINI_DEFAULT_STR, szarrSprite));
-	nTexPos = GetPrivateProfileIntA("TEX", "nPos", 0, cszpConstructionIni);
+	nTexPos = GetPrivateProfileIntA("TEX", "nPos", 0, szarrConstructionIni);
 
 	sprintf_s(szarrPlist, "%s.plist", szarrTexPath);
 	sprintf_s(szarrPlistPng, "%s.png", szarrTexPath);
 	sprintf_s(szarrSprite, "%s%d.png", szarrSprite, nTexPos);
 
-	pSpFrameCons = pSpFrameCache->getSpriteFrameByName(szarrSprite);
-	pSpConstruction = Sprite::createWithSpriteFrame(pSpFrameCons);
-	TH_PROCESS_ERROR(pSpConstruction);
+	m_pSpFrameCons = pSpFrameCache->getSpriteFrameByName(szarrSprite);
+	m_pSpConstruction = Sprite::createWithSpriteFrame(m_pSpFrameCons);
+	TH_PROCESS_ERROR(m_pSpConstruction);
 
 	/* 创建建造中建筑纹理. */
-	pSpConstruction->setPositionX(m_ptSubsoil->pSpCharacter->getPositionX());
-	pSpConstruction->setPositionY(m_ptSubsoil->pSpCharacter->getPositionY());
-	pSpConstruction->setScale(m_ptSubsoil->pSpCharacter->getScale());
+	m_pSpConstruction->setPositionX(m_ptSubsoil->pSpCharacter->getPositionX());
+	m_pSpConstruction->setPositionY(m_ptSubsoil->pSpCharacter->getPositionY());
+	m_pSpConstruction->setScale(m_ptSubsoil->pSpCharacter->getScale());
 	m_ptSubsoil->pSpCharacter->setDisplayFrame(m_pActiveDefaultSubsoil);
 
 	bFnRet = initDefTowerConstructionLoadingBar();
 	TH_PROCESS_ERROR(bFnRet);
 
-	this->addChild(pSpConstruction);
+	this->addChild(m_pSpConstruction);
 	bRet = THTRUE;
 Exit0:
 	return bRet;
+}
+
+void CThDefTowerSubsoil::uninitDefTowerConstruction()
+{
+	this->removeChild(m_pSpLoadingBg);
+	this->removeChild(m_pSpLoadingBg);
+	this->removeChild(m_pSpConstruction);
+	this->removeChild(m_pLoading);
+	return;
 }
 
 thBool CThDefTowerSubsoil::initDefTower()
@@ -163,7 +180,6 @@ thBool CThDefTowerSubsoil::initDefTower()
 	char szpArcher[MAX_PATH] = { 0 };
 	char* arrszpAni[9] = { 0 };
 	char* arrszpWarriors[THMAX_DEFTOWER_TARLEVEL_WARRIORS] = { 0 };
-	char szarrConstruction[MAX_PATH] = { 0 };
 	short sAniSize = 0;
 	short sWarriorsRetSize = 0;
 	CHARACTER_DESC_PTR arrpChacWarrios[THMAX_DEFTOWER_TARLEVEL_WARRIORS] = { 0 };
@@ -171,8 +187,7 @@ thBool CThDefTowerSubsoil::initDefTower()
 	/* loading banner. */
 	
 	m_pDefTower = new CThDefTower;
-
-	CThDefTower::getTowerInfoArcher(THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, szpArcher, arrszpAni, &sAniSize, arrszpWarriors, &sWarriorsRetSize, szarrConstruction);
+	CThDefTower::getTowerInfoArcher(THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, szpArcher, arrszpAni, &sAniSize, arrszpWarriors, &sWarriorsRetSize, NULL);
 
 	for ( short j = 0; j < sWarriorsRetSize; j++ )
 	{
@@ -182,9 +197,6 @@ thBool CThDefTowerSubsoil::initDefTower()
 		TH_PROCESS_ERROR(bFnRet);
 	}
 
-	bFnRet = initDefTowerConstruction(szarrConstruction);
-	TH_PROCESS_ERROR(bFnRet);
-
 
 
 	/*
@@ -193,16 +205,17 @@ thBool CThDefTowerSubsoil::initDefTower()
 		3. update里循环如果播放100就销毁建造中和进度条贴图
 		4. 执行队列任务
 	*/
-	/*
+	
 	bFnRet = m_pDefTower->init(
 		szpArcher,
 		"data\\CharacterConfig\\SaigyoSakura\\ChacBullet.ini",
+		"image\\sprite\\kr\\smallstar.png",
 		arrszpAni,
 		sAniSize,
 		&tWarrior
 	);
 	TH_PROCESS_ERROR(bFnRet);
-	*/
+	
 	bRet = THTRUE;
 Exit0:
 	return bRet;
@@ -232,7 +245,7 @@ void CThDefTowerSubsoil::onMouseUp(EventMouse* pEvent)
 	{
 		if (NULL == m_pDefTower)
 		{
-			initDefTower();
+			initDefTowerConstruction();
 		}
 		else
 		{
@@ -288,4 +301,14 @@ thBool CThDefTowerSubsoil::globalMonitoring()
 	bRet = THTRUE;
 Exit0:
 	return bRet;
+}
+
+void CThDefTowerSubsoil::update(float dt)
+{
+	if (NULL != m_pLoading && 100.f == m_pLoading->getPercentage())
+	{
+		uninitDefTowerConstruction();
+		initDefTower();
+	}
+	return;
 }

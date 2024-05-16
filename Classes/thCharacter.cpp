@@ -61,7 +61,7 @@ thBool CThBaseCharacter::initCharacterWithPlist(CHARACTER_DESC_PTR pDesc, CHARAC
 	TH_PROCESS_ERROR(ptCharFrame);
 	char szarrSp[128] = { 0 };
 
-	sprintf_s(szarrSp, "%s%d.png", pDesc->szarrSpriteName, pDesc->szarrSpriteName);
+	sprintf_s(szarrSp, "%s%d.png", pDesc->szarrSpriteTex, pDesc->nDefaultTexPlistPos);
 	pSpFrame = pSpFrameCache->spriteFrameByName(szarrSp);
 	TH_PROCESS_ERROR(pSpFrame);
 	ptCharFrame->pSpCharacter = Sprite::createWithSpriteFrame(pSpFrame);
@@ -259,6 +259,9 @@ thBool CthCcCharacterLoadHandler::getCharaterDescFromIni(const char* cszpFilenam
 	GetPrivateProfileStringA(cszpSelCharacterDesc, "szarrSpriteName", "NA", szarrTmpStr, 64, cszpFilename);
 	strcpy_s(pRet->szarrSpriteName, strlen(szarrTmpStr) + 1, szarrTmpStr);
 
+	GetPrivateProfileStringA(cszpSelCharacterDesc, "szarrSpriteTex", "NA", szarrTmpStr, 64, cszpFilename);
+	strcpy_s(pRet->szarrSpriteTex, strlen(szarrTmpStr) + 1, szarrTmpStr);
+
 	GetPrivateProfileStringA(cszpSelCharacterDesc, "fPosX", "0.0", szarrTmpFloat, 32, cszpFilename);
 	pRet->fPosX = (float)atof(szarrTmpFloat);
 
@@ -270,6 +273,7 @@ thBool CthCcCharacterLoadHandler::getCharaterDescFromIni(const char* cszpFilenam
 
 	pRet->bFlipX = GetPrivateProfileIntA(cszpSelCharacterDesc, "bFileX", THFALSE, cszpFilename);
 	pRet->bFlipY = GetPrivateProfileIntA(cszpSelCharacterDesc, "bFileY", THFALSE, cszpFilename);
+	pRet->nDefaultTexPlistPos = GetPrivateProfileIntA(cszpSelCharacterDesc, "nDefaultTexPlistPos", 0, cszpFilename);
 	pRet->nHP = GetPrivateProfileIntA(cszpSelCharacterDesc, "nHP", 100, cszpFilename);
 	pRet->nMP = GetPrivateProfileIntA(cszpSelCharacterDesc, "nMP", 100, cszpFilename);
 	pRet->nAttack = GetPrivateProfileIntA(cszpSelCharacterDesc, "nAttack", 10, cszpFilename);
