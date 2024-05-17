@@ -10,6 +10,9 @@
 #include "thBaseMacro.h"
 
 
+float CThDefTower::ms_fWarriorsBirthAngle;
+
+
 CThDefTower::CThDefTower()
 {
 }
@@ -24,7 +27,8 @@ thBool CThDefTower::init(
 	const char* cszpBulletPlistPng,
 	char** szarrpAniDesc,
 	const short csAniDescSize,
-	const DEFTOWER_WARRIORS_PTR ptWarriors
+	const DEFTOWER_WARRIORS_PTR ptWarriors,
+	float fFaceAngle
 )
 {
 	thBool bRet = THFALSE;
@@ -33,6 +37,7 @@ thBool CThDefTower::init(
 	EventListenerMouse* pMouse = EventListenerMouse::create();
 	CHARACTER_DESC_PTR ptCharacterDesc = NULL;
 
+	CThDefTower::ms_fWarriorsBirthAngle = fFaceAngle;
 	m_sVacantPos = 0;
 	m_dLastSummonWarriors = 0.f;
 	m_dLastAttack = 0.f;
@@ -235,9 +240,6 @@ thBool CThDefTower::initWarriors(const short csCnt, short sSpArrVacantPos)
 	CHARACTER_ANI_FRAMEINFO_PTR ptAniMoveTo = NULL;
 	CThDefTowerWarrior* ptmpWarrior = NULL;
 
-	/* debug use */
-	static float fWarriorsBirthAngle = 270.f;
-
 	TH_PROCESS_SUCCESS(THMAX_DEFTOWER_TARLEVEL_WARRIORS < csCnt);
 	for (int i = 0; i < csCnt; i++)
 	{
@@ -252,11 +254,11 @@ thBool CThDefTower::initWarriors(const short csCnt, short sSpArrVacantPos)
 		TH_PROCESS_SUCCESS(bFnRet);
 		getAniFrameInfoByTag(ptSpDesc->ptAniMap->szarrAniMoveTransverse, &ptAniMoveTo);
 		TH_PROCESS_ERROR(ptAniMoveTo);
-		getWarriorExistsByAngle(fWarriorsBirthAngle, &bFnRet);
+		getWarriorExistsByAngle(CThDefTower::ms_fWarriorsBirthAngle, &bFnRet);
 		if (THTRUE == bFnRet)
 		{
-			fWarriorsBirthAngle += 15.f;
-			fWarriorsBirthAngle = fmodf(fWarriorsBirthAngle, 360.f);
+			CThDefTower::ms_fWarriorsBirthAngle += 15.f;
+			CThDefTower::ms_fWarriorsBirthAngle = fmodf(CThDefTower::ms_fWarriorsBirthAngle, 360.f);
 		}
 
 		ptmpWarrior = THNEW_CLASS(CThDefTowerWarrior);
@@ -264,7 +266,7 @@ thBool CThDefTower::initWarriors(const short csCnt, short sSpArrVacantPos)
 		bFnRet = ptmpWarrior->init(
 			ptSpDesc,
 			sSpArrVacantPos,
-			fWarriorsBirthAngle,
+			CThDefTower::ms_fWarriorsBirthAngle,
 			m_ptTower->pSpCharacter->getPositionX(),
 			m_ptTower->pSpCharacter->getPositionY(),
 			m_ptTower->nAttackRadius,
@@ -393,6 +395,48 @@ void CThDefTower::getTowerInfoArcher(
 	enum THEM_CHARACTER_LEVEL emLevel, char* szpArcherRet, char** arrpAniRet, short* psAniSizeRet, char** arrpWarriorsRet, short* psWarriorsCnt, char* szpDefTowerConstruction
 )
 {
+	TH_RUN_SUCCESS(NULL != szpArcherRet, strcpy_s(szpArcherRet, MAX_PATH, "data\\CharacterConfig\\Barracks\\ChacBarracks.ini"));
+	TH_RUN_SUCCESS(NULL != szpDefTowerConstruction, strcpy_s(szpDefTowerConstruction, MAX_PATH, "data\\CharacterConfig\\DefTowerSubsoil\\ChacDefTowerConstructionBarracks.ini"));
+
+	switch (emLevel)
+	{
+	case CHARACTER_LEVEL_1:
+		if (NULL != arrpAniRet && NULL != psAniSizeRet)
+		{
+			strcpy_s(arrpAniRet[0], MAX_PATH, "data\\CharacterConfig\\Barracks\\AniWarriorsMove.ini");
+			strcpy_s(arrpAniRet[1], MAX_PATH, "data\\CharacterConfig\\Barracks\\AniOpenTheDoor.ini");
+			strcpy_s(arrpAniRet[2], MAX_PATH, "data\\CharacterConfig\\Barracks\\AniCloseTheDoor.ini");
+			strcpy_s(arrpAniRet[3], MAX_PATH, "data\\CharacterConfig\\Barracks\\AniTagWarriorsDie.ini");
+			*psAniSizeRet = 4;
+		}
+		if (NULL != arrpWarriorsRet && NULL != psWarriorsCnt)
+		{
+			strcpy_s(arrpWarriorsRet[0], MAX_PATH, "data\\CharacterConfig\\Barracks\\ChacWarrior.ini");
+			*psWarriorsCnt = 1;
+		}
+		break;
+
+	case CHARACTER_LEVEL_2:
+		break;
+	case CHARACTER_LEVEL_3:
+		break;
+	case CHARACTER_LEVEL_4:
+		break;
+	case CHARACTER_LEVEL_5:
+		break;
+	case CHARACTER_MAXLEVEL:
+		break;
+	default:
+		break;
+	}
+
+	return;
+}
+
+void CThDefTower::getTowerInfoArcherWarriors(
+	enum THEM_CHARACTER_LEVEL emLevel, char* szpArcherRet, char** arrpAniRet, short* psAniSizeRet, char** arrpWarriorsRet, short* psWarriorsCnt, char* szpDefTowerConstruction
+)
+{
 	TH_RUN_SUCCESS(NULL != szpArcherRet, strcpy_s(szpArcherRet, MAX_PATH, "data\\CharacterConfig\\SaigyoSakura\\ChacSaigyoSakura.ini"));
 	TH_RUN_SUCCESS(NULL != szpDefTowerConstruction, strcpy_s(szpDefTowerConstruction, MAX_PATH, "data\\CharacterConfig\\DefTowerSubsoil\\ChacDefTowerConstructionArcher.ini"));
 
@@ -425,6 +469,7 @@ void CThDefTower::getTowerInfoArcher(
 
 	return;
 }
+
 
 thBool CThDefTower::_getSpArrayVacantPos(short* psRet)
 {

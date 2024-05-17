@@ -351,8 +351,7 @@ thBool CthCcCharacterLoadHandler::getCharacterAniDescFromIni(const char* cszpFil
 	GetPrivateProfileStringA(cszpSel, "nLoops", "1", sztmpNum, 32, cszpFilename);
 	pRet->nLoops = atoi(sztmpNum);
 	
-	GetPrivateProfileStringA(cszpSel, "szBasicFrameAniPlistPath", "NA", pRet->szarrBasicFrameAniPlistPath, MAX_PATH, cszpFilename);
-	GetPrivateProfileStringA(cszpSel, "szPlistPngPath", "NA", pRet->szarrPlistPngPath, 64, cszpFilename);
+	GetPrivateProfileStringA(cszpSel, "szarrSpriteTex", "NA", pRet->szarrSpriteTex, 64, cszpFilename);
 	GetPrivateProfileStringA(cszpSel, "szAniDesc", "NA", pRet->szarrAniDesc, 32, cszpFilename);
 
 	*ppRet = pRet;

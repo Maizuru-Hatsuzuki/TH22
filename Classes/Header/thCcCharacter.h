@@ -26,7 +26,7 @@ enum THEM_DEFTOWER_TYPE
 	DEFTOWERTYPE_UNKNOW,
 	DEFTOWERTYPE_ARCHER,
 	DEFTOWERTYPE_WARRIORS,
-	DEFTOWERTYPE_ARCHER_WARRIORS
+	DEFTOWERTYPE_ARCHER_WARRIORS,
 };
 
 enum THEM_CHARARCTERLEVEL_MOVESPEED
@@ -121,8 +121,7 @@ struct _tCharacterAnimationDesc
 	float fDelayPerUnit;
 	int nLoops;
 	bool bResFirstFrame;
-	char szarrBasicFrameAniPlistPath[MAX_PATH];
-	char szarrPlistPngPath[64];
+	char szarrSpriteTex[64];
 	char szarrAniDesc[32];
 };
 

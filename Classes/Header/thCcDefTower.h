@@ -94,7 +94,8 @@ public:
 		const char* cszpBulletPlistPng,
 		char** szarrpAniDesc,
 		const short csAniDescSize,
-		const DEFTOWER_WARRIORS_PTR ptWarriors
+		const DEFTOWER_WARRIORS_PTR ptWarriors,
+		float fFaceAngle
 	);
 	thBool initCharacterAnimate(CHARACTER_ANI_DESC_PTR pAniDesc, const int cnGroupPos);
 	thBool initBaiscAnimate(char** szarrpAniDesc, const short csSize);
@@ -129,6 +130,9 @@ public:
 	static void getTowerInfoArcher(
 		enum THEM_CHARACTER_LEVEL emLevel, char* szpArcherRet, char** arrpAniRet, short* psAniSizeRet, char** arrpWarriorsRet, short* psWarriorsCnt, char* szpDefTowerConstruction
 	);
+	static void getTowerInfoArcherWarriors(
+		enum THEM_CHARACTER_LEVEL emLevel, char* szpArcherRet, char** arrpAniRet, short* psAniSizeRet, char** arrpWarriorsRet, short* psWarriorsCnt, char* szpDefTowerConstruction
+	);
 
 private:
 	thBool _getSpArrayVacantPos(short* psRet);
@@ -141,6 +145,7 @@ private:
 
 private:
 	short							m_sVacantPos;
+	static float					ms_fWarriorsBirthAngle;
 	double							m_dLastSummonWarriors;
 	double							m_dLastDieWarriors;
 	double							m_dLastAttack;
@@ -178,6 +183,8 @@ public:
 	virtual void getCharacterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet);
 	virtual void getCharacterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet);
 
+	void setCreateDefTowerType(enum THEM_DEFTOWER_TYPE emType);
+
 	virtual void onMouseUp(EventMouse* pEvent);
 	virtual void onMouseDown(EventMouse* pEvent);
 	virtual void onMouseMove(EventMouse* pEvent);
@@ -198,6 +205,7 @@ private:
 	ProgressTimer* m_pLoading;
 	Sprite* m_pSpLoading;
 	Sprite* m_pSpLoadingBg;
+	enum THEM_DEFTOWER_TYPE m_emCreateDefTowerType;
 };
 
 

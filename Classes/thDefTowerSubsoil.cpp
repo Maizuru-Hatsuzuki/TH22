@@ -36,6 +36,7 @@ thBool CThDefTowerSubsoil::init(char* szpSubsoilCharacterDescPath, const float c
 	m_ptConstruction = NULL;
 	m_pSpLoading = NULL;
 	m_pSpLoadingBg = NULL;
+	m_emCreateDefTowerType = THEM_DEFTOWER_TYPE::DEFTOWERTYPE_UNKNOW;
 
 	bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(szpSubsoilCharacterDescPath, &ptCharacterDesc);
 	TH_PROCESS_ERROR(bFnRet);
@@ -125,7 +126,7 @@ thBool CThDefTowerSubsoil::initDefTowerConstruction()
 	char szarrConstructionIni[MAX_PATH] = { 0 };
 
 	m_ptSubsoil->pSpCharacter->setSpriteFrame(m_pActiveDefaultSubsoil);
-
+	
 	CThDefTower::getTowerInfoArcher(THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, NULL, NULL, NULL, NULL, NULL, szarrConstructionIni);
 	TH_PROCESS_ERROR(0 != strcmp(szarrConstructionIni, "\0"));
 
@@ -156,31 +157,43 @@ thBool CThDefTowerSubsoil::initDefTower()
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
-
-	/* debug use. init archer */
 	char szpArcher[MAX_PATH] = { 0 };
-	char* arrszpAni[9] = { 0 };
-	//char* arrszpWarriors[THMAX_DEFTOWER_TARLEVEL_WARRIORS] = { 0 };
+	char* arrszpAni[THMAX_ANI_COUNT] = { 0 };
+	char* arrszpWarriors[THMAX_DEFTOWER_TARLEVEL_WARRIORS] = { 0 };
 	short sAniSize = 0;
 	short sWarriorsRetSize = 0;
 	CHARACTER_DESC_PTR arrpChacWarrios[THMAX_DEFTOWER_TARLEVEL_WARRIORS] = { 0 };
 	DEFTOWER_WARRIORS tWarrior = { arrpChacWarrios, THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, sWarriorsRetSize };
-	/* loading banner. */
-	
+
 	m_pDefTower = new CThDefTower;
-	CThDefTower::getTowerInfoArcher(THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, szpArcher, arrszpAni, &sAniSize, NULL, &sWarriorsRetSize, NULL);
 
-	/*
-	for ( short j = 0; j < sWarriorsRetSize; j++ )
+	switch (m_emCreateDefTowerType)
 	{
-		bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(
-			arrszpWarriors[j], &(tWarrior.arrpTowerWarriorsDesc[j])
-		);
-		TH_PROCESS_ERROR(bFnRet);
+	case DEFTOWERTYPE_UNKNOW:
+		break;
+
+	case DEFTOWERTYPE_ARCHER:
+		CThDefTower::getTowerInfoArcher(THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, szpArcher, arrszpAni, &sAniSize, NULL, NULL, NULL);
+		break;
+
+	case DEFTOWERTYPE_WARRIORS:
+		CThDefTower::getTowerInfoArcherWarriors(THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, szpArcher, arrszpAni, &sAniSize, arrszpWarriors, &sWarriorsRetSize, NULL);
+		for (short j = 0; j < sWarriorsRetSize; j++)
+		{
+			bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(
+				arrszpWarriors[j], &(tWarrior.arrpTowerWarriorsDesc[j])
+			);
+			TH_PROCESS_ERROR(bFnRet);
+		}
+		break;
+
+	case DEFTOWERTYPE_ARCHER_WARRIORS:
+		break;
+
+	default:
+		break;
 	}
-	*/
-
-
+	
 	/*
 		1. 进度条播放
 		2. init塔加入队列
@@ -194,7 +207,8 @@ thBool CThDefTowerSubsoil::initDefTower()
 		"image\\ScenePlist\\Dungeon\\defTowerBullet.png",
 		NULL,
 		0,
-		NULL
+		NULL,
+		m_ptSubSoilStatus->fFacingEnemyAngle
 	);
 	TH_PROCESS_ERROR(bFnRet);
 	this->addChild(m_pDefTower);
@@ -216,6 +230,12 @@ void CThDefTowerSubsoil::getCharacterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet)
 void CThDefTowerSubsoil::getCharacterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet)
 {
 
+}
+
+void CThDefTowerSubsoil::setCreateDefTowerType(enum THEM_DEFTOWER_TYPE emType)
+{
+	m_emCreateDefTowerType = emType;
+	return;
 }
 
 void CThDefTowerSubsoil::onMouseUp(EventMouse* pEvent)

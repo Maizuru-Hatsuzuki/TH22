@@ -45,7 +45,7 @@ thBool CthCcAnimation::createPlayAnimationWithPList(CHARACTER_ANI_DESC_PTR ptAni
 		ptAniDesc->nFrameAniBegin > ptAniDesc->nFrameAniEnd ? i-- : i++, j++
 		)
 	{
-		sprintf_s(szarrSprite, "%s%d.png", ptAniDesc->szarrPlistPngPath, i);
+		sprintf_s(szarrSprite, "%s%d.png", ptAniDesc->szarrSpriteTex, i);
 		pSpFrame = pSpFrameCache->getSpriteFrameByName(szarrSprite);
 		TH_PROCESS_ERROR(pSpFrame);
 		
@@ -84,3 +84,4 @@ thBool CthCcAnimation::createLoadingBar(Sprite* pSpLoading, const float cfInterv
 Exit0:
 	return bRet;
 }
+
