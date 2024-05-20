@@ -36,7 +36,7 @@ thBool CThDefTowerSubsoil::init(char* szpSubsoilCharacterDescPath, const float c
 	m_ptConstruction = NULL;
 	m_pSpLoading = NULL;
 	m_pSpLoadingBg = NULL;
-	m_emCreateDefTowerType = THEM_DEFTOWER_TYPE::DEFTOWERTYPE_UNKNOW;
+	m_emDefTowerProfessionalType = THEM_DEFTOWER_TYPE::DEFTOWERTYPE_UNKNOW;
 
 	bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(szpSubsoilCharacterDescPath, &ptCharacterDesc);
 	TH_PROCESS_ERROR(bFnRet);
@@ -157,25 +157,25 @@ thBool CThDefTowerSubsoil::initDefTower()
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
-	char szpArcher[MAX_PATH] = { 0 };
+	char szarrProfessional[MAX_PATH] = { 0 };
 	char* arrszpAni[THMAX_ANI_COUNT] = { 0 };
 	char* arrszpWarriors[THMAX_DEFTOWER_TARLEVEL_WARRIORS] = { 0 };
 	short sAniSize = 0;
 	short sWarriorsRetSize = 0;
 	CHARACTER_DESC_PTR arrpChacWarrios[THMAX_DEFTOWER_TARLEVEL_WARRIORS] = { 0 };
-	DEFTOWER_WARRIORS tWarrior = { arrpChacWarrios, THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, sWarriorsRetSize };
+	DEFTOWER_WARRIORS tWarrior = { arrpChacWarrios, THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, 0 };
 
-	switch (m_emCreateDefTowerType)
+	switch (m_emDefTowerProfessionalType)
 	{
 	case DEFTOWERTYPE_UNKNOW:
 		break;
 
 	case DEFTOWERTYPE_ARCHER:
-		CThDefTower::getTowerInfoArcher(THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, szpArcher, arrszpAni, &sAniSize, NULL, NULL, NULL);
+		CThDefTower::getTowerInfoArcher(THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, szarrProfessional, arrszpAni, &sAniSize, NULL, NULL, NULL);
 		break;
 
 	case DEFTOWERTYPE_WARRIORS:
-		CThDefTower::getTowerInfoArcherWarriors(THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, szpArcher, arrszpAni, &sAniSize, arrszpWarriors, &sWarriorsRetSize, NULL);
+		CThDefTower::getTowerInfoArcherWarriors(THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, szarrProfessional, arrszpAni, &sAniSize, arrszpWarriors, &sWarriorsRetSize, NULL);
 		for (short j = 0; j < sWarriorsRetSize; j++)
 		{
 			bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(
@@ -183,6 +183,7 @@ thBool CThDefTowerSubsoil::initDefTower()
 			);
 			TH_PROCESS_ERROR(bFnRet);
 		}
+		tWarrior.sSize = sWarriorsRetSize;
 		break;
 
 	case DEFTOWERTYPE_ARCHER_WARRIORS:
@@ -192,24 +193,25 @@ thBool CThDefTowerSubsoil::initDefTower()
 		break;
 	}
 	
-	/*
-		1. 进度条播放
-		2. init塔加入队列
-		3. update里循环如果播放100就销毁建造中和进度条贴图
-		4. 执行队列任务
-	*/
+	if (0 != strcmp("\0", szarrProfessional))
+	{
+		bFnRet = m_pDefTower->init(
+			szarrProfessional,
+			THEM_BULLET::BULLET_BUTTERFLY,
+			arrszpAni,
+			sAniSize,
+			&tWarrior,
+			m_ptSubSoilStatus->fFacingEnemyAngle
+		);
+		TH_PROCESS_ERROR(bFnRet);
+		this->addChild(m_pDefTower);
+		bRet = THTRUE;
+	}
+	else
+	{
+		CCLOG("Can not found szarrProfessional, check the m_emDefTowerProfessionalType setting.");
+	}
 	
-	bFnRet = m_pDefTower->init(
-		szpArcher,
-		THEM_BULLET::BULLET_BUTTERFLY,
-		NULL,
-		0,
-		NULL,
-		m_ptSubSoilStatus->fFacingEnemyAngle
-	);
-	TH_PROCESS_ERROR(bFnRet);
-	this->addChild(m_pDefTower);
-	bRet = THTRUE;
 Exit0:
 	return bRet;
 }
@@ -229,9 +231,9 @@ void CThDefTowerSubsoil::getCharacterFrameInfoInGroup(const char* cszpTag, CHARA
 
 }
 
-void CThDefTowerSubsoil::setCreateDefTowerType(enum THEM_DEFTOWER_TYPE emType)
+void CThDefTowerSubsoil::setDefTowerProfessionalType(enum THEM_DEFTOWER_TYPE emType)
 {
-	m_emCreateDefTowerType = emType;
+	m_emDefTowerProfessionalType = emType;
 	return;
 }
 

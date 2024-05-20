@@ -179,7 +179,7 @@ struct _tTowerWarriors
 {
 	struct _tCharacterDesc** arrpTowerWarriorsDesc;
 	enum THEM_CHARACTER_LEVEL emLevel;
-	const short csSize;
+	short sSize;
 };
 
 typedef struct _tAniTag						CHARACTER_ANI_TAG, * CHARACTER_ANI_TAG_PTR;

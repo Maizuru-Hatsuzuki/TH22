@@ -73,6 +73,7 @@ private:
 	short m_sActionRadius;
 	short m_csSpArrVacantPos;
 	enum THEM_CHARACTER_FSM_EVENT m_emCurFsmStatus;
+	thBool m_bIsFlip;
 	CHARACTER_FRAMEINFO_PTR m_ptWarriorFrameInfo;
 	CHARACTER_ANI_MAP_PTR m_ptAniMap;
 	CThFSMCharacter* m_fsmWarriorObject;
@@ -182,7 +183,7 @@ public:
 	virtual void getCharacterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet);
 	virtual void getCharacterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet);
 
-	void setCreateDefTowerType(enum THEM_DEFTOWER_TYPE emType);
+	void setDefTowerProfessionalType(enum THEM_DEFTOWER_TYPE emType);
 
 	virtual void onMouseUp(EventMouse* pEvent);
 	virtual void onMouseDown(EventMouse* pEvent);
@@ -204,7 +205,7 @@ private:
 	ProgressTimer* m_pLoading;
 	Sprite* m_pSpLoading;
 	Sprite* m_pSpLoadingBg;
-	enum THEM_DEFTOWER_TYPE m_emCreateDefTowerType;
+	enum THEM_DEFTOWER_TYPE m_emDefTowerProfessionalType;
 };
 
 

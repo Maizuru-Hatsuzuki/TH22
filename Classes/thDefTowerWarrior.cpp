@@ -39,6 +39,7 @@ thBool CThDefTowerWarrior::init(
 	pMouse->onMouseMove = CC_CALLBACK_1(CThDefTowerWarrior::onMouseMove, this);
 
 	m_ptAniMap = cptAniMap;
+	m_bIsFlip = THFALSE;
 	m_ptWarriorFrameInfo = NULL;
 	m_fWarriorBirthMoveAngle = cfWarriorsBirthAngle;
 	m_fWarriorBirthX = cfWarriorsBirthX;
@@ -296,6 +297,7 @@ thBool CThDefTowerWarrior::fsmEventInitStand(void* vpEnv, void** parrArgs)
 	CThDefTowerWarrior* pEnv = static_cast<CThDefTowerWarrior*>(vpEnv);
 
 	pEnv->setCurFsmStatus(THEM_CHARACTER_FSM_EVENT::FSM_EVENT_STAND);
+	setPlayerStopAllAction(pEnv->m_ptWarriorFrameInfo->pSpCharacter);
 
 	bRet = THTRUE;
 Exit0:
@@ -306,6 +308,18 @@ thBool CThDefTowerWarrior::fsmEventUpdateStand(void* vpEnv, void** parrArgs)
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
+	CThDefTowerWarrior* pEnv = static_cast<CThDefTowerWarrior*>(vpEnv);
+	static time_t s_llBeginTime = time(NULL);
+	time_t llCurTime = time(NULL);
+	float fTimeDiff = (float)difftime(llCurTime, s_llBeginTime);
+	float fTimeCond = 3 + (rand() / (RAND_MAX / (4 - 2)));
+
+	if (fTimeCond <= fTimeDiff)
+	{
+		pEnv->m_ptWarriorFrameInfo->pSpCharacter->setFlippedX(!pEnv->m_bIsFlip);
+		pEnv->m_bIsFlip = !pEnv->m_bIsFlip;
+		s_llBeginTime = time(NULL);
+	}
 
 	bRet = THTRUE;
 Exit0:

@@ -98,6 +98,7 @@ bool thSceneDungeon::init()
 	CThDefTowerSubsoil* pSubsoilA = new CThDefTowerSubsoil;
 
 	pSubsoilA->init(szarrSubSoilAPlistPath, 270.f);
+	pSubsoilA->setDefTowerProfessionalType(THEM_DEFTOWER_TYPE::DEFTOWERTYPE_WARRIORS);
 	this->addChild(pSubsoilA);
 
 #ifdef _DEBUG
