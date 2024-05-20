@@ -90,8 +90,7 @@ public:
 
 	thBool init(
 		const char* cszpDefTowerCharacterDescPath,
-		const char* cszpBulletDescPath,
-		const char* cszpBulletPlistPng,
+		enum THEM_BULLET emBullet,
 		char** szarrpAniDesc,
 		const short csAniDescSize,
 		const DEFTOWER_WARRIORS_PTR ptWarriors,

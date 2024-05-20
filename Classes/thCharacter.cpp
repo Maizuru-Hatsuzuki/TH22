@@ -169,6 +169,22 @@ void CThBaseCharacter::getCharacterMoveSpeed(const float cfPlayerX, const float 
 	return;
 }
 
+void CThBaseCharacter::getBulletInfo(enum THEM_BULLET emBullet, char* szpTexPathRet, char* szpBulletIniPathRet)
+{
+	strcpy_s(szpTexPathRet, MAX_PATH, "image\\ScenePlist\\Dungeon\\defTowerBullet.png");
+
+	switch (emBullet)
+	{
+	case BULLET_BUTTERFLY:
+		strcpy_s(szpBulletIniPathRet, MAX_PATH, "data\\CharacterConfig\\Bullet\\ChacBulButterfly.ini");
+		break;
+
+	default:
+		break;
+	}
+	return;
+}
+
 thBool CThBaseCharacter::getCharacterAnimateFrameInfo(CHARACTER_ANI_DESC_PTR pAniDesc, CHARACTER_ANI_FRAMEINFO_PTR pRet) const
 {
 	thBool bRet = THFALSE;

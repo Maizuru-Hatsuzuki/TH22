@@ -165,8 +165,6 @@ thBool CThDefTowerSubsoil::initDefTower()
 	CHARACTER_DESC_PTR arrpChacWarrios[THMAX_DEFTOWER_TARLEVEL_WARRIORS] = { 0 };
 	DEFTOWER_WARRIORS tWarrior = { arrpChacWarrios, THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, sWarriorsRetSize };
 
-	m_pDefTower = new CThDefTower;
-
 	switch (m_emCreateDefTowerType)
 	{
 	case DEFTOWERTYPE_UNKNOW:
@@ -203,8 +201,7 @@ thBool CThDefTowerSubsoil::initDefTower()
 	
 	bFnRet = m_pDefTower->init(
 		szpArcher,
-		"data\\CharacterConfig\\SaigyoSakura\\ChacBullet.ini",
-		"image\\ScenePlist\\Dungeon\\defTowerBullet.png",
+		THEM_BULLET::BULLET_BUTTERFLY,
 		NULL,
 		0,
 		NULL,
@@ -248,6 +245,7 @@ void CThDefTowerSubsoil::onMouseUp(EventMouse* pEvent)
 		if (NULL == m_pDefTower)
 		{
 			initDefTowerConstruction();
+			m_pDefTower = new CThDefTower;
 		}
 		else
 		{

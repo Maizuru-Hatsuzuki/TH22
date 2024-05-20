@@ -13,6 +13,12 @@
 #include "thBase.h"
 
 
+enum THEM_BULLET
+{
+	BULLET_BUTTERFLY,
+	BULLET_SWORD
+};
+
 enum THEM_BULLET_TYPE
 {
 	SHOOTCHAT_TRACKING,
@@ -201,6 +207,7 @@ public:
 
 	thBool getCharacterAnimateFrameInfo(CHARACTER_ANI_DESC_PTR pAniDesc, CHARACTER_ANI_FRAMEINFO_PTR ppRet) const;
 	void getCharacterMoveSpeed(const float cfPlayerX, const float cfPlayerY, const float cfDstX, const float cfDstY, enum THEM_CHARARCTERLEVEL_MOVESPEED emSpeed, float* pfRet);
+	void getBulletInfo(enum THEM_BULLET emBullet, char* szpTexPathRet, char* szpBulletIniPathRet);
 	virtual void getCharacterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet)								= 0;
 	virtual void getCharacterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet)	= 0;
 
@@ -231,6 +238,8 @@ private:
 	~CThBaseCharacterAction();
 	CThBaseCharacterAction(const CThBaseCharacterAction& pSelf);
 	const CThBaseCharacterAction& operator=(const CThBaseCharacterAction& pSelf);
+
+
 
 private:
 	static CThBaseCharacterAction* m_pSelf;

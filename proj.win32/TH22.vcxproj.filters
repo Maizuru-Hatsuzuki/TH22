@@ -58,6 +58,9 @@
     <Filter Include="Config\Character\Barracks">
       <UniqueIdentifier>{6cec962d-ea3d-45d6-8203-64aa4f470fba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Config\Character\Bullet">
+      <UniqueIdentifier>{b24c78f0-e0b1-4f9f-9398-1b18a89f9a60}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -156,9 +159,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Resources\data\CharacterConfig\SaigyoSakura\ChacBullet.ini">
-      <Filter>Config\Character\SaigyoSakura</Filter>
-    </None>
     <None Include="..\Resources\data\CharacterConfig\SaigyoSakura\ChacSaigyoSakura.ini">
       <Filter>Config\Character\SaigyoSakura</Filter>
     </None>
@@ -188,6 +188,9 @@
     </None>
     <None Include="..\Resources\data\CharacterConfig\DefTowerSubsoil\ChacDefTowerConstructionBarracks.ini">
       <Filter>Config\Character\DefTowerSubsoil</Filter>
+    </None>
+    <None Include="..\Resources\data\CharacterConfig\Bullet\ChacBulButterfly.ini">
+      <Filter>Config\Character\Bullet</Filter>
     </None>
   </ItemGroup>
 </Project>

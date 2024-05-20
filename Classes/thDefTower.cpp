@@ -23,8 +23,7 @@ CThDefTower::~CThDefTower()
 
 thBool CThDefTower::init(
 	const char* cszpDefTowerCharacterDescPath,
-	const char* cszpBulletDescPath,
-	const char* cszpBulletPlistPng,
+	enum THEM_BULLET emBullet,
 	char** szarrpAniDesc,
 	const short csAniDescSize,
 	const DEFTOWER_WARRIORS_PTR ptWarriors,
@@ -33,6 +32,8 @@ thBool CThDefTower::init(
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
+	char szarrBulletDescPath[MAX_PATH] = { 0 };
+	char szarrBulletPlistPng[MAX_PATH] = { 0 };
 	short arrnAniTag[THMAX_DEFTOWER_SYNC_ANI] = { m_sVacantPos, };
 	EventListenerMouse* pMouse = EventListenerMouse::create();
 	CHARACTER_DESC_PTR ptCharacterDesc = NULL;
@@ -51,9 +52,12 @@ thBool CThDefTower::init(
 	m_tAniTag.arrTag[1].sTag = m_tAniTag.sOffset + 2;
 	m_tAniTag.arrTag[1].cszpDesc = "AniTagWarriorsDie";
 
+	getBulletInfo(emBullet, szarrBulletPlistPng, szarrBulletDescPath);
+	TH_PROCESS_ERROR(0 != strcmp("\0", szarrBulletDescPath));
+
 	bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(cszpDefTowerCharacterDescPath, &ptCharacterDesc);
 	TH_PROCESS_ERROR(bFnRet);
-	bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(cszpBulletDescPath, &m_ptBulletDesc);
+	bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(szarrBulletDescPath, &m_ptBulletDesc);
 	TH_PROCESS_ERROR(bFnRet);
 	bFnRet = CthCcCharacterLoadHandler::getInstance()->getDefTowerDescFromIni(cszpDefTowerCharacterDescPath, &m_ptTowerStatus);
 	TH_PROCESS_ERROR(bFnRet);
@@ -92,7 +96,7 @@ thBool CThDefTower::init(
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(pMouse, m_ptTower->pSpCharacter);
 
 	/* ×Óµ¯ÌùÍ¼ */
-	m_pBatchNodeBullet = SpriteBatchNode::create(cszpBulletPlistPng);
+	m_pBatchNodeBullet = SpriteBatchNode::create(szarrBulletPlistPng);
 	TH_PROCESS_ERROR(m_pBatchNodeBullet);
 
 	scheduleUpdate();
