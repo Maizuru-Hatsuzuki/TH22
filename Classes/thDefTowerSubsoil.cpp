@@ -72,7 +72,9 @@ thBool CThDefTowerSubsoil::init(char* szpSubsoilCharacterDescPath, const float c
 
 	scheduleUpdate();
 
-	this->addChild(m_ptSubsoil->pSpCharacter);
+	/* 创建地基纹理. */
+	this->addChild(m_ptSubsoil->pSpCharacter, 0, "SP_DefTowerSubsoil");
+
 	bRet = THTRUE;
 Exit0:
 	CthCcCharacterLoadHandler::getInstance()->uninitCharacterDesc(ptCharacterDesc);
@@ -195,6 +197,7 @@ thBool CThDefTowerSubsoil::initDefTower()
 	
 	if (0 != strcmp("\0", szarrProfessional))
 	{
+		this->addChild(m_pDefTower);
 		bFnRet = m_pDefTower->init(
 			szarrProfessional,
 			THEM_BULLET::BULLET_BUTTERFLY,
@@ -204,7 +207,6 @@ thBool CThDefTowerSubsoil::initDefTower()
 			m_ptSubSoilStatus->fFacingEnemyAngle
 		);
 		TH_PROCESS_ERROR(bFnRet);
-		this->addChild(m_pDefTower);
 		bRet = THTRUE;
 	}
 	else

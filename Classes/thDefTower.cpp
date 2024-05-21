@@ -37,6 +37,8 @@ thBool CThDefTower::init(
 	short arrnAniTag[THMAX_DEFTOWER_SYNC_ANI] = { m_sVacantPos, };
 	EventListenerMouse* pMouse = EventListenerMouse::create();
 	CHARACTER_DESC_PTR ptCharacterDesc = NULL;
+	Node* pSpDefTowerSubsoil = this->getParent()->getChildByName("SP_DefTowerSubsoil");
+	TH_PROCESS_ERROR(pSpDefTowerSubsoil);
 
 	CThDefTower::ms_fWarriorsBirthAngle = fFaceAngle;
 	m_sVacantPos = 0;
@@ -57,6 +59,8 @@ thBool CThDefTower::init(
 
 	bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(cszpDefTowerCharacterDescPath, &ptCharacterDesc);
 	TH_PROCESS_ERROR(bFnRet);
+	ptCharacterDesc->fPosX = pSpDefTowerSubsoil->getPositionX();
+	ptCharacterDesc->fPosY = pSpDefTowerSubsoil->getPositionY();
 	bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(szarrBulletDescPath, &m_ptBulletDesc);
 	TH_PROCESS_ERROR(bFnRet);
 	bFnRet = CthCcCharacterLoadHandler::getInstance()->getDefTowerDescFromIni(cszpDefTowerCharacterDescPath, &m_ptTowerStatus);
@@ -106,7 +110,10 @@ thBool CThDefTower::init(
 
 	bRet = THTRUE;
 Exit0:
-	CthCcCharacterLoadHandler::getInstance()->uninitCharacterDesc(ptCharacterDesc);
+	if (NULL != ptCharacterDesc)
+	{
+		CthCcCharacterLoadHandler::getInstance()->uninitCharacterDesc(ptCharacterDesc);
+	}
 	return bRet;
 }
 
@@ -683,8 +690,8 @@ void CThDefTower::update(float dt)
 	bFnRet = globalMonitoring();
 	ASSERT(bFnRet);
 
-	bFnRet = execTowerShoot(m_ptTowerStatus->sMaxBullets);
-	ASSERT(bFnRet);
+	//bFnRet = execTowerShoot(m_ptTowerStatus->sMaxBullets);
+	//ASSERT(bFnRet);
 	
 	return;
 }

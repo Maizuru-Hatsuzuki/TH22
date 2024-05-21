@@ -63,41 +63,12 @@ bool thSceneDungeon::init()
 	bool bRet = THFALSE;
 	bool bFnRet = THFALSE;
 	const int cnDbgTag = 1;
-	/*
-	const short csMaxAni = 4;
-	const char* szarrpAni[csMaxAni] =
-	{
-		"data\\CharacterConfig\\SaigyoSakura\\AniWarriorsMove.ini",
-		"data\\CharacterConfig\\SaigyoSakura\\AniOpenTheDoor.ini",
-		"data\\CharacterConfig\\SaigyoSakura\\AniCloseTheDoor.ini",
-		"data\\CharacterConfig\\SaigyoSakura\\AniTagWarriorsDie.ini"
-	};
-	CHARACTER_DESC_PTR arrpChacWarrios[2] = { 0 };
-	DEFTOWER_WARRIORS tWarrior = { arrpChacWarrios, THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, 2 };
-	CThDefTower* pHunterCabinObject = new CThDefTower;
-
-	bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(
-		"data\\CharacterConfig\\SaigyoSakura\\ChacWarrior.ini", &(tWarrior.arrpTowerWarriorsDesc[0])
-	);
-	TH_PROCESS_ERROR(bFnRet);
-	tWarrior.arrpTowerWarriorsDesc[1] = NULL;
-	
-	bFnRet = pHunterCabinObject->init(
-		"data\\CharacterConfig\\SaigyoSakura\\ChacSaigyoSakura.ini",
-		"data\\CharacterConfig\\SaigyoSakura\\ChacBullet.ini",
-		szarrpAni,
-		csMaxAni,
-		&tWarrior
-		);
-	TH_PROCESS_ERROR(bFnRet);
-	this->addChild(pHunterCabinObject);
-	*/
 
 	CTHCcBaseHandler::getInstance()->setSceneAllSpPlist(THEM_SCENE::THSCENE_DUNGEON, THTRUE);
 	char szarrSubSoilAPlistPath[MAX_PATH] = "data\\CharacterConfig\\DefTowerSubsoil\\ChacGrasslandA.ini";
 	CThDefTowerSubsoil* pSubsoilA = new CThDefTowerSubsoil;
 
-	pSubsoilA->init(szarrSubSoilAPlistPath, 270.f);
+	pSubsoilA->init(szarrSubSoilAPlistPath, 10.f);
 	pSubsoilA->setDefTowerProfessionalType(THEM_DEFTOWER_TYPE::DEFTOWERTYPE_WARRIORS);
 	this->addChild(pSubsoilA);
 
@@ -114,7 +85,7 @@ bool thSceneDungeon::init()
 
 	bRet = THTRUE;
 Exit0:
-	// CthCcCharacterLoadHandler::getInstance()->uninitCharacterDesc(tWarrior.arrpTowerWarriorsDesc[0]);
+
 	return bRet;
 }
 

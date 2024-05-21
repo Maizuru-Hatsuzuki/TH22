@@ -57,6 +57,7 @@ thBool CThBaseCharacter::initCharacterWithPlist(CHARACTER_DESC_PTR pDesc, CHARAC
 	thBool bFnRet = THFALSE;
 	SpriteFrame* pSpFrame = NULL;
 	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::getInstance();
+	
 	CHARACTER_FRAMEINFO_PTR ptCharFrame = THMALLOC(CHARACTER_FRAMEINFO, sizeof(CHARACTER_FRAMEINFO));
 	TH_PROCESS_ERROR(ptCharFrame);
 	char szarrSp[128] = { 0 };

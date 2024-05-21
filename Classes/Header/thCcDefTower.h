@@ -74,6 +74,7 @@ private:
 	short m_csSpArrVacantPos;
 	enum THEM_CHARACTER_FSM_EVENT m_emCurFsmStatus;
 	thBool m_bIsFlip;
+	time_t m_tLastStandFlipTime;
 	CHARACTER_FRAMEINFO_PTR m_ptWarriorFrameInfo;
 	CHARACTER_ANI_MAP_PTR m_ptAniMap;
 	CThFSMCharacter* m_fsmWarriorObject;

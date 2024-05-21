@@ -210,11 +210,11 @@ thBool CThDefTowerWarrior::usSetWarriorMove(const float cfDstX, const float cfDs
 	if (m_fWarriorBirthX > cfDstX)
 	{
 		// ×ó.
+		m_ptWarriorFrameInfo->pSpCharacter->setFlippedX(true);
 	}
 	else
 	{
 		// ÓÒ.
-		m_ptWarriorFrameInfo->pSpCharacter->setFlippedX(true);
 	}
 
 	if (NULL != varrpFsmRet)
@@ -295,6 +295,7 @@ thBool CThDefTowerWarrior::fsmEventInitStand(void* vpEnv, void** parrArgs)
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
 	CThDefTowerWarrior* pEnv = static_cast<CThDefTowerWarrior*>(vpEnv);
+	pEnv->m_tLastStandFlipTime = time(NULL);
 
 	pEnv->setCurFsmStatus(THEM_CHARACTER_FSM_EVENT::FSM_EVENT_STAND);
 	setPlayerStopAllAction(pEnv->m_ptWarriorFrameInfo->pSpCharacter);
@@ -309,16 +310,17 @@ thBool CThDefTowerWarrior::fsmEventUpdateStand(void* vpEnv, void** parrArgs)
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
 	CThDefTowerWarrior* pEnv = static_cast<CThDefTowerWarrior*>(vpEnv);
-	static time_t s_llBeginTime = time(NULL);
 	time_t llCurTime = time(NULL);
-	float fTimeDiff = (float)difftime(llCurTime, s_llBeginTime);
-	float fTimeCond = 3 + (rand() / (RAND_MAX / (4 - 2)));
+	float fTimeDiff = (float)difftime(llCurTime, pEnv->m_tLastStandFlipTime);
+	static float s_fTimeCond = rand() % 3 + 2;
 
-	if (fTimeCond <= fTimeDiff)
+	if (s_fTimeCond <= fTimeDiff)
 	{
+		/* ÉÚ±ø·ÅÉÚ¶¯×÷. */
 		pEnv->m_ptWarriorFrameInfo->pSpCharacter->setFlippedX(!pEnv->m_bIsFlip);
 		pEnv->m_bIsFlip = !pEnv->m_bIsFlip;
-		s_llBeginTime = time(NULL);
+		pEnv->m_tLastStandFlipTime = time(NULL);
+		s_fTimeCond = rand() % 3 + 5;
 	}
 
 	bRet = THTRUE;
