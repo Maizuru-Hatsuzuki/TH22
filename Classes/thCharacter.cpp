@@ -413,6 +413,7 @@ thBool CthCcCharacterLoadHandler::getSubsoilFromIni(const char* cszpFilename, SU
 	pRet->nHoverTexPlistPos = GetPrivateProfileIntA(cszpSel, "nHoverTexPlistPos", 1, cszpFilename);
 	pRet->nActiveDefaultTexPlistPos = GetPrivateProfileIntA(cszpSel, "nActiveDefaultTexPlistPos", 1, cszpFilename);
 	pRet->nActiveHoverTexPlistPos = GetPrivateProfileIntA(cszpSel, "nActiveHoverTexPlistPos", 1, cszpFilename);
+	GetPrivateProfileStringA(cszpSel, "szActiveTex", THINI_DEFAULT_STR, pRet->szarrActiveTex, 64, cszpFilename);
 
 	*ppRet = pRet;
 	bRet = THTRUE;

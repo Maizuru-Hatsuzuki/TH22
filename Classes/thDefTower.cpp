@@ -79,8 +79,13 @@ thBool CThDefTower::init(
 	memset(m_arrpAniGroup, 0, sizeof(CHARACTER_ANI_FRAMEINFO_PTR) * THMAX_ANI_COUNT);
 	memset(m_arrpWarriors, 0, sizeof(CThDefTowerWarrior_ptr) * THMAX_DEFTOWER_TARLEVEL_WARRIORS);
 
+	/* 创建防御塔. */
 	bFnRet = initCharacterWithPlist(ptCharacterDesc, &m_ptTower);
 	TH_PROCESS_ERROR(bFnRet);
+	m_ptTower->pSpCharacter->setPositionX(m_ptTower->pSpCharacter->getPositionX() - 2.5);
+	m_ptTower->pSpCharacter->setPositionY(m_ptTower->pSpCharacter->getPositionY() + 5);
+	m_ptTower->pSpCharacter->setAnchorPoint(Vec2(0.5, 0));
+
 	bFnRet = initBaiscAnimate(szarrpAniDesc, csAniDescSize);
 	TH_PROCESS_ERROR(bFnRet);
 	if (THEM_DEFTOWER_TYPE::DEFTOWERTYPE_WARRIORS == m_emTowerType || THEM_DEFTOWER_TYPE::DEFTOWERTYPE_ARCHER_WARRIORS == m_emTowerType)
@@ -471,46 +476,53 @@ void CThDefTower::getTowerInfoArcher(
 	return;
 }
 
-void CThDefTower::getTowerInfoArcherWarriors(
-	enum THEM_CHARACTER_LEVEL emLevel, char* szpArcherRet, char** arrpAniRet, short* psAniSizeRet, char** arrpWarriorsRet, short* psWarriorsCnt, char* szpDefTowerConstruction
+thBool CThDefTower::getTowerInfoArcherWarriors(
+	char* szpArcherRet, char** arrpAniRet, short* psAniSizeRet, char** arrpWarriorsRet, short* psWarriorsCnt, char* szpDefTowerConstruction, char* szpLv
 )
 {
-	TH_RUN_SUCCESS(NULL != szpArcherRet, strcpy_s(szpArcherRet, MAX_PATH, "data\\CharacterConfig\\Barracks\\ChacBarracks.ini"));
-	TH_RUN_SUCCESS(NULL != szpDefTowerConstruction, strcpy_s(szpDefTowerConstruction, MAX_PATH, "data\\CharacterConfig\\DefTowerSubsoil\\ChacDefTowerConstructionBarracks.ini"));
-	
-	switch (emLevel)
-	{
-	case CHARACTER_LEVEL_1:
-		if (NULL != arrpAniRet && NULL != psAniSizeRet)
-		{
-			arrpAniRet[0] = "data\\CharacterConfig\\Barracks\\AniWarriorsMove.ini";
-			arrpAniRet[1] = "data\\CharacterConfig\\Barracks\\AniOpenTheDoor.ini";
-			arrpAniRet[2] = "data\\CharacterConfig\\Barracks\\AniCloseTheDoor.ini";
-			arrpAniRet[3] = "data\\CharacterConfig\\Barracks\\AniTagWarriorsDie.ini";
-			*psAniSizeRet = 4;
-		}
-		if (NULL != arrpWarriorsRet && NULL != psWarriorsCnt)
-		{
-			arrpWarriorsRet[0] = "data\\CharacterConfig\\Barracks\\ChacWarrior.ini";
-			*psWarriorsCnt = 1;
-		}
-		break;
+	thBool bRet = THFALSE;
+	char sztmpPath[MAX_PATH] = { 0 };
 
-	case CHARACTER_LEVEL_2:
-		break;
-	case CHARACTER_LEVEL_3:
-		break;
-	case CHARACTER_LEVEL_4:
-		break;
-	case CHARACTER_LEVEL_5:
-		break;
-	case CHARACTER_MAXLEVEL:
-		break;
-	default:
-		break;
+	TH_RUN_SUCCESS(NULL != szpArcherRet, sprintf_s(szpArcherRet, MAX_PATH, "data\\CharacterConfig\\Barracks\\%s\\ChacBarracks.ini", szpLv));
+	TH_RUN_SUCCESS(NULL != szpDefTowerConstruction, strcpy_s(szpDefTowerConstruction, MAX_PATH, "data\\CharacterConfig\\DefTowerSubsoil\\ChacDefTowerConstructionBarracks.ini"));
+
+	if (NULL != arrpAniRet && NULL != psAniSizeRet)
+	{
+		sprintf_s(sztmpPath, "data\\CharacterConfig\\Barracks\\%s\\AniWarriorsMove.ini", szpLv);
+		arrpAniRet[0] = THMALLOC(char, MAX_PATH);
+		TH_PROCESS_ERROR(arrpAniRet[0]);
+		strcpy_s(arrpAniRet[0], MAX_PATH, sztmpPath);
+
+		sprintf_s(sztmpPath, "data\\CharacterConfig\\Barracks\\%s\\AniOpenTheDoor.ini", szpLv);
+		arrpAniRet[1] = THMALLOC(char, MAX_PATH);
+		TH_PROCESS_ERROR(arrpAniRet[1]);
+		strcpy_s(arrpAniRet[1], MAX_PATH, sztmpPath);
+
+		sprintf_s(sztmpPath, "data\\CharacterConfig\\Barracks\\%s\\AniCloseTheDoor.ini", szpLv);
+		arrpAniRet[2] = THMALLOC(char, MAX_PATH);
+		TH_PROCESS_ERROR(arrpAniRet[2]);
+		strcpy_s(arrpAniRet[2], MAX_PATH, sztmpPath);
+
+		sprintf_s(sztmpPath, "data\\CharacterConfig\\Barracks\\%s\\AniTagWarriorsDie.ini", szpLv);
+		arrpAniRet[3] = THMALLOC(char, MAX_PATH);
+		TH_PROCESS_ERROR(arrpAniRet[3]);
+		strcpy_s(arrpAniRet[3], MAX_PATH, sztmpPath);
+
+		*psAniSizeRet = 4;
+	}
+	if (NULL != arrpWarriorsRet && NULL != psWarriorsCnt)
+	{
+		sprintf_s(sztmpPath, "data\\CharacterConfig\\Barracks\\%s\\ChacWarrior.ini", szpLv);
+		arrpWarriorsRet[0] = THMALLOC(char, MAX_PATH);
+		TH_PROCESS_ERROR(arrpWarriorsRet[0]);
+		strcpy_s(arrpWarriorsRet[0], MAX_PATH, sztmpPath);
+
+		*psWarriorsCnt = 1;
 	}
 
-	return;
+	bRet = THTRUE;
+Exit0:
+	return bRet;
 }
 
 
@@ -598,6 +610,12 @@ thBool CThDefTower::setPlayAniTowerSummon(const short* arrnCondAniTag, const sho
 	bRet = THTRUE;
 Exit0:
 	return bRet;
+}
+
+void CThDefTower::_setSpTowerPositionTweaks()
+{
+	/* 微调防御塔精灵位置, 有时候美术资源大小有瑕疵, 对不上地基, 在这里微调位置. */
+	return;
 }
 
 thBool CThDefTower::_setPlayAniOpenTheDoor()

@@ -61,6 +61,9 @@
     <Filter Include="Config\Character\Bullet">
       <UniqueIdentifier>{b24c78f0-e0b1-4f9f-9398-1b18a89f9a60}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Config\Character\Barracks\LV4">
+      <UniqueIdentifier>{f5ae2d21-49d6-4fa8-ba11-bac86be9b947}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -168,29 +171,29 @@
     <None Include="..\Resources\data\CharacterConfig\DefTowerSubsoil\ChacDefTowerConstructionArcher.ini">
       <Filter>Config\Character\DefTowerSubsoil</Filter>
     </None>
-    <None Include="..\Resources\data\CharacterConfig\Barracks\ChacBarracks.ini">
-      <Filter>Config\Character\Barracks</Filter>
-    </None>
-    <None Include="..\Resources\data\CharacterConfig\Barracks\AniCloseTheDoor.ini">
-      <Filter>Config\Character\Barracks</Filter>
-    </None>
-    <None Include="..\Resources\data\CharacterConfig\Barracks\AniOpenTheDoor.ini">
-      <Filter>Config\Character\Barracks</Filter>
-    </None>
-    <None Include="..\Resources\data\CharacterConfig\Barracks\AniTagWarriorsDie.ini">
-      <Filter>Config\Character\Barracks</Filter>
-    </None>
-    <None Include="..\Resources\data\CharacterConfig\Barracks\AniWarriorsMove.ini">
-      <Filter>Config\Character\Barracks</Filter>
-    </None>
-    <None Include="..\Resources\data\CharacterConfig\Barracks\ChacWarrior.ini">
-      <Filter>Config\Character\Barracks</Filter>
-    </None>
     <None Include="..\Resources\data\CharacterConfig\DefTowerSubsoil\ChacDefTowerConstructionBarracks.ini">
       <Filter>Config\Character\DefTowerSubsoil</Filter>
     </None>
     <None Include="..\Resources\data\CharacterConfig\Bullet\ChacBulButterfly.ini">
       <Filter>Config\Character\Bullet</Filter>
+    </None>
+    <None Include="..\Resources\data\CharacterConfig\Barracks\LV4\AniCloseTheDoor.ini">
+      <Filter>Config\Character\Barracks\LV4</Filter>
+    </None>
+    <None Include="..\Resources\data\CharacterConfig\Barracks\LV4\AniOpenTheDoor.ini">
+      <Filter>Config\Character\Barracks\LV4</Filter>
+    </None>
+    <None Include="..\Resources\data\CharacterConfig\Barracks\LV4\AniTagWarriorsDie.ini">
+      <Filter>Config\Character\Barracks\LV4</Filter>
+    </None>
+    <None Include="..\Resources\data\CharacterConfig\Barracks\LV4\AniWarriorsMove.ini">
+      <Filter>Config\Character\Barracks\LV4</Filter>
+    </None>
+    <None Include="..\Resources\data\CharacterConfig\Barracks\LV4\ChacBarracks.ini">
+      <Filter>Config\Character\Barracks\LV4</Filter>
+    </None>
+    <None Include="..\Resources\data\CharacterConfig\Barracks\LV4\ChacWarrior.ini">
+      <Filter>Config\Character\Barracks\LV4</Filter>
     </None>
   </ItemGroup>
 </Project>

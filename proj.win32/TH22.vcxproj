@@ -200,12 +200,12 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ResourceCompile Include="game.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Resources\data\CharacterConfig\Barracks\AniCloseTheDoor.ini" />
-    <None Include="..\Resources\data\CharacterConfig\Barracks\AniOpenTheDoor.ini" />
-    <None Include="..\Resources\data\CharacterConfig\Barracks\AniTagWarriorsDie.ini" />
-    <None Include="..\Resources\data\CharacterConfig\Barracks\AniWarriorsMove.ini" />
-    <None Include="..\Resources\data\CharacterConfig\Barracks\ChacBarracks.ini" />
-    <None Include="..\Resources\data\CharacterConfig\Barracks\ChacWarrior.ini" />
+    <None Include="..\Resources\data\CharacterConfig\Barracks\LV4\AniCloseTheDoor.ini" />
+    <None Include="..\Resources\data\CharacterConfig\Barracks\LV4\AniOpenTheDoor.ini" />
+    <None Include="..\Resources\data\CharacterConfig\Barracks\LV4\AniTagWarriorsDie.ini" />
+    <None Include="..\Resources\data\CharacterConfig\Barracks\LV4\AniWarriorsMove.ini" />
+    <None Include="..\Resources\data\CharacterConfig\Barracks\LV4\ChacBarracks.ini" />
+    <None Include="..\Resources\data\CharacterConfig\Barracks\LV4\ChacWarrior.ini" />
     <None Include="..\Resources\data\CharacterConfig\Bullet\ChacBulButterfly.ini" />
     <None Include="..\Resources\data\CharacterConfig\DefTowerSubsoil\ChacDefTowerConstructionBarracks.ini" />
     <None Include="..\Resources\data\CharacterConfig\DefTowerSubsoil\ChacGrasslandA.ini" />

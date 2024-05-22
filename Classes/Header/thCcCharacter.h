@@ -163,6 +163,7 @@ struct _tSubsoilDesc
 	int nActiveDefaultTexPlistPos;
 	int nActiveHoverTexPlistPos;
 	float fFacingEnemyAngle;
+	char szarrActiveTex[64];
 };
 
 struct _tDefTowerDesc

@@ -131,14 +131,15 @@ public:
 	static void getTowerInfoArcher(
 		enum THEM_CHARACTER_LEVEL emLevel, char* szpArcherRet, char** arrpAniRet, short* psAniSizeRet, char** arrpWarriorsRet, short* psWarriorsCnt, char* szpDefTowerConstruction
 	);
-	static void getTowerInfoArcherWarriors(
-		enum THEM_CHARACTER_LEVEL emLevel, char* szpArcherRet, char** arrpAniRet, short* psAniSizeRet, char** arrpWarriorsRet, short* psWarriorsCnt, char* szpDefTowerConstruction
+	static thBool getTowerInfoArcherWarriors(
+		char* szpArcherRet, char** arrpAniRet, short* psAniSizeRet, char** arrpWarriorsRet, short* psWarriorsCnt, char* szpDefTowerConstruction, char* szpLv
 	);
 
 private:
 	void _initWarriorsMovePos(const CHARACTER_DESC_PTR cptCharacterDesc, const float cfFaceAngle);
 	thBool _getSpArrayVacantPos(short* psRet);
 	thBool _getWarArrayVacantPos(short* psRet);
+	void _setSpTowerPositionTweaks();
 	thBool _setPlayAniOpenTheDoor();
 	thBool _setPlayAniCloseTheDoor();
 	thBool _setPlayAniWarriorsDie(CThDefTowerWarrior_ptr pSp);
@@ -180,7 +181,7 @@ public:
 	thBool initDefTowerConstructionLoadingBar();
 	thBool initDefTowerConstruction();
 	void uninitDefTowerConstruction();
-	thBool initDefTower();
+	thBool initDefTower(enum THEM_CHARACTER_LEVEL emLevel);
 	void uninit();
 	void uninitDefTower();
 	virtual void getCharacterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet);
@@ -201,10 +202,10 @@ private:
 	CHARACTER_FRAMEINFO_PTR m_ptConstruction;
 	SUBSOIL_DESC_PTR m_ptSubSoilStatus;
 	CThDefTower_ptr m_pDefTower;
-	SpriteFrame* m_pDefaultSubsoil;
-	SpriteFrame* m_pHoverSubsoil;
-	SpriteFrame* m_pActiveDefaultSubsoil;
-	SpriteFrame* m_pActiveHoverSubsoil;
+	SpriteFrame* m_pSpFrDefaultSubsoil;
+	SpriteFrame* m_pSpFrHoverSubsoil;
+	SpriteFrame* m_pSpFrActiveDefaultSubsoil;
+	SpriteFrame* m_pSpFrActiveHoverSubsoil;
 	ProgressTimer* m_pLoading;
 	Sprite* m_pSpLoading;
 	Sprite* m_pSpLoadingBg;
