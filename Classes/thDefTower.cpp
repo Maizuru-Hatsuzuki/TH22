@@ -85,6 +85,9 @@ thBool CThDefTower::init(
 	TH_PROCESS_ERROR(bFnRet);
 	if (THEM_DEFTOWER_TYPE::DEFTOWERTYPE_WARRIORS == m_emTowerType || THEM_DEFTOWER_TYPE::DEFTOWERTYPE_ARCHER_WARRIORS == m_emTowerType)
 	{
+		/* 计算战士固定位置坐标. */
+		_initWarriorsMovePos(ptCharacterDesc, fFaceAngle);
+
 		/* 播放开门动画并初始化战士精灵. */
 		bFnRet = initDefTowerWarriorsDesc(ptWarriors);
 		TH_PROCESS_ERROR(bFnRet);
@@ -144,6 +147,35 @@ void CThDefTower::uninit()
 	THFREE(m_arrpAniGroup);
 	THFREE(m_arrpWarriors);
 
+	return;
+}
+
+void CThDefTower::_initWarriorsMovePos(const CHARACTER_DESC_PTR cptCharacterDesc, const float cfFaceAngle)
+{
+	float fWarriorsSeparationAngle = 40.f;
+	const float cfWarriorsSeparationDis = 25.f;
+	float fWarriorCenterPointX = 0.f;
+	float fWarriorCenterPointY = 0.f;
+
+	/* 求最终中心坐标点.*/
+	fWarriorCenterPointX = cptCharacterDesc->fPosX + m_ptTower->nAttackRadius * cos(cfFaceAngle * (M_PI / 180));
+	fWarriorCenterPointY = cptCharacterDesc->fPosY + m_ptTower->nAttackRadius * sin(cfFaceAngle * (M_PI / 180));
+	/* 求四散分开的坐标点. */
+	for (short s = 0; s < THMAX_DEFTOWER_TARLEVEL_WARRIORS; s++)
+	{
+		if (s < m_ptTowerStatus->sMaxWarriors)
+		{
+			m_arrfWarriorMovePos[s][0] = fWarriorCenterPointX + cfWarriorsSeparationDis * cos(fWarriorsSeparationAngle * (M_PI / 180));
+			m_arrfWarriorMovePos[s][1] = fWarriorCenterPointY + cfWarriorsSeparationDis * sin(fWarriorsSeparationAngle * (M_PI / 180));
+			fWarriorsSeparationAngle += 90.f;
+			fWarriorsSeparationAngle = fmod(fWarriorsSeparationAngle, 360.f);
+		}
+		else
+		{
+			m_arrfWarriorMovePos[s][0] = 0.f;
+			m_arrfWarriorMovePos[s][1] = 0.f;
+		}
+	}
 	return;
 }
 
@@ -260,8 +292,8 @@ thBool CThDefTower::initWarriors(const short csCnt, short sSpArrVacantPos)
 			sWarriorType = (rand() % THMAX_DEFTOWER_TARLEVEL_WARRIORS);
 			ptSpDesc = m_arrpWarriorsDesc[m_ptTower->emCurLevel][sWarriorType];
 		}
-		bFnRet = _getWarArrayVacantPos(&sSpArrVacantPos);
 		/* 检查是否满容量. */
+		bFnRet = _getWarArrayVacantPos(&sSpArrVacantPos);
 		TH_PROCESS_SUCCESS(bFnRet);
 		getAniFrameInfoByTag(ptSpDesc->ptAniMap->szarrAniMoveTransverse, &ptAniMoveTo);
 		TH_PROCESS_ERROR(ptAniMoveTo);
@@ -280,7 +312,7 @@ thBool CThDefTower::initWarriors(const short csCnt, short sSpArrVacantPos)
 			CThDefTower::ms_fWarriorsBirthAngle,
 			m_ptTower->pSpCharacter->getPositionX(),
 			m_ptTower->pSpCharacter->getPositionY(),
-			m_ptTower->nAttackRadius,
+			m_arrfWarriorMovePos[sSpArrVacantPos],
 			ptSpDesc->ptAniMap,
 			ptAniMoveTo
 		);

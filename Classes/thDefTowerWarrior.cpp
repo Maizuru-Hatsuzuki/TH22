@@ -26,7 +26,7 @@ thBool CThDefTowerWarrior::init(
 	const float cfWarriorsBirthAngle,
 	const float cfWarriorsBirthX,
 	const float cfWarriorsBirthY,
-	const short csActionRadius,
+	float* arrfDstXY,
 	const CHARACTER_ANI_MAP_PTR cptAniMap,
 	const CHARACTER_ANI_FRAMEINFO_PTR cptAniMoveTo
 )
@@ -44,7 +44,7 @@ thBool CThDefTowerWarrior::init(
 	m_fWarriorBirthMoveAngle = cfWarriorsBirthAngle;
 	m_fWarriorBirthX = cfWarriorsBirthX;
 	m_fWarriorBirthY = cfWarriorsBirthY;
-	m_sActionRadius = csActionRadius;
+	m_arrfWarriorMovePos = arrfDstXY;
 	m_fsmWarriorObject = THNEW_CLASS(CThFSMCharacter);
 	m_emCurFsmStatus = THEM_CHARACTER_FSM_EVENT::FSM_EVENT_STAND;
 
@@ -121,8 +121,8 @@ thBool CThDefTowerWarrior::initWarriors(const CHARACTER_DESC_PTR cptSpDesc, cons
 	float fDstY = 0.f;
 	float fInPositionTimeDeviation = 0.f;
 
-	fDstX = m_fWarriorBirthX + m_sActionRadius * cos(m_fWarriorBirthMoveAngle * (M_PI / 180));
-	fDstY = m_fWarriorBirthY + m_sActionRadius * sin(m_fWarriorBirthMoveAngle * (M_PI / 180));
+	fDstX = m_arrfWarriorMovePos[0];
+	fDstY = m_arrfWarriorMovePos[1];
 
 	bFnRet = initCharacterWithPlist(cptSpDesc, &m_ptWarriorFrameInfo);
 	TH_PROCESS_ERROR(bFnRet);

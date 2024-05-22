@@ -26,7 +26,7 @@ public:
 		const float cfWarriorsBirthAngle,
 		const float cfWarriorsBirthX,
 		const float cfWarriorsBirthY,
-		const short csActionRadius,
+		float* arrfDstXY,
 		const CHARACTER_ANI_MAP_PTR cptAniMap,
 		const CHARACTER_ANI_FRAMEINFO_PTR cptAniMoveTo
 	);
@@ -67,10 +67,10 @@ public:
 
 private:
 	float m_fWarriorBirthMoveAngle;
+	float* m_arrfWarriorMovePos;
 	float m_fWarriorBirthX;
 	float m_fWarriorBirthY;
 	double m_dInPositionTime;
-	short m_sActionRadius;
 	short m_csSpArrVacantPos;
 	enum THEM_CHARACTER_FSM_EVENT m_emCurFsmStatus;
 	thBool m_bIsFlip;
@@ -136,6 +136,7 @@ public:
 	);
 
 private:
+	void _initWarriorsMovePos(const CHARACTER_DESC_PTR cptCharacterDesc, const float cfFaceAngle);
 	thBool _getSpArrayVacantPos(short* psRet);
 	thBool _getWarArrayVacantPos(short* psRet);
 	thBool _setPlayAniOpenTheDoor();
@@ -147,6 +148,7 @@ private:
 private:
 	short							m_sVacantPos;
 	static float					ms_fWarriorsBirthAngle;
+	float							m_arrfWarriorMovePos[THMAX_DEFTOWER_TARLEVEL_WARRIORS][2];
 	double							m_dLastSummonWarriors;
 	double							m_dLastDieWarriors;
 	double							m_dLastAttack;
