@@ -62,7 +62,7 @@ thBool CThBaseCharacter::initCharacterWithPlist(CHARACTER_DESC_PTR pDesc, CHARAC
 	TH_PROCESS_ERROR(ptCharFrame);
 	char szarrSp[128] = { 0 };
 
-	if (0 != strcmp(pDesc->szarrDefaultTexPlistPos, "NA"))
+	if (0 != strcmp(pDesc->szarrDefaultTexPlistPos, THINI_DEFAULT_STR))
 	{
 		sprintf_s(szarrSp, "%s.png", pDesc->szarrDefaultTexPlistPos);
 	}
@@ -103,8 +103,8 @@ void CThBaseCharacter::_initCharacterDescInfo(CHARACTER_DESC_PTR pDesc, CHARACTE
 	ptCharFrame->nSupportDuration = pDesc->nSupportDuration;
 	ptCharFrame->emCharacterType = pDesc->emCharacterType;
 	ptCharFrame->emMoveSpeed = pDesc->emMoveSpeed;
+	ptCharFrame->emCurLevel = pDesc->emCurLevel;
 	ptCharFrame->emMaxLevel = pDesc->emMaxLevel;
-	ptCharFrame->emCurLevel = THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1;
 	strcpy_s(ptCharFrame->szarrDesc, strlen(pDesc->szarrSpriteName) + 1, pDesc->szarrSpriteName);
 	return;
 }
@@ -312,6 +312,7 @@ thBool CthCcCharacterLoadHandler::getCharaterDescFromIni(const char* cszpFilenam
 	pRet->nSupportDuration = GetPrivateProfileIntA(cszpSelCharacterDesc, "nSupportDuration", 15, cszpFilename);
 	pRet->emMoveSpeed = (enum THEM_CHARARCTERLEVEL_MOVESPEED)GetPrivateProfileIntA(cszpSelCharacterDesc, "emMoveSpeed", 2, cszpFilename);
 	pRet->emCharacterType = (enum THEM_CHARACTER_TYPE)GetPrivateProfileIntA(cszpSelCharacterDesc, "emCharacterType", 0, cszpFilename);
+	pRet->emCurLevel = (enum THEM_CHARACTER_LEVEL)GetPrivateProfileIntA(cszpSelCharacterDesc, "emCurLevel", 1, cszpFilename);
 	pRet->emMaxLevel = (enum THEM_CHARACTER_LEVEL)GetPrivateProfileIntA(cszpSelCharacterDesc, "emMaxLevel", 1, cszpFilename);
 
 	/* ╪сть CHARACTER_ANI_MAP */

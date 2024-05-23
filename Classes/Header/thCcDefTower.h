@@ -126,12 +126,14 @@ public:
 	virtual thBool globalMonitoring();
 	thBool globalMonitoringWarriors();
 
+	thBool thOnClickQucikMenu(const thBool bIsCreate);
+
 public:
 	/* static fn. get init defTower info. */
 	static void getTowerInfoArcher(
 		enum THEM_CHARACTER_LEVEL emLevel, char* szpArcherRet, char** arrpAniRet, short* psAniSizeRet, char** arrpWarriorsRet, short* psWarriorsCnt, char* szpDefTowerConstruction
 	);
-	static thBool getTowerInfoArcherWarriors(
+	static thBool getTowerInfoWarriors(
 		char* szpArcherRet, char** arrpAniRet, short* psAniSizeRet, char** arrpWarriorsRet, short* psWarriorsCnt, char* szpDefTowerConstruction, char* szpLv
 	);
 
@@ -140,6 +142,7 @@ private:
 	thBool _getSpArrayVacantPos(short* psRet);
 	thBool _getWarArrayVacantPos(short* psRet);
 	void _setSpTowerPositionTweaks();
+	void _setSpTowerPositionTweaksWarrior();
 	thBool _setPlayAniOpenTheDoor();
 	thBool _setPlayAniCloseTheDoor();
 	thBool _setPlayAniWarriorsDie(CThDefTowerWarrior_ptr pSp);
@@ -165,9 +168,32 @@ private:
 	/* ×Óµ¯. */
 	SpriteBatchNode*				m_pBatchNodeBullet;
 	CHARACTER_DESC_PTR				m_ptBulletDesc;
+	/* µã»÷²Ëµ¥ */
+	DEFTOWER_QUICKMENU				m_tChacFrameQuickMenuBg;
 };
-
 typedef CThDefTower* CThDefTower_ptr;
+
+
+class CThDefTowerQuickMenu:
+	public CThDefTower
+{
+public:
+	static CThDefTowerQuickMenu* getInstance();
+	thBool createBasicQm(const float cfX, const float cfY, const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm);
+	void destoryBasicQm(DEFTOWER_QUICKMENU_PTR ptDefTowerQm);
+
+	thBool createQmWarriorLevel4(const float cfX, const float cfY, const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm);
+	thBool destoryQmWarriorLevel4(DEFTOWER_QUICKMENU_PTR ptDefTowerQm);
+
+private:
+	CThDefTowerQuickMenu();
+	~CThDefTowerQuickMenu();
+	CThDefTowerQuickMenu(const CThDefTowerQuickMenu& pSelf);
+	const CThDefTowerQuickMenu& operator=(const CThDefTowerQuickMenu& pSelf);
+
+private:
+	static CThDefTowerQuickMenu* m_pSelf;
+};
 
 
 class CThDefTowerSubsoil :
@@ -193,10 +219,13 @@ public:
 	virtual void onMouseDown(EventMouse* pEvent);
 	virtual void onMouseMove(EventMouse* pEvent);
 
+	void onHoverSubsoil(const thBool cbIsHover);
+
 	virtual thBool globalMonitoring();
 	virtual void update(float dt);
 
 private:
+	float m_fSubsoilScale;
 	float m_arrfDefTowerWarriorPos[THMAX_DEFTOWER_TARLEVEL_WARRIORS][2];
 	CHARACTER_FRAMEINFO_PTR m_ptSubsoil;
 	CHARACTER_FRAMEINFO_PTR m_ptConstruction;

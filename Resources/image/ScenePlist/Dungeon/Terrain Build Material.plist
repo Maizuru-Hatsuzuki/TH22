@@ -56,20 +56,20 @@
         <key>sourceSize</key>
         <string>{126,80}</string>
       </dict>
-      <key>Terrain Build Material10.png</key>
+      <key>Terrain Build Material11.png</key>
       <dict>
         <key>frame</key>
         <string>{{273,82},{133,70}}</string>
         <key>offset</key>
-        <string>{0,0}</string>
+        <string>{2,4.5}</string>
         <key>rotated</key>
         <false/>
         <key>sourceColorRect</key>
-        <string>{{0,0},{133,70}}</string>
+        <string>{{7,10},{133,70}}</string>
         <key>sourceSize</key>
-        <string>{133,70}</string>
+        <string>{143,81}</string>
       </dict>
-      <key>Terrain Build Material11.png</key>
+      <key>Terrain Build Material10.png</key>
       <dict>
         <key>frame</key>
         <string>{{0,83},{133,70}}</string>
@@ -95,7 +95,7 @@
         <key>sourceSize</key>
         <string>{125,72}</string>
       </dict>
-      <key>Terrain Build Material2.png</key>
+      <key>Terrain Build Material1.png</key>
       <dict>
         <key>frame</key>
         <string>{{0,155},{125,71}}</string>
@@ -108,7 +108,7 @@
         <key>sourceSize</key>
         <string>{125,71}</string>
       </dict>
-      <key>Terrain Build Material1.png</key>
+      <key>Terrain Build Material2.png</key>
       <dict>
         <key>frame</key>
         <string>{{127,158},{125,71}}</string>
@@ -178,13 +178,13 @@
         <key>frame</key>
         <string>{{124,293},{123,60}}</string>
         <key>offset</key>
-        <string>{0,0}</string>
+        <string>{-2,-0.5}</string>
         <key>rotated</key>
         <false/>
         <key>sourceColorRect</key>
-        <string>{{0,0},{123,60}}</string>
+        <string>{{8,10},{123,60}}</string>
         <key>sourceSize</key>
-        <string>{123,60}</string>
+        <string>{143,81}</string>
       </dict>
       <key>Terrain Build Material4.png</key>
       <dict>

@@ -46,6 +46,7 @@ thBool CThDefTower::init(
 	m_dLastAttack = 0.f;
 	m_ptBulletDesc = NULL;
 	m_ptTowerStatus = NULL;
+	m_tChacFrameQuickMenuBg = { NULL, NULL, NULL };
 	m_tAniTag.sOffset = THMAX_ANI_COUNT;
 	/* AniTagTowerSummon nTag = 33 */
 	m_tAniTag.arrTag[0].sTag = m_tAniTag.sOffset + 1;
@@ -82,9 +83,9 @@ thBool CThDefTower::init(
 	/* 创建防御塔. */
 	bFnRet = initCharacterWithPlist(ptCharacterDesc, &m_ptTower);
 	TH_PROCESS_ERROR(bFnRet);
-	m_ptTower->pSpCharacter->setPositionX(m_ptTower->pSpCharacter->getPositionX() - 2.5);
-	m_ptTower->pSpCharacter->setPositionY(m_ptTower->pSpCharacter->getPositionY() + 5);
+	_setSpTowerPositionTweaks();
 	m_ptTower->pSpCharacter->setAnchorPoint(Vec2(0.5, 0));
+	this->addChild(m_ptTower->pSpCharacter);
 
 	bFnRet = initBaiscAnimate(szarrpAniDesc, csAniDescSize);
 	TH_PROCESS_ERROR(bFnRet);
@@ -110,11 +111,9 @@ thBool CThDefTower::init(
 	/* 子弹贴图 */
 	m_pBatchNodeBullet = SpriteBatchNode::create(szarrBulletPlistPng);
 	TH_PROCESS_ERROR(m_pBatchNodeBullet);
+	this->addChild(m_pBatchNodeBullet);
 
 	scheduleUpdate();
-
-	this->addChild(m_ptTower->pSpCharacter);
-	this->addChild(m_pBatchNodeBullet);
 
 	bRet = THTRUE;
 Exit0:
@@ -129,6 +128,11 @@ void CThDefTower::uninit()
 {
 	unscheduleUpdate();
 	uninitDefTowerWarriorsDesc();
+
+	m_ptTower->pSpCharacter->removeFromParentAndCleanup(THTRUE);
+	this->removeChild(m_ptTower->pSpCharacter);
+	m_pBatchNodeBullet->removeFromParentAndCleanup(THTRUE);
+	this->removeChild(m_pBatchNodeBullet);
 
 	for (int i = 0; i < THMAX_SP_COUNT; i++)
 	{
@@ -151,6 +155,8 @@ void CThDefTower::uninit()
 	THFREE(m_arrpSpGroup);
 	THFREE(m_arrpAniGroup);
 	THFREE(m_arrpWarriors);
+	THFREE(m_ptTower);
+	THFREE(m_ptTowerStatus);
 
 	return;
 }
@@ -476,7 +482,7 @@ void CThDefTower::getTowerInfoArcher(
 	return;
 }
 
-thBool CThDefTower::getTowerInfoArcherWarriors(
+thBool CThDefTower::getTowerInfoWarriors(
 	char* szpArcherRet, char** arrpAniRet, short* psAniSizeRet, char** arrpWarriorsRet, short* psWarriorsCnt, char* szpDefTowerConstruction, char* szpLv
 )
 {
@@ -524,7 +530,6 @@ thBool CThDefTower::getTowerInfoArcherWarriors(
 Exit0:
 	return bRet;
 }
-
 
 thBool CThDefTower::_getSpArrayVacantPos(short* psRet)
 {
@@ -615,6 +620,28 @@ Exit0:
 void CThDefTower::_setSpTowerPositionTweaks()
 {
 	/* 微调防御塔精灵位置, 有时候美术资源大小有瑕疵, 对不上地基, 在这里微调位置. */
+	switch (m_emTowerType)
+	{
+	case THEM_DEFTOWER_TYPE::DEFTOWERTYPE_WARRIORS:
+		_setSpTowerPositionTweaksWarrior();
+
+	default:
+		break;
+	}
+	return;
+}
+
+void CThDefTower::_setSpTowerPositionTweaksWarrior()
+{
+	switch (m_ptTower->emCurLevel)
+	{
+	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4:
+		m_ptTower->pSpCharacter->setPositionX(m_ptTower->pSpCharacter->getPositionX() - 3);
+		m_ptTower->pSpCharacter->setPositionY(m_ptTower->pSpCharacter->getPositionY() + 12);
+		break;
+	default:
+		break;
+	}
 	return;
 }
 
@@ -721,16 +748,108 @@ Exit0:
 
 void CThDefTower::onMouseUp(EventMouse* pEvent)
 {
+	thBool bRet = THFALSE;
+
+	bRet = pEvent->getCurrentTarget()->getBoundingBox().containsPoint(pEvent->getLocationInView());
+	//pSubsoil->onHoverSubsoil(bRet);
+
+Exit0:
+	return;
 }
 
 void CThDefTower::onMouseDown(EventMouse* pEvent)
 {
+	thBool bRet = THFALSE;
+	
+
+	bRet = pEvent->getCurrentTarget()->getBoundingBox().containsPoint(pEvent->getLocationInView());
+
+	if (bRet)
+	{
+		
+		
+	}
+	else
+	{
+	
+	}
+	
+
+
+Exit0:
 	return;
 }
 
 void CThDefTower::onMouseMove(EventMouse* pEvent)
 {
 
+}
+
+thBool CThDefTower::thOnClickQucikMenu(const thBool bIsCreate)
+{
+	thBool bRet = THFALSE;
+	CHARACTER_DESC tQuickMenuBg = { 0 };
+	CHARACTER_DESC tCommandMovement = { 0 };
+	ScaleTo* pAcQuickMenuBgScale = NULL;
+
+	if (THTRUE == bIsCreate)
+	{
+		switch (m_emTowerType)
+		{
+		case DEFTOWERTYPE_UNKNOW:
+			break;
+		case DEFTOWERTYPE_ARCHER:
+			break;
+		case DEFTOWERTYPE_WARRIORS:
+			switch (m_ptTower->emCurLevel)
+			{
+			case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4:
+				CThDefTowerQuickMenu::getInstance()->createQmWarriorLevel4(
+					m_ptTower->pSpCharacter->getPositionX(),
+					m_ptTower->pSpCharacter->getPositionY() + m_ptTower->pSpCharacter->getBoundingBox().size.height / 2,
+					m_ptTower->pSpCharacter->getScale(),
+					&m_tChacFrameQuickMenuBg
+				);
+				break;
+			default:
+				break;
+			}
+			break;
+		case DEFTOWERTYPE_ARCHER_WARRIORS:
+			break;
+		default:
+			break;
+		}
+	}
+	else
+	{
+		switch (m_emTowerType)
+		{
+		case DEFTOWERTYPE_UNKNOW:
+			break;
+		case DEFTOWERTYPE_ARCHER:
+			break;
+		case DEFTOWERTYPE_WARRIORS:
+			switch (m_ptTower->emCurLevel)
+			{
+			case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4:
+				CThDefTowerQuickMenu::getInstance()->destoryQmWarriorLevel4(&m_tChacFrameQuickMenuBg);
+				break;
+			default:
+				break;
+			}
+			break;
+		case DEFTOWERTYPE_ARCHER_WARRIORS:
+			break;
+		default:
+			break;
+		}
+	}
+	
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
 }
 
 void CThDefTower::update(float dt)
@@ -848,4 +967,5 @@ thBool CThDefTower::_monitoringWarriorsHealthy(CThDefTowerWarrior_ptr pSp, pthBo
 Exit0:
 	return bRet;
 }
+
 

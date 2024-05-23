@@ -48,6 +48,7 @@ thBool CThDefTowerSubsoil::init(char* szpSubsoilCharacterDescPath, const float c
 	bFnRet = initCharacterWithPlist(ptCharacterDesc, &m_ptSubsoil);
 	TH_PROCESS_ERROR(bFnRet);
 	m_ptSubsoil->pSpCharacter->setAnchorPoint(Vec2(0.5, 0));
+	m_fSubsoilScale = m_ptSubsoil->pSpCharacter->getScale();
 
 	sprintf_s(szarrSpFrame, 64, "%s%d.png", ptCharacterDesc->szarrSpriteTex, m_ptSubSoilStatus->nDefaultTexPlistPos);
 	m_pSpFrDefaultSubsoil = pSpFrameCache->getSpriteFrameByName(szarrSpFrame);
@@ -56,7 +57,6 @@ thBool CThDefTowerSubsoil::init(char* szpSubsoilCharacterDescPath, const float c
 	sprintf_s(szarrSpFrame, 64, "%s%d.png", ptCharacterDesc->szarrSpriteTex, m_ptSubSoilStatus->nHoverTexPlistPos);
 	m_pSpFrHoverSubsoil = pSpFrameCache->getSpriteFrameByName(szarrSpFrame);
 	TH_PROCESS_ERROR(m_pSpFrHoverSubsoil);
-	
 
 	if (0 != strcmp(THINI_DEFAULT_STR, m_ptSubSoilStatus->szarrActiveTex))
 	{
@@ -106,20 +106,22 @@ thBool CThDefTowerSubsoil::initDefTowerConstructionLoadingBar()
 	thBool bRet = THFALSE;
 	ProgressTo* pActionLoading = NULL;
 	CHARACTER_DESC tLoadingDesc = {};
+	const int cnLoadingPosOffset = 100;
+	const float cfLoadingTime = 1.f;
 	tLoadingDesc.fPosX = m_ptSubsoil->pSpCharacter->getPositionX();
-	tLoadingDesc.fPosY = m_ptSubsoil->pSpCharacter->getPositionY() + 50;
-	tLoadingDesc.fScale = m_ptSubsoil->pSpCharacter->getScale();
+	tLoadingDesc.fPosY = m_ptSubsoil->pSpCharacter->getPositionY() + cnLoadingPosOffset;
+	tLoadingDesc.fScale = m_fSubsoilScale;
 
 	/* 创建进度条背景. */
 	m_pSpLoadingBg = Sprite::createWithSpriteFrameName("Tower Construction Material7.png");
 	TH_PROCESS_ERROR(m_pSpLoadingBg);
-	m_pSpLoadingBg->setPosition(m_ptSubsoil->pSpCharacter->getPositionX(), m_ptSubsoil->pSpCharacter->getPositionY() + 50);
-	m_pSpLoadingBg->setScale(m_ptSubsoil->pSpCharacter->getScale());
+	m_pSpLoadingBg->setPosition(m_ptSubsoil->pSpCharacter->getPositionX(), m_ptSubsoil->pSpCharacter->getPositionY() + cnLoadingPosOffset);
+	m_pSpLoadingBg->setScale(m_fSubsoilScale);
 
 	/* 创建进度条 */
 	m_pSpLoading = Sprite::createWithSpriteFrameName("Tower Construction Material8.png");
 	TH_PROCESS_ERROR(m_pSpLoading);
-	bRet = CthCcAnimation::getInstance()->createLoadingBar(m_pSpLoading, 1.f, 100, &tLoadingDesc, &pActionLoading, &m_pLoading);
+	bRet = CthCcAnimation::getInstance()->createLoadingBar(m_pSpLoading, cfLoadingTime, 100, &tLoadingDesc, &pActionLoading, &m_pLoading);
 	TH_PROCESS_ERROR(bRet);
 
 	this->addChild(m_pSpLoadingBg);
@@ -149,6 +151,7 @@ thBool CThDefTowerSubsoil::initDefTowerConstruction()
 	TH_PROCESS_ERROR(bFnRet);
 	bFnRet = initCharacterWithPlist(ptSubsoilDesc, &m_ptConstruction);
 	TH_PROCESS_ERROR(bFnRet);
+	m_ptConstruction->pSpCharacter->setPositionY(m_ptConstruction->pSpCharacter->getPositionY() + 10);
 	m_ptConstruction->pSpCharacter->setAnchorPoint(Vec2(0.5, 0));
 	bFnRet = initDefTowerConstructionLoadingBar();
 	TH_PROCESS_ERROR(bFnRet);
@@ -187,15 +190,19 @@ thBool CThDefTowerSubsoil::initDefTower(enum THEM_CHARACTER_LEVEL emLevel)
 		strcpy_s(szarrLvPath, strlen("LV1") + 1, "LV1");
 		break;
 	case CHARACTER_LEVEL_2:
+		tWarrior.emLevel = THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_2;
 		strcpy_s(szarrLvPath, strlen("LV2") + 1, "LV2");
 		break;
 	case CHARACTER_LEVEL_3:
+		tWarrior.emLevel = THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_3;
 		strcpy_s(szarrLvPath, strlen("LV3") + 1, "LV3");
 		break;
 	case CHARACTER_LEVEL_4:
+		tWarrior.emLevel = THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4;
 		strcpy_s(szarrLvPath, strlen("LV4") + 1, "LV4");
 		break;
 	case CHARACTER_LEVEL_5:
+		tWarrior.emLevel = THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_5;
 		strcpy_s(szarrLvPath, strlen("LV5") + 1, "LV5");
 		break;
 	case CHARACTER_MAXLEVEL:
@@ -214,7 +221,7 @@ thBool CThDefTowerSubsoil::initDefTower(enum THEM_CHARACTER_LEVEL emLevel)
 		break;
 
 	case DEFTOWERTYPE_WARRIORS:
-		bFnRet = CThDefTower::getTowerInfoArcherWarriors(szarrProfessional, arrszpAni, &sAniSize, arrszpWarriors, &sWarriorsRetSize, NULL, szarrLvPath);
+		bFnRet = CThDefTower::getTowerInfoWarriors(szarrProfessional, arrszpAni, &sAniSize, arrszpWarriors, &sWarriorsRetSize, NULL, szarrLvPath);
 		TH_PROCESS_ERROR(bFnRet);
 
 		for (short j = 0; j < sWarriorsRetSize; j++)
@@ -254,7 +261,16 @@ thBool CThDefTowerSubsoil::initDefTower(enum THEM_CHARACTER_LEVEL emLevel)
 	}
 	
 Exit0:
-	/* TODO: 路径的释放. */
+	for (short j = 0; j < sAniSize; j++)
+	{
+		THFREE(arrszpAni[j]);
+	}
+
+	for (short j = 0; j < sWarriorsRetSize; j++)
+	{
+		THFREE(arrszpWarriors[j]);
+	}
+
 	return bRet;
 }
 
@@ -309,7 +325,14 @@ void CThDefTowerSubsoil::onMouseMove(EventMouse* pEvent)
 	thBool bRet = THFALSE;
 
 	bRet = pEvent->getCurrentTarget()->getBoundingBox().containsPoint(pEvent->getLocationInView());
-	if (bRet)
+	onHoverSubsoil(bRet);
+
+	return;
+}
+
+void CThDefTowerSubsoil::onHoverSubsoil(const thBool cbIsHover)
+{
+	if (cbIsHover)
 	{
 		if (NULL == m_pLoading)
 		{
@@ -331,7 +354,6 @@ void CThDefTowerSubsoil::onMouseMove(EventMouse* pEvent)
 			m_ptSubsoil->pSpCharacter->setSpriteFrame(m_pSpFrActiveDefaultSubsoil);
 		}
 	}
-
 	return;
 }
 

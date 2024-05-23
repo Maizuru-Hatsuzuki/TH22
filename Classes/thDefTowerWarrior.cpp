@@ -142,7 +142,7 @@ thBool CThDefTowerWarrior::initWarriors(const CHARACTER_DESC_PTR cptSpDesc, cons
 
 	scheduleUpdate();
 
-	this->addChild(m_ptWarriorFrameInfo->pSpCharacter);
+	this->addChild(m_ptWarriorFrameInfo->pSpCharacter, 0);
 	bRet = THTRUE;
 Exit0:
 	return bRet;

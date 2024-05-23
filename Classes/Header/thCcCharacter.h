@@ -115,6 +115,7 @@ struct _tCharacterDesc
 	int nSupportDuration;
 	enum THEM_CHARARCTERLEVEL_MOVESPEED emMoveSpeed;
 	enum THEM_CHARACTER_TYPE emCharacterType;
+	enum THEM_CHARACTER_LEVEL emCurLevel;
 	enum THEM_CHARACTER_LEVEL emMaxLevel;
 	struct _tCharacterAniMap* ptAniMap;
 };
@@ -183,6 +184,14 @@ struct _tTowerWarriors
 	short sSize;
 };
 
+struct _tDefTowerQuickMenu
+{
+	struct _tCharacterFrameInfo* pBg;
+	struct _tCharacterFrameInfo* pCommandMovement;
+	struct _tCharacterFrameInfo* pSellTower;
+
+};
+
 typedef struct _tAniTag						CHARACTER_ANI_TAG, * CHARACTER_ANI_TAG_PTR;
 typedef struct _tCharacterDesc				CHARACTER_DESC, * CHARACTER_DESC_PTR;
 typedef struct _tCharacterAniMap			CHARACTER_ANI_MAP, * CHARACTER_ANI_MAP_PTR;
@@ -192,6 +201,7 @@ typedef struct _tCharacterAnimateFrameInfo	CHARACTER_ANI_FRAMEINFO, * CHARACTER_
 typedef struct _tSubsoilDesc				SUBSOIL_DESC, * SUBSOIL_DESC_PTR;
 typedef struct _tDefTowerDesc				DEFTOWER_DESC, * DEFTOWER_DESC_PTR;
 typedef struct _tTowerWarriors				DEFTOWER_WARRIORS, * DEFTOWER_WARRIORS_PTR;
+typedef struct _tDefTowerQuickMenu			DEFTOWER_QUICKMENU, * DEFTOWER_QUICKMENU_PTR;
 
 
 class CThBaseCharacter:
@@ -230,17 +240,13 @@ class CThBaseCharacterAction
 {
 public:
 	static CThBaseCharacterAction* getInstance();
-	
 	thBool createActionMoveTo(float fSpeed, float fDstX, float fDstY, FiniteTimeAction** arrfnCallback, const short csCallbackSize, Sequence** ppRet) noexcept;
-
 
 private:
 	CThBaseCharacterAction();
 	~CThBaseCharacterAction();
 	CThBaseCharacterAction(const CThBaseCharacterAction& pSelf);
 	const CThBaseCharacterAction& operator=(const CThBaseCharacterAction& pSelf);
-
-
 
 private:
 	static CThBaseCharacterAction* m_pSelf;
