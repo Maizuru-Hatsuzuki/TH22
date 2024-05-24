@@ -129,10 +129,8 @@ void CThDefTower::uninit()
 	unscheduleUpdate();
 	uninitDefTowerWarriorsDesc();
 
-	m_ptTower->pSpCharacter->removeFromParentAndCleanup(THTRUE);
-	this->removeChild(m_ptTower->pSpCharacter);
-	m_pBatchNodeBullet->removeFromParentAndCleanup(THTRUE);
-	this->removeChild(m_pBatchNodeBullet);
+	this->removeAllChildrenWithCleanup(THTRUE);
+	this->removeFromParentAndCleanup(THTRUE);
 
 	for (int i = 0; i < THMAX_SP_COUNT; i++)
 	{
@@ -445,6 +443,84 @@ void CThDefTower::getWarriorExistsByAngle(const float cfAngle, thBool* pbRet)
 	return;
 }
 
+thBool CThDefTower::getTowerInfo(
+	enum THEM_CHARACTER_LEVEL emLevel, enum THEM_DEFTOWER_TYPE emTowerType, DEFTOWER_WARRIORS_PTR ptWarrior,
+	char* szpTowerDescRet, char** arrpAniRet, short* psAniSizeRet, char** arrpWarriorsRet, short* psWarriorsCnt, char* szpDefTowerConstruction
+)
+{
+	thBool bFnRet = THFALSE;
+	char szarrLvPath[16] = { 0 };
+
+	switch (emLevel)
+	{
+	case CHARACTER_LEVEL_1:
+		TH_RUN_SUCCESS(NULL != ptWarrior, ptWarrior->emLevel = THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1);
+		strcpy_s(szarrLvPath, strlen("LV1") + 1, "LV1");
+		break;
+
+	case CHARACTER_LEVEL_2:
+		TH_RUN_SUCCESS(NULL != ptWarrior, ptWarrior->emLevel = THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_2);
+		strcpy_s(szarrLvPath, strlen("LV2") + 1, "LV2");
+		break;
+
+	case CHARACTER_LEVEL_3:
+		TH_RUN_SUCCESS(NULL != ptWarrior, ptWarrior->emLevel = THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_3);
+		strcpy_s(szarrLvPath, strlen("LV3") + 1, "LV3");
+		break;
+
+	case CHARACTER_LEVEL_4:
+		TH_RUN_SUCCESS(NULL != ptWarrior, ptWarrior->emLevel = THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4);
+		strcpy_s(szarrLvPath, strlen("LV4") + 1, "LV4");
+		break;
+
+	case CHARACTER_LEVEL_5:
+		TH_RUN_SUCCESS(NULL != ptWarrior, ptWarrior->emLevel = THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_5);
+		strcpy_s(szarrLvPath, strlen("LV5") + 1, "LV5");
+		break;
+
+	case CHARACTER_MAXLEVEL:
+		break;
+	default:
+		break;
+	}
+
+	switch (emTowerType)
+	{
+	case DEFTOWERTYPE_UNKNOW:
+		break;
+
+	case DEFTOWERTYPE_ARCHER:
+		break;
+
+	case DEFTOWERTYPE_WARRIORS:
+		bFnRet = CThDefTower::getTowerInfoWarriors(szpTowerDescRet, arrpAniRet, psAniSizeRet, arrpWarriorsRet, psWarriorsCnt, szpDefTowerConstruction, szarrLvPath);
+		TH_PROCESS_ERROR(bFnRet);
+
+		if (NULL != ptWarrior)
+		{
+			for (short j = 0; j < *psWarriorsCnt; j++)
+			{
+				bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(
+					arrpWarriorsRet[j], &(ptWarrior->arrpTowerWarriorsDesc[j])
+				);
+				TH_PROCESS_ERROR(bFnRet);
+			}
+			ptWarrior->sSize = *psWarriorsCnt;
+		}
+		break;
+
+	case DEFTOWERTYPE_ARCHER_WARRIORS:
+		break;
+
+	default:
+		break;
+	}
+
+	bFnRet = THTRUE;
+Exit0:
+	return bFnRet;
+}
+
 void CThDefTower::getTowerInfoArcher(
 	enum THEM_CHARACTER_LEVEL emLevel, char* szpArcherRet, char** arrpAniRet, short* psAniSizeRet, char** arrpWarriorsRet, short* psWarriorsCnt, char* szpDefTowerConstruction
 )
@@ -483,13 +559,13 @@ void CThDefTower::getTowerInfoArcher(
 }
 
 thBool CThDefTower::getTowerInfoWarriors(
-	char* szpArcherRet, char** arrpAniRet, short* psAniSizeRet, char** arrpWarriorsRet, short* psWarriorsCnt, char* szpDefTowerConstruction, char* szpLv
+	char* szpTowerDescRet, char** arrpAniRet, short* psAniSizeRet, char** arrpWarriorsRet, short* psWarriorsCnt, char* szpDefTowerConstruction, char* szpLv
 )
 {
 	thBool bRet = THFALSE;
 	char sztmpPath[MAX_PATH] = { 0 };
 
-	TH_RUN_SUCCESS(NULL != szpArcherRet, sprintf_s(szpArcherRet, MAX_PATH, "data\\CharacterConfig\\Barracks\\%s\\ChacBarracks.ini", szpLv));
+	TH_RUN_SUCCESS(NULL != szpTowerDescRet, sprintf_s(szpTowerDescRet, MAX_PATH, "data\\CharacterConfig\\Barracks\\%s\\ChacBarracks.ini", szpLv));
 	TH_RUN_SUCCESS(NULL != szpDefTowerConstruction, strcpy_s(szpDefTowerConstruction, MAX_PATH, "data\\CharacterConfig\\DefTowerSubsoil\\ChacDefTowerConstructionBarracks.ini"));
 
 	if (NULL != arrpAniRet && NULL != psAniSizeRet)
@@ -703,6 +779,53 @@ Exit0:
 	return bRet;
 }
 
+thBool CThDefTower::_setCreateQmWarrior(const thBool cbIsCreate)
+{
+	thBool bRet = THFALSE;
+	ScaleTo* pAcQuickMenuBgScale = NULL;
+
+	if (THTRUE == cbIsCreate)
+	{
+		pAcQuickMenuBgScale = ScaleTo::create(0.1f, 0.7f, 0.7f);
+
+		switch (m_ptTower->emCurLevel)
+		{
+		case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4:
+			bRet = CThDefTowerQuickMenu::getInstance()->createQmWarriorLevel4(
+				m_ptTower->pSpCharacter->getPositionX(),
+				m_ptTower->pSpCharacter->getPositionY() + m_ptTower->pSpCharacter->getBoundingBox().size.height / 2,
+				m_ptTower->pSpCharacter->getScale(),
+				&m_tChacFrameQuickMenuBg
+			);
+			TH_PROCESS_ERROR(bRet);
+			this->addChild(CThDefTowerQuickMenu::getInstance());
+			CThDefTowerQuickMenu::getInstance()->runAction(pAcQuickMenuBgScale);
+			break;
+
+		default:
+			break;
+		}
+	}
+	else
+	{
+		switch (m_ptTower->emCurLevel)
+		{
+		case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4:
+			bRet = CThDefTowerQuickMenu::getInstance()->destoryQmWarriorLevel4(&m_tChacFrameQuickMenuBg);
+			TH_PROCESS_ERROR(bRet);
+			this->removeChild(CThDefTowerQuickMenu::getInstance());
+			break;
+
+		default:
+			break;
+		}
+	}
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
 thBool CThDefTower::execTowerShoot(const short csBulletCnt)
 {
 	thBool bRet = THFALSE;
@@ -751,7 +874,6 @@ void CThDefTower::onMouseUp(EventMouse* pEvent)
 	thBool bRet = THFALSE;
 
 	bRet = pEvent->getCurrentTarget()->getBoundingBox().containsPoint(pEvent->getLocationInView());
-	//pSubsoil->onHoverSubsoil(bRet);
 
 Exit0:
 	return;
@@ -760,23 +882,20 @@ Exit0:
 void CThDefTower::onMouseDown(EventMouse* pEvent)
 {
 	thBool bRet = THFALSE;
-	
-
+	ssize_t lQmSpCnt = CThDefTowerQuickMenu::getInstance()->getChildrenCount();
 	bRet = pEvent->getCurrentTarget()->getBoundingBox().containsPoint(pEvent->getLocationInView());
 
-	if (bRet)
+	if (bRet && 0L == lQmSpCnt)
 	{
-		
-		
+		bRet = thOnClickCreateQucikMenu();
+		ASSERT(bRet);
 	}
 	else
 	{
-	
+		bRet = thOnClickDestoryQucikMenu();
+		ASSERT(bRet);
 	}
-	
 
-
-Exit0:
 	return;
 }
 
@@ -785,67 +904,53 @@ void CThDefTower::onMouseMove(EventMouse* pEvent)
 
 }
 
-thBool CThDefTower::thOnClickQucikMenu(const thBool bIsCreate)
+thBool CThDefTower::thOnClickCreateQucikMenu()
 {
 	thBool bRet = THFALSE;
 	CHARACTER_DESC tQuickMenuBg = { 0 };
 	CHARACTER_DESC tCommandMovement = { 0 };
 	ScaleTo* pAcQuickMenuBgScale = NULL;
 
-	if (THTRUE == bIsCreate)
+	switch (m_emTowerType)
 	{
-		switch (m_emTowerType)
-		{
-		case DEFTOWERTYPE_UNKNOW:
-			break;
-		case DEFTOWERTYPE_ARCHER:
-			break;
-		case DEFTOWERTYPE_WARRIORS:
-			switch (m_ptTower->emCurLevel)
-			{
-			case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4:
-				CThDefTowerQuickMenu::getInstance()->createQmWarriorLevel4(
-					m_ptTower->pSpCharacter->getPositionX(),
-					m_ptTower->pSpCharacter->getPositionY() + m_ptTower->pSpCharacter->getBoundingBox().size.height / 2,
-					m_ptTower->pSpCharacter->getScale(),
-					&m_tChacFrameQuickMenuBg
-				);
-				break;
-			default:
-				break;
-			}
-			break;
-		case DEFTOWERTYPE_ARCHER_WARRIORS:
-			break;
-		default:
-			break;
-		}
-	}
-	else
-	{
-		switch (m_emTowerType)
-		{
-		case DEFTOWERTYPE_UNKNOW:
-			break;
-		case DEFTOWERTYPE_ARCHER:
-			break;
-		case DEFTOWERTYPE_WARRIORS:
-			switch (m_ptTower->emCurLevel)
-			{
-			case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4:
-				CThDefTowerQuickMenu::getInstance()->destoryQmWarriorLevel4(&m_tChacFrameQuickMenuBg);
-				break;
-			default:
-				break;
-			}
-			break;
-		case DEFTOWERTYPE_ARCHER_WARRIORS:
-			break;
-		default:
-			break;
-		}
+	case DEFTOWERTYPE_UNKNOW:
+		break;
+	case DEFTOWERTYPE_ARCHER:
+		break;
+	case DEFTOWERTYPE_WARRIORS:
+		bRet = _setCreateQmWarrior(THTRUE);
+		TH_PROCESS_ERROR(bRet);
+		break;
+	case DEFTOWERTYPE_ARCHER_WARRIORS:
+		break;
+	default:
+		break;
 	}
 	
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+thBool CThDefTower::thOnClickDestoryQucikMenu()
+{
+	thBool bRet = THFALSE;
+
+	switch (m_emTowerType)
+	{
+	case DEFTOWERTYPE_UNKNOW:
+		break;
+	case DEFTOWERTYPE_ARCHER:
+		break;
+	case DEFTOWERTYPE_WARRIORS:
+		bRet = _setCreateQmWarrior(THFALSE);
+		TH_PROCESS_ERROR(bRet);
+		break;
+	case DEFTOWERTYPE_ARCHER_WARRIORS:
+		break;
+	default:
+		break;
+	}
 
 	bRet = THTRUE;
 Exit0:

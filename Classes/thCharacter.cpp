@@ -198,6 +198,16 @@ Exit0:
 	return bRet;
 }
 
+thBool CThBaseCharacter::getIsHoverSprite(Sprite* pSp, Vec2 vecMouseLocationInWorld)
+{
+	thBool bRet = THFALSE;
+	Vec2 vecLocaltionInSell = pSp->convertToNodeSpace(vecMouseLocationInWorld);
+	Size sizeSell = pSp->getBoundingBox().size;
+
+	bRet = Rect(0, 0, sizeSell.width, sizeSell.height).containsPoint(vecLocaltionInSell);
+	return bRet;
+}
+
 CThBaseCharacterAction::CThBaseCharacterAction()
 {
 }

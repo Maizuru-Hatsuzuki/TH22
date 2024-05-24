@@ -126,10 +126,15 @@ public:
 	virtual thBool globalMonitoring();
 	thBool globalMonitoringWarriors();
 
-	thBool thOnClickQucikMenu(const thBool bIsCreate);
+	thBool thOnClickCreateQucikMenu();
+	thBool thOnClickDestoryQucikMenu();
 
 public:
 	/* static fn. get init defTower info. */
+	static thBool getTowerInfo(
+		enum THEM_CHARACTER_LEVEL emLevel, enum THEM_DEFTOWER_TYPE emTowerType, DEFTOWER_WARRIORS_PTR ptWarrior,
+		char* szpTowerDescRet, char** arrpAniRet, short* psAniSizeRet, char** arrpWarriorsRet, short* psWarriorsCnt, char* szpDefTowerConstruction
+	);
 	static void getTowerInfoArcher(
 		enum THEM_CHARACTER_LEVEL emLevel, char* szpArcherRet, char** arrpAniRet, short* psAniSizeRet, char** arrpWarriorsRet, short* psWarriorsCnt, char* szpDefTowerConstruction
 	);
@@ -146,6 +151,7 @@ private:
 	thBool _setPlayAniOpenTheDoor();
 	thBool _setPlayAniCloseTheDoor();
 	thBool _setPlayAniWarriorsDie(CThDefTowerWarrior_ptr pSp);
+	thBool _setCreateQmWarrior(const thBool cbIsCreate);
 
 	thBool _monitoringWarriorsHealthy(CThDefTowerWarrior_ptr pSp, pthBool pbIsRelease);
 
@@ -178,12 +184,18 @@ class CThDefTowerQuickMenu:
 	public CThDefTower
 {
 public:
+	thBool init();
+	void uninit();
 	static CThDefTowerQuickMenu* getInstance();
 	thBool createBasicQm(const float cfX, const float cfY, const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm);
 	void destoryBasicQm(DEFTOWER_QUICKMENU_PTR ptDefTowerQm);
 
 	thBool createQmWarriorLevel4(const float cfX, const float cfY, const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm);
 	thBool destoryQmWarriorLevel4(DEFTOWER_QUICKMENU_PTR ptDefTowerQm);
+
+	/* Sell */
+	void onMouseUp(EventMouse* pMouse);
+	void onMouseMove(EventMouse* pMouse);
 
 private:
 	CThDefTowerQuickMenu();
@@ -193,6 +205,9 @@ private:
 
 private:
 	static CThDefTowerQuickMenu* m_pSelf;
+	DEFTOWER_QUICKMENU_PTR m_ptQm;
+
+	CHARACTER_FRAMEINFO_PTR m_ptSellHoverBorder;
 };
 
 

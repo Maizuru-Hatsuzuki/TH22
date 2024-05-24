@@ -141,9 +141,11 @@ thBool CThDefTowerSubsoil::initDefTowerConstruction()
 	CHARACTER_DESC_PTR ptSubsoilDesc = NULL;
 	char szarrConstructionIni[MAX_PATH] = { 0 };
 
+	m_ptSubsoil->pSpCharacter->setScale(m_fSubsoilScale + 0.05f);
 	m_ptSubsoil->pSpCharacter->setSpriteFrame(m_pSpFrActiveDefaultSubsoil);
 	
-	CThDefTower::getTowerInfoArcher(THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, NULL, NULL, NULL, NULL, NULL, szarrConstructionIni);
+	bFnRet = CThDefTower::getTowerInfo(THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4, m_emDefTowerProfessionalType, NULL, NULL, NULL, NULL, NULL, NULL, szarrConstructionIni);
+	TH_PROCESS_ERROR(bFnRet);
 	TH_PROCESS_ERROR(0 != strcmp(szarrConstructionIni, "\0"));
 
 	/* 创建建造中建筑纹理. */
@@ -151,7 +153,7 @@ thBool CThDefTowerSubsoil::initDefTowerConstruction()
 	TH_PROCESS_ERROR(bFnRet);
 	bFnRet = initCharacterWithPlist(ptSubsoilDesc, &m_ptConstruction);
 	TH_PROCESS_ERROR(bFnRet);
-	m_ptConstruction->pSpCharacter->setPositionY(m_ptConstruction->pSpCharacter->getPositionY() + 10);
+	m_ptConstruction->pSpCharacter->setPositionY(m_ptConstruction->pSpCharacter->getPositionY() + 15);
 	m_ptConstruction->pSpCharacter->setAnchorPoint(Vec2(0.5, 0));
 	bFnRet = initDefTowerConstructionLoadingBar();
 	TH_PROCESS_ERROR(bFnRet);
@@ -184,62 +186,8 @@ thBool CThDefTowerSubsoil::initDefTower(enum THEM_CHARACTER_LEVEL emLevel)
 	CHARACTER_DESC_PTR arrpChacWarrios[THMAX_DEFTOWER_TARLEVEL_WARRIORS] = { 0 };
 	DEFTOWER_WARRIORS tWarrior = { arrpChacWarrios, THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, 0 };
 
-	switch (emLevel)
-	{
-	case CHARACTER_LEVEL_1:
-		strcpy_s(szarrLvPath, strlen("LV1") + 1, "LV1");
-		break;
-	case CHARACTER_LEVEL_2:
-		tWarrior.emLevel = THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_2;
-		strcpy_s(szarrLvPath, strlen("LV2") + 1, "LV2");
-		break;
-	case CHARACTER_LEVEL_3:
-		tWarrior.emLevel = THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_3;
-		strcpy_s(szarrLvPath, strlen("LV3") + 1, "LV3");
-		break;
-	case CHARACTER_LEVEL_4:
-		tWarrior.emLevel = THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4;
-		strcpy_s(szarrLvPath, strlen("LV4") + 1, "LV4");
-		break;
-	case CHARACTER_LEVEL_5:
-		tWarrior.emLevel = THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_5;
-		strcpy_s(szarrLvPath, strlen("LV5") + 1, "LV5");
-		break;
-	case CHARACTER_MAXLEVEL:
-		break;
-	default:
-		break;
-	}
-
-	switch (m_emDefTowerProfessionalType)
-	{
-	case DEFTOWERTYPE_UNKNOW:
-		break;
-
-	case DEFTOWERTYPE_ARCHER:
-		CThDefTower::getTowerInfoArcher(THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, szarrProfessional, arrszpAni, &sAniSize, NULL, NULL, NULL);
-		break;
-
-	case DEFTOWERTYPE_WARRIORS:
-		bFnRet = CThDefTower::getTowerInfoWarriors(szarrProfessional, arrszpAni, &sAniSize, arrszpWarriors, &sWarriorsRetSize, NULL, szarrLvPath);
-		TH_PROCESS_ERROR(bFnRet);
-
-		for (short j = 0; j < sWarriorsRetSize; j++)
-		{
-			bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(
-				arrszpWarriors[j], &(tWarrior.arrpTowerWarriorsDesc[j])
-			);
-			TH_PROCESS_ERROR(bFnRet);
-		}
-		tWarrior.sSize = sWarriorsRetSize;
-		break;
-
-	case DEFTOWERTYPE_ARCHER_WARRIORS:
-		break;
-
-	default:
-		break;
-	}
+	bFnRet = CThDefTower::getTowerInfo(emLevel, m_emDefTowerProfessionalType, &tWarrior, szarrProfessional, arrszpAni, &sAniSize, arrszpWarriors, &sWarriorsRetSize, NULL);
+	TH_PROCESS_ERROR(bFnRet);
 	
 	if (0 != strcmp("\0", szarrProfessional))
 	{

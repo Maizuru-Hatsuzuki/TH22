@@ -108,6 +108,9 @@
     <ClCompile Include="..\Classes\thCcBase.cpp">
       <Filter>Src\THBase</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\thDefTowerQuickMenu.cpp">
+      <Filter>Src\THCharacter</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">

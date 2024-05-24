@@ -162,6 +162,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <ClCompile Include="..\Classes\thCcBase.cpp" />
     <ClCompile Include="..\Classes\thCcDbg.cpp" />
     <ClCompile Include="..\Classes\thCharacter.cpp" />
+    <ClCompile Include="..\Classes\thDefTowerQuickMenu.cpp" />
     <ClCompile Include="..\Classes\thDefTowerSubsoil.cpp" />
     <ClCompile Include="..\Classes\thDefTowerWarrior.cpp" />
     <ClCompile Include="..\Classes\thDefTower.cpp" />
