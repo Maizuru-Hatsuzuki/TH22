@@ -99,7 +99,7 @@ public:
 		float fFaceAngle
 	);
 	thBool initCharacterAnimate(CHARACTER_ANI_DESC_PTR pAniDesc, const int cnGroupPos);
-	thBool initBaiscAnimate(char** szarrpAniDesc, const short csSize);
+	thBool initAnimate(char** szarrpAniDesc, const short csSize);
 	thBool initWarriors(const short csCnt, short sSpArrVacantPos);
 	thBool initDefTowerWarriorsDesc(const DEFTOWER_WARRIORS_PTR ptWarriors);
 	thBool initBullet(float fShootAngle);
@@ -115,6 +115,7 @@ public:
 
 	void setWarriorExistsByAngle(const float cfAngle, const short csTag);
 	thBool setPlayAniTowerSummon(const short* arrnCondAniTag, const short cnSize, const thBool bIsSummoning);
+	thBool setPlayAniBuildSmoke(thBool bIsBuild);
 
 	thBool execTowerShoot(const short csBulletCnt);
 
@@ -143,6 +144,7 @@ public:
 	);
 
 private:
+	thBool _initBasicAnimate(short* psOffset);
 	void _initWarriorsMovePos(const CHARACTER_DESC_PTR cptCharacterDesc, const float cfFaceAngle);
 	thBool _getSpArrayVacantPos(short* psRet);
 	thBool _getWarArrayVacantPos(short* psRet);
@@ -153,6 +155,8 @@ private:
 	thBool _setPlayAniWarriorsDie(CThDefTowerWarrior_ptr pSp);
 	thBool _setCreateQmWarrior(const thBool cbIsCreate);
 
+	void thcbPlayAniSmoke();
+
 	thBool _monitoringWarriorsHealthy(CThDefTowerWarrior_ptr pSp, pthBool pbIsRelease);
 
 private:
@@ -162,8 +166,10 @@ private:
 	double							m_dLastSummonWarriors;
 	double							m_dLastDieWarriors;
 	double							m_dLastAttack;
+	Vec2							m_vecAnchorPoint;
 	CHARACTER_ANI_TAG				m_tAniTag;
 	CHARACTER_FRAMEINFO_PTR			m_ptTower;
+	CHARACTER_FRAMEINFO_PTR			m_ptSmoke;
 	DEFTOWER_DESC_PTR				m_ptTowerStatus;
 	enum THEM_DEFTOWER_TYPE			m_emTowerType;
 	CHARACTER_FRAMEINFO_PTR*		m_arrpSpGroup;
@@ -190,8 +196,8 @@ public:
 	thBool createBasicQm(const float cfX, const float cfY, const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm);
 	void destoryBasicQm(DEFTOWER_QUICKMENU_PTR ptDefTowerQm);
 
-	thBool createQmWarriorLevel4(const float cfX, const float cfY, const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm);
-	thBool destoryQmWarriorLevel4(DEFTOWER_QUICKMENU_PTR ptDefTowerQm);
+	thBool createQmWarriorLevel4(const float cfX, const float cfY, const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget);
+	thBool destoryQmWarriorLevel4(DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget);
 
 	/* Sell */
 	void onMouseUp(EventMouse* pMouse);
@@ -206,8 +212,10 @@ private:
 private:
 	static CThDefTowerQuickMenu* m_pSelf;
 	DEFTOWER_QUICKMENU_PTR m_ptQm;
-
+	CThDefTower_ptr m_pTaget;
 	CHARACTER_FRAMEINFO_PTR m_ptSellHoverBorder;
+	CHARACTER_FRAMEINFO_PTR m_ptMoveHoverBorder;
+	CHARACTER_FRAMEINFO_PTR m_ptSkillHoverBorder;
 };
 
 

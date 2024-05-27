@@ -113,13 +113,13 @@ thBool CThDefTowerSubsoil::initDefTowerConstructionLoadingBar()
 	tLoadingDesc.fScale = m_fSubsoilScale;
 
 	/* 创建进度条背景. */
-	m_pSpLoadingBg = Sprite::createWithSpriteFrameName("Tower Construction Material7.png");
+	m_pSpLoadingBg = Sprite::createWithSpriteFrameName("TowerConLoadingBg.png");
 	TH_PROCESS_ERROR(m_pSpLoadingBg);
 	m_pSpLoadingBg->setPosition(m_ptSubsoil->pSpCharacter->getPositionX(), m_ptSubsoil->pSpCharacter->getPositionY() + cnLoadingPosOffset);
 	m_pSpLoadingBg->setScale(m_fSubsoilScale);
 
 	/* 创建进度条 */
-	m_pSpLoading = Sprite::createWithSpriteFrameName("Tower Construction Material8.png");
+	m_pSpLoading = Sprite::createWithSpriteFrameName("TowerConLoading.png");
 	TH_PROCESS_ERROR(m_pSpLoading);
 	bRet = CthCcAnimation::getInstance()->createLoadingBar(m_pSpLoading, cfLoadingTime, 100, &tLoadingDesc, &pActionLoading, &m_pLoading);
 	TH_PROCESS_ERROR(bRet);

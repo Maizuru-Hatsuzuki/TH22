@@ -41,19 +41,24 @@ thBool CThDefTower::init(
 	TH_PROCESS_ERROR(pSpDefTowerSubsoil);
 
 	CThDefTower::ms_fWarriorsBirthAngle = fFaceAngle;
-	m_sVacantPos = 0;
-	m_dLastSummonWarriors = 0.f;
-	m_dLastAttack = 0.f;
-	m_ptBulletDesc = NULL;
-	m_ptTowerStatus = NULL;
-	m_tChacFrameQuickMenuBg = { NULL, NULL, NULL };
-	m_tAniTag.sOffset = THMAX_ANI_COUNT;
+	m_sVacantPos						= 0;
+	m_dLastSummonWarriors				= 0.f;
+	m_dLastAttack						= 0.f;
+	m_ptBulletDesc						= NULL;
+	m_ptTowerStatus						= NULL;
+	m_ptSmoke							= NULL;
+	m_tChacFrameQuickMenuBg				= { NULL, NULL, NULL };
+	m_tAniTag.sOffset					= THMAX_ANI_COUNT;
+	m_vecAnchorPoint					= Vec2(0.5, 0);
 	/* AniTagTowerSummon nTag = 33 */
 	m_tAniTag.arrTag[0].sTag = m_tAniTag.sOffset + 1;
 	m_tAniTag.arrTag[0].cszpDesc = "AniTagTowerSummon";
 	/* AniTagWarriorsDie nTag = 34 */
 	m_tAniTag.arrTag[1].sTag = m_tAniTag.sOffset + 2;
 	m_tAniTag.arrTag[1].cszpDesc = "AniTagWarriorsDie";
+	/* AniTagBuildSmoke nTag = 35 */
+	m_tAniTag.arrTag[1].sTag = m_tAniTag.sOffset + 3;
+	m_tAniTag.arrTag[1].cszpDesc = "AniTagBuildSmoke";
 
 	getBulletInfo(emBullet, szarrBulletPlistPng, szarrBulletDescPath);
 	TH_PROCESS_ERROR(0 != strcmp("\0", szarrBulletDescPath));
@@ -84,10 +89,10 @@ thBool CThDefTower::init(
 	bFnRet = initCharacterWithPlist(ptCharacterDesc, &m_ptTower);
 	TH_PROCESS_ERROR(bFnRet);
 	_setSpTowerPositionTweaks();
-	m_ptTower->pSpCharacter->setAnchorPoint(Vec2(0.5, 0));
+	m_ptTower->pSpCharacter->setAnchorPoint(m_vecAnchorPoint);
 	this->addChild(m_ptTower->pSpCharacter);
 
-	bFnRet = initBaiscAnimate(szarrpAniDesc, csAniDescSize);
+	bFnRet = initAnimate(szarrpAniDesc, csAniDescSize);
 	TH_PROCESS_ERROR(bFnRet);
 	if (THEM_DEFTOWER_TYPE::DEFTOWERTYPE_WARRIORS == m_emTowerType || THEM_DEFTOWER_TYPE::DEFTOWERTYPE_ARCHER_WARRIORS == m_emTowerType)
 	{
@@ -112,6 +117,10 @@ thBool CThDefTower::init(
 	m_pBatchNodeBullet = SpriteBatchNode::create(szarrBulletPlistPng);
 	TH_PROCESS_ERROR(m_pBatchNodeBullet);
 	this->addChild(m_pBatchNodeBullet);
+
+	/* 播放创建后烟雾动画. */
+	bFnRet = setPlayAniBuildSmoke(THTRUE);
+	TH_PROCESS_ERROR(bFnRet);
 
 	scheduleUpdate();
 
@@ -138,7 +147,10 @@ void CThDefTower::uninit()
 	}
 	for (int i = 0; i < THMAX_ANI_COUNT; i++)
 	{
-		m_arrpAniGroup[i]->pAnimate->release();
+		if (NULL != m_arrpAniGroup[i])
+		{
+			m_arrpAniGroup[i]->pAnimate->release();
+		}
 		THFREE(m_arrpAniGroup[i]);
 	}
 	for (int i = 0; i < THMAX_DEFTOWER_TARLEVEL_WARRIORS; i++)
@@ -208,6 +220,7 @@ thBool CThDefTower::initDefTowerWarriorsDesc(const DEFTOWER_WARRIORS_PTR ptWarri
 	CHARACTER_DESC_PTR pSpDesc = NULL;
 	CHARACTER_ANI_MAP_PTR pAniMap = NULL;
 
+	memset(m_arrpWarriorsDesc, 0, sizeof(CHARACTER_DESC_PTR) * THEM_CHARACTER_LEVEL::CHARACTER_MAXLEVEL * THMAX_DEFTOWER_TARLEVEL_WARRIORS);
 	for (short i = 0; i < THMAX_DEFTOWER_TARLEVEL_WARRIORS; i++)
 	{
 		if (i < ptWarriors->sSize && NULL != ptWarriors->arrpTowerWarriorsDesc[i])
@@ -250,33 +263,74 @@ void CThDefTower::uninitDefTowerWarriorsDesc()
 	}
 }
 
-thBool CThDefTower::initBaiscAnimate(char** szarrpAniDesc, const short csSize)
+thBool CThDefTower::initAnimate(char** szarrpAniDesc, const short csSize)
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
 	CHARACTER_ANI_DESC_PTR ptmpAniDesc = NULL;
 	CHARACTER_ANI_FRAMEINFO_PTR pResAni = NULL;
+	short sOffset = 0;
+	short sAniGroupOffset = 0;
 
 	TH_PROCESS_SUCCESS(THMAX_ANI_COUNT < csSize);
-	for (int i = 0; i < csSize; i++)
+
+	bFnRet = _initBasicAnimate(&sOffset);
+	TH_PROCESS_ERROR(bFnRet);
+	for (short i = 0; i < csSize; i++)
 	{
 		if (NULL != szarrpAniDesc[i])
 		{
+			sAniGroupOffset = i + sOffset;
 			bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharacterAniDescFromIni(szarrpAniDesc[i], &ptmpAniDesc);
 			TH_PROCESS_ERROR(bFnRet);
 			pResAni = THMALLOC(CHARACTER_ANI_FRAMEINFO, sizeof(CHARACTER_ANI_FRAMEINFO));
 			TH_PROCESS_ERROR(pResAni);
 			pResAni->pAnimate = NULL;
 			strcpy_s(pResAni->szarrDesc, strlen(ptmpAniDesc->szarrAniDesc) + 1, ptmpAniDesc->szarrAniDesc);
-			m_arrpAniGroup[i] = pResAni;
+			m_arrpAniGroup[sAniGroupOffset] = pResAni;
 
-			bFnRet = initCharacterAnimate(ptmpAniDesc, i);
+			bFnRet = initCharacterAnimate(ptmpAniDesc, sAniGroupOffset);
 			TH_PROCESS_ERROR(bFnRet);
 
 			CthCcCharacterLoadHandler::getInstance()->uninitCharacterAniDesc(ptmpAniDesc);
 		}
 	}
 
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+thBool CThDefTower::_initBasicAnimate(short* psOffset)
+{
+	thBool bRet = THFALSE;
+	CHARACTER_ANI_DESC_PTR ptmpAniDesc = NULL;
+	CHARACTER_ANI_FRAMEINFO_PTR pResAni = NULL;
+	const short csOffset = 2;
+	const char* szparrIniPath[csOffset] =
+	{
+		"data\\AnimateConfig\\Basic\\AniCreateTowerSmoke.ini",
+		"data\\AnimateConfig\\Basic\\AniDestoryTowerSmoke.ini"
+	};
+
+	/* 创建烟雾. */
+	for (short s = 0; s < csOffset; s++)
+	{
+		bRet = CthCcCharacterLoadHandler::getInstance()->getCharacterAniDescFromIni(szparrIniPath[s], &ptmpAniDesc);
+		TH_PROCESS_ERROR(bRet);
+		pResAni = THMALLOC(CHARACTER_ANI_FRAMEINFO, sizeof(CHARACTER_ANI_FRAMEINFO));
+		TH_PROCESS_ERROR(pResAni);
+		pResAni->pAnimate = NULL;
+		strcpy_s(pResAni->szarrDesc, strlen(ptmpAniDesc->szarrAniDesc) + 1, ptmpAniDesc->szarrAniDesc);
+		m_arrpAniGroup[s] = pResAni;
+
+		bRet = initCharacterAnimate(ptmpAniDesc, s);
+		TH_PROCESS_ERROR(bRet);
+
+		CthCcCharacterLoadHandler::getInstance()->uninitCharacterAniDesc(ptmpAniDesc);
+	}
+
+	*psOffset = csOffset;
 	bRet = THTRUE;
 Exit0:
 	return bRet;
@@ -693,6 +747,58 @@ Exit0:
 	return bRet;
 }
 
+thBool CThDefTower::setPlayAniBuildSmoke(thBool bIsBuild)
+{
+	thBool bRet = THFALSE;
+	int nAniSummonTag = 0;
+	CHARACTER_ANI_FRAMEINFO_PTR pAni = NULL;
+	CHARACTER_DESC tChacSmoke = { 0 };
+	CallFunc* fnEndSmoke = CallFunc::create(CC_CALLBACK_0(CThDefTower::thcbPlayAniSmoke, this));
+	Sequence* pSeqAni = NULL;
+
+	tChacSmoke.nDefaultTexPlistPos = 1;
+	strcpy_s(tChacSmoke.szarrDefaultTexPlistPos, 64, THINI_DEFAULT_STR);
+	tChacSmoke.fPosX = m_ptTower->pSpCharacter->getPositionX();
+	tChacSmoke.fPosY = m_ptTower->pSpCharacter->getPositionY();
+	tChacSmoke.fScale = 0.6;
+
+	if (THTRUE == bIsBuild)
+	{
+		/* 创建. */
+		strcpy_s(tChacSmoke.szarrSpriteName, 64, "createTowerSmoke");
+		strcpy_s(tChacSmoke.szarrSpriteTex, 64, "createTowerSmoke");
+		getAniFrameInfoByTag("createTowerSmoke", &pAni);
+		TH_PROCESS_ERROR(pAni);
+	}
+	else
+	{
+		/* 销毁. */
+		strcpy_s(tChacSmoke.szarrSpriteName, 64, "destoryTowerSmoke");
+		strcpy_s(tChacSmoke.szarrSpriteTex, 64, "destoryTowerSmoke");
+		getAniFrameInfoByTag("destoryTowerSmoke", &pAni);
+		TH_PROCESS_ERROR(pAni);
+	}
+
+	if (NULL == m_ptSmoke)
+	{
+		bRet = initCharacterWithPlist(&tChacSmoke, &m_ptSmoke);
+		TH_PROCESS_ERROR(bRet);
+		m_ptSmoke->pSpCharacter->setAnchorPoint(m_vecAnchorPoint);
+		this->addChild(m_ptSmoke->pSpCharacter);
+	}
+	m_ptSmoke->pSpCharacter->setVisible(THTRUE);
+
+	getAniTagByDesc("AniTagBuildSmoke", &nAniSummonTag);
+	TH_PROCESS_ERROR(nAniSummonTag);
+	pSeqAni = Sequence::create(pAni->pAnimate, fnEndSmoke, NULL);
+	m_ptSmoke->pSpCharacter->runAction(pSeqAni);
+	pAni->pAnimate->setTag(nAniSummonTag);
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
 void CThDefTower::_setSpTowerPositionTweaks()
 {
 	/* 微调防御塔精灵位置, 有时候美术资源大小有瑕疵, 对不上地基, 在这里微调位置. */
@@ -795,7 +901,8 @@ thBool CThDefTower::_setCreateQmWarrior(const thBool cbIsCreate)
 				m_ptTower->pSpCharacter->getPositionX(),
 				m_ptTower->pSpCharacter->getPositionY() + m_ptTower->pSpCharacter->getBoundingBox().size.height / 2,
 				m_ptTower->pSpCharacter->getScale(),
-				&m_tChacFrameQuickMenuBg
+				&m_tChacFrameQuickMenuBg,
+				this
 			);
 			TH_PROCESS_ERROR(bRet);
 			this->addChild(CThDefTowerQuickMenu::getInstance());
@@ -811,9 +918,10 @@ thBool CThDefTower::_setCreateQmWarrior(const thBool cbIsCreate)
 		switch (m_ptTower->emCurLevel)
 		{
 		case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4:
-			bRet = CThDefTowerQuickMenu::getInstance()->destoryQmWarriorLevel4(&m_tChacFrameQuickMenuBg);
+			bRet = CThDefTowerQuickMenu::getInstance()->destoryQmWarriorLevel4(&m_tChacFrameQuickMenuBg, this);
 			TH_PROCESS_ERROR(bRet);
 			this->removeChild(CThDefTowerQuickMenu::getInstance());
+			
 			break;
 
 		default:
@@ -960,6 +1068,7 @@ Exit0:
 void CThDefTower::update(float dt)
 {
 	thBool bFnRet = THFALSE;
+	int nAniSummonTag = 0;
 
 	bFnRet = globalMonitoring();
 	ASSERT(bFnRet);
@@ -1073,4 +1182,8 @@ Exit0:
 	return bRet;
 }
 
-
+void CThDefTower::thcbPlayAniSmoke()
+{
+	m_ptSmoke->pSpCharacter->setVisible(THFALSE);
+	return;
+}

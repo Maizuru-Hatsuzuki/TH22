@@ -222,6 +222,7 @@ public:
 	virtual void getCharacterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet)								= 0;
 	virtual void getCharacterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet)	= 0;
 	static thBool getIsHoverSprite(Sprite* pSp, Vec2 vecMouseLocationInWorld);
+	static thBool getIsClickSprite(Sprite* pSp, Vec2 vecMouseLocation);
 
 	void setPlayerRunAction(Action* pAction, Sprite* pSp);
 	static void setPlayerStopAllAction(Sprite* pSp);

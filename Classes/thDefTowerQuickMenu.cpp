@@ -15,6 +15,10 @@ CThDefTowerQuickMenu* CThDefTowerQuickMenu::m_pSelf;
 
 CThDefTowerQuickMenu::CThDefTowerQuickMenu()
 {
+	m_pTaget = NULL;
+	m_ptSellHoverBorder = NULL;
+	m_ptMoveHoverBorder = NULL;
+	m_ptSkillHoverBorder = NULL;
 }
 
 CThDefTowerQuickMenu::~CThDefTowerQuickMenu()
@@ -26,16 +30,35 @@ thBool CThDefTowerQuickMenu::init()
 	thBool bRet = THFALSE;
 	const char* cszpSpTex = "Quickmenu Material_";
 	CHARACTER_DESC tSellHoverBorder = { 0 };
+	CHARACTER_DESC tMoveHoverBorder = { 0 };
+	CHARACTER_DESC tSkillHoverBorder = { 0 };
 
-	strcpy_s(tSellHoverBorder.szarrDefaultTexPlistPos, 64, THINI_DEFAULT_STR);
-	strcpy_s(tSellHoverBorder.szarrSpriteTex, 64, cszpSpTex);
-	strcpy_s(tSellHoverBorder.szarrSpriteName, 64, "Quickmenu sell border");
-	tSellHoverBorder.nDefaultTexPlistPos = 34;
+	if (NULL == m_ptSellHoverBorder)
+	{
+		strcpy_s(tSellHoverBorder.szarrDefaultTexPlistPos, 64, THINI_DEFAULT_STR);
+		strcpy_s(tSellHoverBorder.szarrSpriteTex, 64, cszpSpTex);
+		strcpy_s(tSellHoverBorder.szarrSpriteName, 64, "Quickmenu sell border");
+		tSellHoverBorder.nDefaultTexPlistPos = 34;
 
-	initCharacterWithPlist(&tSellHoverBorder, &m_ptSellHoverBorder);
-	m_ptSellHoverBorder->pSpCharacter->setVisible(THFALSE);
+		initCharacterWithPlist(&tSellHoverBorder, &m_ptSellHoverBorder);
+		m_ptSellHoverBorder->pSpCharacter->setVisible(THFALSE);
+		this->addChild(m_ptSellHoverBorder->pSpCharacter);
+	}
+	if (NULL == m_ptMoveHoverBorder)
+	{
+		strcpy_s(tMoveHoverBorder.szarrDefaultTexPlistPos, 64, THINI_DEFAULT_STR);
+		strcpy_s(tMoveHoverBorder.szarrSpriteTex, 64, cszpSpTex);
+		strcpy_s(tMoveHoverBorder.szarrSpriteName, 64, "Quickmenu move border");
+		tMoveHoverBorder.nDefaultTexPlistPos = 63;
 
-	this->addChild(m_ptSellHoverBorder->pSpCharacter);
+		initCharacterWithPlist(&tMoveHoverBorder, &m_ptMoveHoverBorder);
+		m_ptMoveHoverBorder->pSpCharacter->setVisible(THFALSE);
+		this->addChild(m_ptMoveHoverBorder->pSpCharacter);
+	}
+	if (NULL == m_ptSkillHoverBorder)
+	{
+
+	}
 
 	bRet = THTRUE;
 Exit0:
@@ -44,6 +67,9 @@ Exit0:
 
 void CThDefTowerQuickMenu::uninit()
 {
+	THFREE(m_ptSellHoverBorder);
+	THFREE(m_ptMoveHoverBorder);
+	THFREE(m_ptSkillHoverBorder);
 	return;
 }
 
@@ -143,10 +169,11 @@ void CThDefTowerQuickMenu::destoryBasicQm(DEFTOWER_QUICKMENU_PTR ptDefTowerQm)
 	THFREE(ptDefTowerQm->pBg);
 }
 
-thBool CThDefTowerQuickMenu::createQmWarriorLevel4(const float cfX, const float cfY, const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm)
+thBool CThDefTowerQuickMenu::createQmWarriorLevel4(const float cfX, const float cfY, const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget)
 {
 	thBool bRet = THFALSE;
-	
+	m_pTaget = pTaget;
+
 	bRet = createBasicQm(cfX, cfY, cfTagScale, ptDefTowerQm);
 	TH_PROCESS_ERROR(bRet);
 
@@ -155,11 +182,12 @@ Exit0:
 	return bRet;
 }
 
-thBool CThDefTowerQuickMenu::destoryQmWarriorLevel4(DEFTOWER_QUICKMENU_PTR ptDefTowerQm)
+thBool CThDefTowerQuickMenu::destoryQmWarriorLevel4(DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget)
 {
 	thBool bRet = THFALSE;
 	
 	this->removeAllChildrenWithCleanup(THTRUE);
+	uninit();
 
 	bRet = THTRUE;
 Exit0:
@@ -171,10 +199,11 @@ void CThDefTowerQuickMenu::onMouseUp(EventMouse* pMouse)
 	thBool bRet = THFALSE;
 	Vec2 vecMousePos = pMouse->getLocationInView();
 
-	bRet = m_ptQm->pSellTower->pSpCharacter->getCenterRect().containsPoint(vecMousePos);
+	/* 检查出售按钮. */
+	bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pSellTower->pSpCharacter, vecMousePos);
 	if (bRet)
 	{
-		CCLOG("Sell");
+		m_pTaget->uninit();
 	}
 
 	return;
@@ -200,6 +229,16 @@ void CThDefTowerQuickMenu::onMouseMove(EventMouse* pMouse)
 
 	/* 检查移动按钮. */
 	bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pCommandMovement->pSpCharacter, vecMousePos);
+	if (bRet)
+	{
+		m_ptMoveHoverBorder->pSpCharacter->setPosition(m_ptQm->pCommandMovement->pSpCharacter->getPosition());
+		m_ptMoveHoverBorder->pSpCharacter->setScale(m_ptQm->pCommandMovement->pSpCharacter->getScale());
+		m_ptMoveHoverBorder->pSpCharacter->setVisible(THTRUE);
+	}
+	else
+	{
+		m_ptMoveHoverBorder->pSpCharacter->setVisible(THFALSE);
+	}
 
 	return;
 }

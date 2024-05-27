@@ -64,6 +64,12 @@
     <Filter Include="Config\Character\Barracks\LV4">
       <UniqueIdentifier>{f5ae2d21-49d6-4fa8-ba11-bac86be9b947}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Config\Animate">
+      <UniqueIdentifier>{4430cf0d-aee9-4b37-bf2c-23167f001a94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Config\Animate\Basic">
+      <UniqueIdentifier>{171b62b0-ce59-4f01-b9ab-82661bca8112}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -197,6 +203,12 @@
     </None>
     <None Include="..\Resources\data\CharacterConfig\Barracks\LV4\ChacWarrior.ini">
       <Filter>Config\Character\Barracks\LV4</Filter>
+    </None>
+    <None Include="..\Resources\data\AnimateConfig\Basic\AniCreateTowerSmoke.ini">
+      <Filter>Config\Animate\Basic</Filter>
+    </None>
+    <None Include="..\Resources\data\AnimateConfig\Basic\AniDestoryTowerSmoke.ini">
+      <Filter>Config\Animate\Basic</Filter>
     </None>
   </ItemGroup>
 </Project>

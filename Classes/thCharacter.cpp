@@ -57,11 +57,11 @@ thBool CThBaseCharacter::initCharacterWithPlist(CHARACTER_DESC_PTR pDesc, CHARAC
 	thBool bFnRet = THFALSE;
 	SpriteFrame* pSpFrame = NULL;
 	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::getInstance();
-	
 	CHARACTER_FRAMEINFO_PTR ptCharFrame = THMALLOC(CHARACTER_FRAMEINFO, sizeof(CHARACTER_FRAMEINFO));
 	TH_PROCESS_ERROR(ptCharFrame);
 	char szarrSp[128] = { 0 };
 
+	/* plist 纹理要么用 szarrDefaultTexPlistPos, 要么用 szarrSpriteTex + nDefaultTexPlistPos. */
 	if (0 != strcmp(pDesc->szarrDefaultTexPlistPos, THINI_DEFAULT_STR))
 	{
 		sprintf_s(szarrSp, "%s.png", pDesc->szarrDefaultTexPlistPos);
@@ -201,12 +201,22 @@ Exit0:
 thBool CThBaseCharacter::getIsHoverSprite(Sprite* pSp, Vec2 vecMouseLocationInWorld)
 {
 	thBool bRet = THFALSE;
-	Vec2 vecLocaltionInSell = pSp->convertToNodeSpace(vecMouseLocationInWorld);
+	Vec2 vecLocaltionInNode = pSp->convertToNodeSpace(vecMouseLocationInWorld);
 	Size sizeSell = pSp->getBoundingBox().size;
 
-	bRet = Rect(0, 0, sizeSell.width, sizeSell.height).containsPoint(vecLocaltionInSell);
+	bRet = Rect(0, 0, sizeSell.width, sizeSell.height).containsPoint(vecLocaltionInNode);
 	return bRet;
 }
+
+thBool CThBaseCharacter::getIsClickSprite(Sprite* pSp, Vec2 vecMouseLocation)
+{
+	thBool bRet = THFALSE;
+	
+	bRet = pSp->getBoundingBox().containsPoint(vecMouseLocation);
+	return bRet;
+}
+
+
 
 CThBaseCharacterAction::CThBaseCharacterAction()
 {
