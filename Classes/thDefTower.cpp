@@ -41,6 +41,7 @@ thBool CThDefTower::init(
 
 	CThDefTower::ms_fWarriorsBirthAngle = fFaceAngle;
 	m_sVacantPos						= 0;
+	m_emStepUninit						= THEM_DELAY_UNINIT_FLAG::FLAG_NOTNEED_UNINIT;
 	m_dLastSummonWarriors				= 0.f;
 	m_dLastAttack						= 0.f;
 	m_pMouse							= EventListenerMouse::create();
@@ -84,7 +85,7 @@ thBool CThDefTower::init(
 	memset(m_arrpSpGroup, 0, sizeof(CHARACTER_FRAMEINFO_PTR) * THMAX_SP_COUNT);
 	memset(m_arrpAniGroup, 0, sizeof(CHARACTER_ANI_FRAMEINFO_PTR) * THMAX_ANI_COUNT);
 	memset(m_arrpWarriors, 0, sizeof(CThDefTowerWarrior_ptr) * THMAX_DEFTOWER_TARLEVEL_WARRIORS);
-	memset(m_arrsWarriorsVacantPos, 0, sizeof(short) * THMAX_DEFTOWER_TARLEVEL_WARRIORS);
+	memset(m_arrsWarriorsVacantPos, -1, sizeof(short) * THMAX_DEFTOWER_TARLEVEL_WARRIORS);
 
 	/* 创建防御塔. */
 	bFnRet = initCharacterWithPlist(ptCharacterDesc, &m_ptTower);
@@ -136,6 +137,9 @@ Exit0:
 
 void CThDefTower::uninit()
 {
+	thBool bRet = THFALSE;
+	ssize_t lQmSpCnt = CThDefTowerQuickMenu::getInstance()->getChildrenCount();
+
 	this->unscheduleUpdate();
 	this->uninitDefTowerWarriorsDesc();
 	this->removeAllChildrenWithCleanup(THTRUE);
@@ -163,12 +167,20 @@ void CThDefTower::uninit()
 		}
 	}
 
+	if (0L != lQmSpCnt)
+	{
+		bRet = thOnClickDestoryQucikMenu();
+		TH_PROCESS_ERROR(bRet);
+	}
+
 	THFREE(m_arrpSpGroup);
 	THFREE(m_arrpAniGroup);
 	THFREE(m_arrpWarriors);
 	THFREE(m_ptTower);
 	THFREE(m_ptTowerStatus);
 
+Exit0:
+	ASSERT(bRet);
 	return;
 }
 
@@ -356,15 +368,14 @@ thBool CThDefTower::initWarriors(const short csCnt, short sSpArrVacantPos)
 			sWarriorType = (rand() % THMAX_DEFTOWER_TARLEVEL_WARRIORS);
 			ptSpDesc = m_arrpWarriorsDesc[m_ptTower->emCurLevel][sWarriorType];
 		}
-		/* 检查是否满容量. sSpArrVacantPos 不能为 0.*/
+		/* 检查是否满容量.*/
 		bFnRet = _getWarArrayVacantPos(&sSpArrVacantPos);
-		TH_PROCESS_SUCCESS(bFnRet || 0 == sSpArrVacantPos);
+		TH_PROCESS_SUCCESS(bFnRet);
 		
 		/* 如果 j == 0, 就代表这一位映射的 sSpArrVacantPos 战士已经被释放. */
-		/* 多做一个数组映射的原因可能是 i 不是顺序的, 需要一个数组存储实际的位置. */
 		for (short j = 0; j < THMAX_DEFTOWER_TARLEVEL_WARRIORS; j++)
 		{
-			if (0 == m_arrsWarriorsVacantPos[j])
+			if (-1 == m_arrsWarriorsVacantPos[j])
 			{
 				m_arrsWarriorsVacantPos[j] = sSpArrVacantPos;
 				break;
@@ -507,6 +518,12 @@ void CThDefTower::getWarriorExistsByAngle(const float cfAngle, thBool* pbRet)
 			break;
 		}
 	}
+	return;
+}
+
+void CThDefTower::getUninitFlag(enum THEM_DELAY_UNINIT_FLAG* pRet) const
+{
+	*pRet = m_emStepUninit;
 	return;
 }
 
@@ -695,7 +712,8 @@ thBool CThDefTower::_getWarArrayVacantPos(short* psRet)
 {
 	thBool bFull = THTRUE;
 
-	for (short i = 1; i < THMAX_SP_COUNT; i++)
+	/* 1 ~ 4 */
+	for (short i = 0; i <= THMAX_DEFTOWER_TARLEVEL_WARRIORS; i++)
 	{
 		if (NULL == m_arrpWarriors[i])
 		{
@@ -806,11 +824,17 @@ thBool CThDefTower::setPlayAniBuildSmoke(thBool bIsBuild)
 	TH_PROCESS_ERROR(nAniSummonTag);
 	pSeqAni = Sequence::create(pAni->pAnimate, fnEndSmoke, NULL);
 	m_ptSmoke->pSpCharacter->runAction(pSeqAni);
-	pAni->pAnimate->setTag(nAniSummonTag);
+	pSeqAni->setTag(nAniSummonTag);
 
 	bRet = THTRUE;
 Exit0:
 	return bRet;
+}
+
+void CThDefTower::setUninitFlag()
+{
+	m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_NEED_UNINIT;
+	return;
 }
 
 void CThDefTower::_setSpTowerPositionTweaks()
@@ -911,6 +935,9 @@ thBool CThDefTower::_setCreateQmWarrior(const thBool cbIsCreate)
 		switch (m_ptTower->emCurLevel)
 		{
 		case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4:
+			/* 防御塔释放的时候会全部隐藏, 这里多加层显示. */
+			CThDefTowerQuickMenu::getInstance()->setVisible(THTRUE);
+
 			bRet = CThDefTowerQuickMenu::getInstance()->createQmWarriorLevel4(
 				m_ptTower->pSpCharacter->getPositionX(),
 				m_ptTower->pSpCharacter->getPositionY() + m_ptTower->pSpCharacter->getBoundingBox().size.height / 2,
@@ -1008,7 +1035,7 @@ void CThDefTower::onMouseDown(EventMouse* pEvent)
 	if (bRet && 0L == lQmSpCnt)
 	{
 		bRet = thOnClickCreateQucikMenu();
-		ASSERT(bRet);
+		TH_PROCESS_ERROR(bRet);
 		
 		for (short s = 0; s < m_ptTowerStatus->sMaxWarriors; s++)
 		{
@@ -1018,7 +1045,7 @@ void CThDefTower::onMouseDown(EventMouse* pEvent)
 	else
 	{
 		bRet = thOnClickDestoryQucikMenu();
-		ASSERT(bRet);
+		TH_PROCESS_ERROR(bRet);
 
 		for (short s = 0; s < m_ptTowerStatus->sMaxWarriors; s++)
 		{
@@ -1026,6 +1053,8 @@ void CThDefTower::onMouseDown(EventMouse* pEvent)
 		}
 	}
 
+Exit0:
+	ASSERT(bRet);
 	return;
 }
 
@@ -1090,14 +1119,58 @@ Exit0:
 void CThDefTower::update(float dt)
 {
 	thBool bFnRet = THFALSE;
+	Action* pAcDestorySmoke = NULL;
+	Vector<cocos2d::Node*> vecAllChild = this->getChildren();
 	int nAniSummonTag = 0;
 
 	bFnRet = globalMonitoring();
-	ASSERT(bFnRet);
+	TH_PROCESS_ERROR(bFnRet);
+
+	/* uninit 操作需要播放一个烟雾动画, 所以这里单独做延迟处理释放. */
+	switch (m_emStepUninit)
+	{
+	case FLAG_NOTNEED_UNINIT:
+		break;
+	case FLAG_NEED_UNINIT:
+		for (ssize_t i = 0; i < vecAllChild.size(); i++)
+		{
+			vecAllChild.at(i)->setVisible(THFALSE);
+		}
+		bFnRet = setPlayAniBuildSmoke(THFALSE);
+		TH_PROCESS_ERROR(bFnRet);
+
+		m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_END_ANI;
+		break;
+
+	case FLAG_END_ANI:
+		/* 检查动画是否播放完成. */
+		getAniTagByDesc("AniTagBuildSmoke", &nAniSummonTag);
+		TH_PROCESS_ERROR(nAniSummonTag);
+		pAcDestorySmoke = m_ptSmoke->pSpCharacter->getActionByTag(nAniSummonTag);
+		if (NULL == pAcDestorySmoke)
+		{
+			/* 烟雾动画播放完了, 可以最终释放了. */
+			m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_UNINIT;
+		}
+		break;
+
+	case FLAG_UNINIT:
+		uninit();
+		m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_UNINIT_COMPLETE;
+		break;
+
+	case FLAG_UNINIT_COMPLETE:
+		break;
+
+	default:
+		break;
+	}
 
 	//bFnRet = execTowerShoot(m_ptTowerStatus->sMaxBullets);
 	//ASSERT(bFnRet);
 	
+Exit0:
+	ASSERT(bFnRet);
 	return;
 }
 
@@ -1197,7 +1270,7 @@ thBool CThDefTower::_monitoringWarriorsHealthy(CThDefTowerWarrior_ptr pSp, pthBo
 			{
 				if (sTagVacantPos == m_arrsWarriorsVacantPos[j])
 				{
-					m_arrsWarriorsVacantPos[j] = 0;
+					m_arrsWarriorsVacantPos[j] = -1;
 					break;
 				}
 			}

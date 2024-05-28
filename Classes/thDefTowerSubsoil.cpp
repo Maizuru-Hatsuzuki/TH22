@@ -153,7 +153,8 @@ thBool CThDefTowerSubsoil::initDefTowerConstruction()
 	TH_PROCESS_ERROR(bFnRet);
 	bFnRet = initCharacterWithPlist(ptSubsoilDesc, &m_ptConstruction);
 	TH_PROCESS_ERROR(bFnRet);
-	m_ptConstruction->pSpCharacter->setPositionY(m_ptConstruction->pSpCharacter->getPositionY() + 15);
+	m_ptConstruction->pSpCharacter->setPositionY(m_ptConstruction->pSpCharacter->getPositionY() + 17);
+	m_ptConstruction->pSpCharacter->setPositionX(m_ptConstruction->pSpCharacter->getPositionX() - 2.5);
 	m_ptConstruction->pSpCharacter->setAnchorPoint(Vec2(0.5, 0));
 	bFnRet = initDefTowerConstructionLoadingBar();
 	TH_PROCESS_ERROR(bFnRet);
@@ -282,7 +283,7 @@ void CThDefTowerSubsoil::onHoverSubsoil(const thBool cbIsHover)
 {
 	if (cbIsHover)
 	{
-		if (NULL == m_pLoading)
+		if (NULL == m_pDefTower)
 		{
 			m_ptSubsoil->pSpCharacter->setSpriteFrame(m_pSpFrHoverSubsoil);
 		}
@@ -293,7 +294,7 @@ void CThDefTowerSubsoil::onHoverSubsoil(const thBool cbIsHover)
 	}
 	else
 	{
-		if (NULL == m_pLoading)
+		if (NULL == m_pDefTower)
 		{
 			m_ptSubsoil->pSpCharacter->setSpriteFrame(m_pSpFrDefaultSubsoil);
 		}
@@ -319,10 +320,40 @@ Exit0:
 
 void CThDefTowerSubsoil::update(float dt)
 {
+	enum THEM_DELAY_UNINIT_FLAG emTowerUnitFlag = THEM_DELAY_UNINIT_FLAG::FLAG_NOTNEED_UNINIT;
+
+	/* 释放建造中纹理和初始化防御塔. */
 	if (NULL != m_pLoading && 100.f == m_pLoading->getPercentage())
 	{
 		uninitDefTowerConstruction();
 		initDefTower(THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4);
+	}
+
+	if (NULL != m_pDefTower)
+	{
+		m_pDefTower->getUninitFlag(&emTowerUnitFlag);
+		switch (emTowerUnitFlag)
+		{
+		case FLAG_NOTNEED_UNINIT:
+			break;
+		case FLAG_NEED_UNINIT:
+			break;
+		case FLAG_END_ANI:
+			m_ptSubsoil->pSpCharacter->setSpriteFrame(m_pSpFrDefaultSubsoil);
+			break;
+
+		case FLAG_UNINIT:
+			break;
+
+		case FLAG_UNINIT_COMPLETE:
+			m_pDefTower->removeFromParentAndCleanup(THTRUE);
+			this->removeChild(m_pDefTower);
+			m_pDefTower = NULL;
+			break;
+
+		default:
+			break;
+		}
 	}
 	return;
 }

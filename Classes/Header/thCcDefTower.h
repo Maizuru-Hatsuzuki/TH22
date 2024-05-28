@@ -113,10 +113,12 @@ public:
 
 	virtual void getCharacterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet);
 	virtual void getCharacterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet);
+	void getUninitFlag(enum THEM_DELAY_UNINIT_FLAG* pRet) const;
 	void getAniTagByDesc(const char* cszpDesc, int* pnRet);
 	void getAniFrameInfoByTag(const char* cszpTag, CHARACTER_ANI_FRAMEINFO_PTR* ppRet);
 	void getWarriorExistsByAngle(const float cfAngle, thBool* pbRet);
 
+	void setUninitFlag();
 	void setWarriorExistsByAngle(const float cfAngle, const short csTag);
 	thBool setPlayAniTowerSummon(const short* arrnCondAniTag, const short cnSize, const thBool bIsSummoning);
 	thBool setPlayAniBuildSmoke(thBool bIsBuild);
@@ -177,6 +179,7 @@ private:
 	CHARACTER_FRAMEINFO_PTR			m_ptTower;
 	CHARACTER_FRAMEINFO_PTR			m_ptSmoke;
 	DEFTOWER_DESC_PTR				m_ptTowerStatus;
+	enum THEM_DELAY_UNINIT_FLAG		m_emStepUninit;
 	enum THEM_DEFTOWER_TYPE			m_emTowerType;
 	CHARACTER_FRAMEINFO_PTR*		m_arrpSpGroup;
 	CHARACTER_ANI_FRAMEINFO_PTR*	m_arrpAniGroup;

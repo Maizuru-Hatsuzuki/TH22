@@ -204,7 +204,7 @@ void CThDefTowerQuickMenu::onMouseUp(EventMouse* pMouse)
 	bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pSellTower->pSpCharacter, vecMousePos);
 	if (bRet)
 	{
-		m_pTaget->uninit();
+		m_pTaget->setUninitFlag();
 	}
 
 	return;
