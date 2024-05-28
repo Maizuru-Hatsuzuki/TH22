@@ -217,7 +217,6 @@ thBool CThBaseCharacter::getIsClickSprite(Sprite* pSp, Vec2 vecMouseLocation)
 }
 
 
-
 CThBaseCharacterAction::CThBaseCharacterAction()
 {
 }

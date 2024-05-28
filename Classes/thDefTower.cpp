@@ -35,7 +35,6 @@ thBool CThDefTower::init(
 	char szarrBulletDescPath[MAX_PATH] = { 0 };
 	char szarrBulletPlistPng[MAX_PATH] = { 0 };
 	short arrnAniTag[THMAX_DEFTOWER_SYNC_ANI] = { m_sVacantPos, };
-	EventListenerMouse* pMouse = EventListenerMouse::create();
 	CHARACTER_DESC_PTR ptCharacterDesc = NULL;
 	Node* pSpDefTowerSubsoil = this->getParent()->getChildByName("SP_DefTowerSubsoil");
 	TH_PROCESS_ERROR(pSpDefTowerSubsoil);
@@ -44,6 +43,7 @@ thBool CThDefTower::init(
 	m_sVacantPos						= 0;
 	m_dLastSummonWarriors				= 0.f;
 	m_dLastAttack						= 0.f;
+	m_pMouse							= EventListenerMouse::create();
 	m_ptBulletDesc						= NULL;
 	m_ptTowerStatus						= NULL;
 	m_ptSmoke							= NULL;
@@ -84,6 +84,7 @@ thBool CThDefTower::init(
 	memset(m_arrpSpGroup, 0, sizeof(CHARACTER_FRAMEINFO_PTR) * THMAX_SP_COUNT);
 	memset(m_arrpAniGroup, 0, sizeof(CHARACTER_ANI_FRAMEINFO_PTR) * THMAX_ANI_COUNT);
 	memset(m_arrpWarriors, 0, sizeof(CThDefTowerWarrior_ptr) * THMAX_DEFTOWER_TARLEVEL_WARRIORS);
+	memset(m_arrsWarriorsVacantPos, 0, sizeof(short) * THMAX_DEFTOWER_TARLEVEL_WARRIORS);
 
 	/* 创建防御塔. */
 	bFnRet = initCharacterWithPlist(ptCharacterDesc, &m_ptTower);
@@ -108,10 +109,10 @@ thBool CThDefTower::init(
 		TH_PROCESS_ERROR(bFnRet);
 	}
 
-	pMouse->onMouseUp = CC_CALLBACK_1(CThDefTower::onMouseUp, this);
-	pMouse->onMouseMove = CC_CALLBACK_1(CThDefTower::onMouseMove, this);
-	pMouse->onMouseDown = CC_CALLBACK_1(CThDefTower::onMouseDown, this);
-	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(pMouse, m_ptTower->pSpCharacter);
+	m_pMouse->onMouseUp = CC_CALLBACK_1(CThDefTower::onMouseUp, this);
+	m_pMouse->onMouseMove = CC_CALLBACK_1(CThDefTower::onMouseMove, this);
+	m_pMouse->onMouseDown = CC_CALLBACK_1(CThDefTower::onMouseDown, this);
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(m_pMouse, 2);
 
 	/* 子弹贴图 */
 	m_pBatchNodeBullet = SpriteBatchNode::create(szarrBulletPlistPng);
@@ -135,11 +136,11 @@ Exit0:
 
 void CThDefTower::uninit()
 {
-	unscheduleUpdate();
-	uninitDefTowerWarriorsDesc();
-
+	this->unscheduleUpdate();
+	this->uninitDefTowerWarriorsDesc();
 	this->removeAllChildrenWithCleanup(THTRUE);
 	this->removeFromParentAndCleanup(THTRUE);
+	Director::getInstance()->getEventDispatcher()->removeEventListener(m_pMouse);
 
 	for (int i = 0; i < THMAX_SP_COUNT; i++)
 	{
@@ -355,9 +356,21 @@ thBool CThDefTower::initWarriors(const short csCnt, short sSpArrVacantPos)
 			sWarriorType = (rand() % THMAX_DEFTOWER_TARLEVEL_WARRIORS);
 			ptSpDesc = m_arrpWarriorsDesc[m_ptTower->emCurLevel][sWarriorType];
 		}
-		/* 检查是否满容量. */
+		/* 检查是否满容量. sSpArrVacantPos 不能为 0.*/
 		bFnRet = _getWarArrayVacantPos(&sSpArrVacantPos);
-		TH_PROCESS_SUCCESS(bFnRet);
+		TH_PROCESS_SUCCESS(bFnRet || 0 == sSpArrVacantPos);
+		
+		/* 如果 j == 0, 就代表这一位映射的 sSpArrVacantPos 战士已经被释放. */
+		/* 多做一个数组映射的原因可能是 i 不是顺序的, 需要一个数组存储实际的位置. */
+		for (short j = 0; j < THMAX_DEFTOWER_TARLEVEL_WARRIORS; j++)
+		{
+			if (0 == m_arrsWarriorsVacantPos[j])
+			{
+				m_arrsWarriorsVacantPos[j] = sSpArrVacantPos;
+				break;
+			}
+		}
+
 		getAniFrameInfoByTag(ptSpDesc->ptAniMap->szarrAniMoveTransverse, &ptAniMoveTo);
 		TH_PROCESS_ERROR(ptAniMoveTo);
 		getWarriorExistsByAngle(CThDefTower::ms_fWarriorsBirthAngle, &bFnRet);
@@ -375,7 +388,7 @@ thBool CThDefTower::initWarriors(const short csCnt, short sSpArrVacantPos)
 			CThDefTower::ms_fWarriorsBirthAngle,
 			m_ptTower->pSpCharacter->getPositionX(),
 			m_ptTower->pSpCharacter->getPositionY(),
-			m_arrfWarriorMovePos[sSpArrVacantPos],
+			m_arrfWarriorMovePos[i],
 			ptSpDesc->ptAniMap,
 			ptAniMoveTo
 		);
@@ -677,11 +690,12 @@ thBool CThDefTower::_getSpArrayVacantPos(short* psRet)
 	return bFull;
 }
 
+/* 从 1 开始, 0 做保留位. */
 thBool CThDefTower::_getWarArrayVacantPos(short* psRet)
 {
 	thBool bFull = THTRUE;
 
-	for (short i = 0; i < THMAX_SP_COUNT; i++)
+	for (short i = 1; i < THMAX_SP_COUNT; i++)
 	{
 		if (NULL == m_arrpWarriors[i])
 		{
@@ -921,7 +935,6 @@ thBool CThDefTower::_setCreateQmWarrior(const thBool cbIsCreate)
 			bRet = CThDefTowerQuickMenu::getInstance()->destoryQmWarriorLevel4(&m_tChacFrameQuickMenuBg, this);
 			TH_PROCESS_ERROR(bRet);
 			this->removeChild(CThDefTowerQuickMenu::getInstance());
-			
 			break;
 
 		default:
@@ -981,8 +994,7 @@ void CThDefTower::onMouseUp(EventMouse* pEvent)
 {
 	thBool bRet = THFALSE;
 
-	bRet = pEvent->getCurrentTarget()->getBoundingBox().containsPoint(pEvent->getLocationInView());
-
+	bRet = THTRUE;
 Exit0:
 	return;
 }
@@ -991,17 +1003,27 @@ void CThDefTower::onMouseDown(EventMouse* pEvent)
 {
 	thBool bRet = THFALSE;
 	ssize_t lQmSpCnt = CThDefTowerQuickMenu::getInstance()->getChildrenCount();
-	bRet = pEvent->getCurrentTarget()->getBoundingBox().containsPoint(pEvent->getLocationInView());
+	bRet = m_ptTower->pSpCharacter->getBoundingBox().containsPoint(pEvent->getLocationInView());
 
 	if (bRet && 0L == lQmSpCnt)
 	{
 		bRet = thOnClickCreateQucikMenu();
 		ASSERT(bRet);
+		
+		for (short s = 0; s < m_ptTowerStatus->sMaxWarriors; s++)
+		{
+			m_arrpWarriors[m_arrsWarriorsVacantPos[s]]->setWarriorHaloIsVisible(THTRUE);
+		}
 	}
 	else
 	{
 		bRet = thOnClickDestoryQucikMenu();
 		ASSERT(bRet);
+
+		for (short s = 0; s < m_ptTowerStatus->sMaxWarriors; s++)
+		{
+			m_arrpWarriors[m_arrsWarriorsVacantPos[s]]->setWarriorHaloIsVisible(THFALSE);
+		}
 	}
 
 	return;
@@ -1106,8 +1128,8 @@ thBool CThDefTower::globalMonitoringWarriors()
 	bFnRet = setPlayAniTowerSummon(arrnAniTag, THMAX_DEFTOWER_SYNC_ANI, THFALSE);
 	TH_PROCESS_ERROR(bFnRet);
 
-	// 获取防御塔战士精灵信息并做一些健康检查.
-	for (short i = 0; i < THMAX_DEFTOWER_TARLEVEL_WARRIORS; i++)
+	/* 获取防御塔战士精灵信息并做一些健康检查. */
+	for (short i = 0; i < m_ptTowerStatus->sMaxWarriors; i++)
 	{
 		ptmpSpWarr = m_arrpWarriors[i];
 		if (NULL != ptmpSpWarr)
@@ -1123,7 +1145,7 @@ thBool CThDefTower::globalMonitoringWarriors()
 		}
 	}
 
-	// 检查是否需要创建精灵：检查HP，检查重生CD，检查精灵数组内容是否为空.
+	/* 检查是否需要创建精灵：检查HP，检查重生CD，检查精灵数组内容是否为空.*/
 	if (bIsNeedSummon && m_ptTowerStatus->sSummonWarriorsCD <= time(NULL) - m_dLastSummonWarriors)
 	{
 		bFnRet = setPlayAniTowerSummon(arrnAniTag, THMAX_DEFTOWER_SYNC_ANI, THTRUE);
@@ -1144,6 +1166,7 @@ thBool CThDefTower::_monitoringWarriorsHealthy(CThDefTowerWarrior_ptr pSp, pthBo
 	thBool bFnRet = THFALSE;
 	CHARACTER_FRAMEINFO_PTR pSpFrame = NULL;
 	double dWarriorInPositionTime = pSp->getWarriorInPositionTime();
+	short sTagVacantPos = 0;
 
 	pSp->getCharacterFrameInfo(&pSpFrame);
 	TH_PROCESS_ERROR(pSpFrame);
@@ -1161,12 +1184,23 @@ thBool CThDefTower::_monitoringWarriorsHealthy(CThDefTowerWarrior_ptr pSp, pthBo
 		case THSP_FLAG_CLEAN:
 			/* HP = 0 时进入DIE状态, 但是因为线程切换, 播放动画需要时间, 当动画播放完设置HP=-1, 代表可以回收. */
 			/* 这里不需要再 delete, uninit 里用 removeFromParentAndCleanup 标记了释放. */
+			sTagVacantPos = pSp->getWarriorVacantPos();
 			pSp->uninit();
 
 			m_ptTowerStatus->sCurWarriors--;
 			m_dLastDieWarriors = time(NULL);
 			/* 在上层数组里直接置空, 回收交给CC引擎. */
 			*pbIsRelease = THTRUE;
+
+			/* 回收映射存储位. */
+			for (short j = 0; j < THMAX_DEFTOWER_TARLEVEL_WARRIORS; j++)
+			{
+				if (sTagVacantPos == m_arrsWarriorsVacantPos[j])
+				{
+					m_arrsWarriorsVacantPos[j] = 0;
+					break;
+				}
+			}
 
 		default:
 			break;

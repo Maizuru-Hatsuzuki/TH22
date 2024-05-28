@@ -117,15 +117,35 @@ thBool CThDefTowerWarrior::initWarriors(const CHARACTER_DESC_PTR cptSpDesc, cons
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
 	Sequence* pSeMoveTo = NULL;
+	CHARACTER_DESC tSpDescSetTagHalo = { 0 };
 	float fDstX = 0.f;
 	float fDstY = 0.f;
 	float fInPositionTimeDeviation = 0.f;
+	float fHaloX = 0.f;
+	float fHaloY = 0.f;
 
 	fDstX = m_arrfWarriorMovePos[0];
 	fDstY = m_arrfWarriorMovePos[1];
 
 	bFnRet = initCharacterWithPlist(cptSpDesc, &m_ptWarriorFrameInfo);
 	TH_PROCESS_ERROR(bFnRet);
+
+	/* 初始化选中的蓝色光环, 并隐藏. */
+	strcpy_s(tSpDescSetTagHalo.szarrDefaultTexPlistPos, 64, THINI_DEFAULT_STR);
+	strcpy_s(tSpDescSetTagHalo.szarrSpriteTex, 64, "HUD Material_");
+	strcpy_s(tSpDescSetTagHalo.szarrSpriteName, 64, "warriorSetTagHalo");
+	tSpDescSetTagHalo.nDefaultTexPlistPos = 364;
+	tSpDescSetTagHalo.fScale = m_ptWarriorFrameInfo->pSpCharacter->getScale();
+
+	bFnRet = initCharacterWithPlist(&tSpDescSetTagHalo, &m_ptWarriorHaloFrameInfo);
+	TH_PROCESS_ERROR(bFnRet);
+
+	getWarriorPosition(&fHaloX, &fHaloY, 0.f);
+	m_ptWarriorHaloFrameInfo->pSpCharacter->setPositionX(fHaloX);
+	m_ptWarriorHaloFrameInfo->pSpCharacter->setPositionY(fHaloY);
+	setWarriorHaloIsVisible(THFALSE);
+
+	/* 移动战士. */
 	bFnRet = usSetWarriorMove(fDstX, fDstY, csSpArrVacantPos, cptAniMoveTo);
 	TH_PROCESS_ERROR(bFnRet);
 
@@ -142,16 +162,47 @@ thBool CThDefTowerWarrior::initWarriors(const CHARACTER_DESC_PTR cptSpDesc, cons
 
 	scheduleUpdate();
 
-	this->addChild(m_ptWarriorFrameInfo->pSpCharacter, 0);
+	this->addChild(m_ptWarriorFrameInfo->pSpCharacter);
+	this->addChild(m_ptWarriorHaloFrameInfo->pSpCharacter);
 	bRet = THTRUE;
 Exit0:
 	return bRet;
+}
+
+/* 需要先初始化战士精灵. fFixedY 如果 == 0 , 就为固定 Y 值求对应的 Y */
+void CThDefTowerWarrior::getWarriorPosition(float* pfX, float* pfY, float fFixedY) const
+{
+	float fWarriorBottomY = 0.f;
+	const float cfHalfWarriorY = m_ptWarriorHaloFrameInfo->pSpCharacter->getBoundingBox().size.height / 2;
+	const float cfOffsetY = 4;
+
+	/* Y 要下移一定的距离差, 因为光环的锚点在 0.5 0.5, 对齐减去半个高度. */
+	if (NULL != m_ptWarriorHaloFrameInfo)
+	{
+		if (0.f != fFixedY)
+		{
+			TH_RUN_SUCCESS(NULL != pfY, *pfY = fFixedY - m_ptWarriorFrameInfo->pSpCharacter->getBoundingBox().size.height / 2 - cfHalfWarriorY + cfOffsetY;);
+		}
+		else
+		{
+			fWarriorBottomY = m_ptWarriorFrameInfo->pSpCharacter->getBoundingBox().getMinY();
+			TH_RUN_SUCCESS(NULL != pfY, *pfY = fWarriorBottomY - cfHalfWarriorY + cfOffsetY);
+		}
+		TH_RUN_SUCCESS(NULL != pfX, *pfX = m_ptWarriorFrameInfo->pSpCharacter->getPositionX());
+	}
+	
+	return;
 }
 
 void CThDefTowerWarrior::getCharacterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet)
 {
 	*ppRet = m_ptWarriorFrameInfo;
 	return;
+}
+
+const short CThDefTowerWarrior::getWarriorVacantPos() const
+{
+	return m_csSpArrVacantPos;
 }
 
 const float CThDefTowerWarrior::getWarriorBirthMoveAngle() const
@@ -186,13 +237,21 @@ void CThDefTowerWarrior::setWarriorBirthMoveAngle(const float fAngle)
 	return;
 }
 
+void CThDefTowerWarrior::setWarriorHaloIsVisible(const thBool cbIsVisible)
+{
+	m_ptWarriorHaloFrameInfo->pSpCharacter->setVisible(cbIsVisible);
+	return;
+}
+
 thBool CThDefTowerWarrior::usSetWarriorMove(const float cfDstX, const float cfDstY, const short csSpArrVacantPos, const CHARACTER_ANI_FRAMEINFO_PTR cptAniMoveTo)
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
 	float fMoveTime = 0.f;
-	void* varrpFsmRet[2] = { 0 };
+	float fHaloY = 0.f;
+	void* varrpFsmRet[3] = { 0 };
 	Sequence* pSeMoveTo = NULL;
+	Sequence* pSeHaloMoveTo = NULL;
 	m_csSpArrVacantPos = csSpArrVacantPos;
 
 	getCharacterMoveSpeed(
@@ -206,6 +265,10 @@ thBool CThDefTowerWarrior::usSetWarriorMove(const float cfDstX, const float cfDs
 	bFnRet = CThBaseCharacterAction::getInstance()->createActionMoveTo(fMoveTime, cfDstX, cfDstY, NULL, 0, &pSeMoveTo);
 	TH_PROCESS_ERROR(bFnRet);
 
+	getWarriorPosition(NULL, &fHaloY, cfDstY);
+	bFnRet = CThBaseCharacterAction::getInstance()->createActionMoveTo(fMoveTime, cfDstX, fHaloY, NULL, 0, &pSeHaloMoveTo);
+	TH_PROCESS_ERROR(bFnRet);
+
 	// 判断左移还是右移
 	if (m_fWarriorBirthX > cfDstX)
 	{
@@ -217,11 +280,9 @@ thBool CThDefTowerWarrior::usSetWarriorMove(const float cfDstX, const float cfDs
 		// 右.
 	}
 
-	if (NULL != varrpFsmRet)
-	{
-		varrpFsmRet[0] = pSeMoveTo;
-		varrpFsmRet[1] = cptAniMoveTo;
-	}
+	varrpFsmRet[0] = pSeMoveTo;
+	varrpFsmRet[1] = pSeHaloMoveTo;
+	varrpFsmRet[2] = cptAniMoveTo;
 
 	bFnRet = m_fsmWarriorObject->switchEvent(m_emCurFsmStatus, THEM_CHARACTER_FSM_EVENT::FSM_EVENT_MOVE, varrpFsmRet);
 	TH_PROCESS_ERROR(bFnRet);
@@ -347,12 +408,16 @@ thBool CThDefTowerWarrior::fsmEventInitMove(void* vpEnv, void** parrArgs)
 	thBool bFnRet = THFALSE;
 	CThDefTowerWarrior* pEnv = static_cast<CThDefTowerWarrior*>(vpEnv);
 	Sequence* pSeMoveTo = static_cast<Sequence*>(parrArgs[0]);
-	const CHARACTER_ANI_FRAMEINFO_PTR cptAni = static_cast<CHARACTER_ANI_FRAMEINFO_PTR>(parrArgs[1]);
+	Sequence* pSeHaloMoveTo = static_cast<Sequence*>(parrArgs[1]);;
+	const CHARACTER_ANI_FRAMEINFO_PTR cptAni = static_cast<CHARACTER_ANI_FRAMEINFO_PTR>(parrArgs[2]);
 
 	pEnv->setCurFsmStatus(THEM_CHARACTER_FSM_EVENT::FSM_EVENT_MOVE);
+	/* 战士移动. */
 	pEnv->m_ptWarriorFrameInfo->pSpCharacter->runAction(cptAni->pAnimate->clone());
 	pEnv->m_ptWarriorFrameInfo->pSpCharacter->runAction(pSeMoveTo);
 	pSeMoveTo->setTag(pEnv->m_csSpArrVacantPos);
+	/* 光环移动. */
+	pEnv->m_ptWarriorHaloFrameInfo->pSpCharacter->runAction(pSeHaloMoveTo);
 
 	bRet = THTRUE;
 Exit0:

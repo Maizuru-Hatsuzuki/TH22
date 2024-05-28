@@ -34,8 +34,10 @@ public:
 	thBool initFsmEvent();
 	void uninit();
 
+	const short getWarriorVacantPos() const;
 	const float getWarriorBirthMoveAngle() const;
 	const float getWarriorInPositionTime() const;
+	void getWarriorPosition(float* pfX, float* pfY, float fFixedY) const;
 	void getWarriorAniMap(CHARACTER_ANI_MAP_PTR* ppRet) const;
 	void getWarriorFsmStatus(enum THEM_CHARACTER_FSM_EVENT* pemRet) const;
 	virtual void getCharacterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet);
@@ -43,6 +45,7 @@ public:
 
 	void setCurFsmStatus(enum THEM_CHARACTER_FSM_EVENT emStatus);
 	void setWarriorBirthMoveAngle(const float fAngle);
+	void setWarriorHaloIsVisible(const thBool cbIsVisible);
 
 	/* us 前缀, 用户接口, 能够直接切换状态机状态, 暴露给其他逻辑用接口. */
 	thBool usSetWarriorMove(const float cfDstX, const float cfDstY, const short csSpArrVacantPos, const CHARACTER_ANI_FRAMEINFO_PTR cptAniMoveTo);
@@ -76,6 +79,7 @@ private:
 	thBool m_bIsFlip;
 	time_t m_tLastStandFlipTime;
 	CHARACTER_FRAMEINFO_PTR m_ptWarriorFrameInfo;
+	CHARACTER_FRAMEINFO_PTR m_ptWarriorHaloFrameInfo;
 	CHARACTER_ANI_MAP_PTR m_ptAniMap;
 	CThFSMCharacter* m_fsmWarriorObject;
 };
@@ -161,12 +165,14 @@ private:
 
 private:
 	short							m_sVacantPos;
+	short							m_arrsWarriorsVacantPos[THMAX_DEFTOWER_TARLEVEL_WARRIORS];
 	static float					ms_fWarriorsBirthAngle;
 	float							m_arrfWarriorMovePos[THMAX_DEFTOWER_TARLEVEL_WARRIORS][2];
 	double							m_dLastSummonWarriors;
 	double							m_dLastDieWarriors;
 	double							m_dLastAttack;
 	Vec2							m_vecAnchorPoint;
+	EventListenerMouse*				m_pMouse;
 	CHARACTER_ANI_TAG				m_tAniTag;
 	CHARACTER_FRAMEINFO_PTR			m_ptTower;
 	CHARACTER_FRAMEINFO_PTR			m_ptSmoke;
@@ -199,8 +205,8 @@ public:
 	thBool createQmWarriorLevel4(const float cfX, const float cfY, const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget);
 	thBool destoryQmWarriorLevel4(DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget);
 
-	/* Sell */
 	void onMouseUp(EventMouse* pMouse);
+	void onMouseDown(EventMouse* pMouse);
 	void onMouseMove(EventMouse* pMouse);
 
 private:
@@ -216,6 +222,7 @@ private:
 	CHARACTER_FRAMEINFO_PTR m_ptSellHoverBorder;
 	CHARACTER_FRAMEINFO_PTR m_ptMoveHoverBorder;
 	CHARACTER_FRAMEINFO_PTR m_ptSkillHoverBorder;
+	EventListenerMouse* m_pMouse;
 };
 
 
