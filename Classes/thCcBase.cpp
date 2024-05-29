@@ -76,14 +76,19 @@ Exit0:
 
 thBool CTHCcBaseHandler::scanPlistFiles(const char* cszpPath, int* pnPlistCnt, thBool bIsLoad)
 {
-	thBool bRet = THFALSE;
-	int nLoadingCnt = 0;
-	char szarrFilename[MAX_PATH] = { 0 };
-	char szarrPlist[MAX_PATH] = { 0 };
-	char szarrPlistPng[MAX_PATH] = { 0 };
-	struct dirent* ptFile = { 0 };
-	DIR* ptDir = opendir(cszpPath);
-	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::getInstance();
+	thBool bRet							= THFALSE;
+	DWORD dwFnRet						= 0;
+	int nLoadingCnt						= 0;
+	char szarrWinPath[MAX_PATH]			= { 0 };
+	char szarrFilename[MAX_PATH]		= { 0 };
+	char szarrPlist[MAX_PATH]			= { 0 };
+	char szarrPlistPng[MAX_PATH]		= { 0 };
+	char szarrCurPath[MAX_PATH]			= { 0 };
+	struct dirent* ptFile				= { 0 };
+	SpriteFrameCache* pSpFrameCache		= SpriteFrameCache::getInstance();
+	/* 这里要多加个 Resources 路径, cc 搜索路径和 windows 不一样. */
+	sprintf_s(szarrWinPath, "Resources\\%s", cszpPath);
+	DIR* ptDir = opendir(szarrWinPath);
 
 	if (NULL != ptDir)
 	{
@@ -109,6 +114,10 @@ thBool CTHCcBaseHandler::scanPlistFiles(const char* cszpPath, int* pnPlistCnt, t
 				}
 			}
 		}
+	}
+	else
+	{
+		CCLOG("Dir is null: %s. cur path: %s.", cszpPath, szarrCurPath);
 	}
 
 	*pnPlistCnt = nLoadingCnt;

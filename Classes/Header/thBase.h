@@ -57,6 +57,10 @@
 #define THSP_FLAG_DIE 0
 #define THSP_FLAG_CLEAN -1
 
+#define TH_EVENTPRIORITY_QUICKMENU 1
+#define TH_EVENTPRIORITY_DEFTOWER 2
+#define TH_EVENTPRIORITY_DEFTOWERWARRIOR 3
+
 #define THINI_DEFAULT_STR "NA"
 
 #define THMALLOC(t, s) (t*)malloc(s)
@@ -70,6 +74,27 @@ typedef bool thBool;
 #define THFALSE false
 #define THNEW_CLASS(p) new p()
 #define THDELETE(p) { if (p) { delete (p); (p) = NULL; }}
+
+class CTHCcBaseHandler
+{
+public:
+	static CTHCcBaseHandler* getInstance();
+
+	thBool getSpriteFrameExists(const char* cszpSpName);
+	thBool setSceneAllSpPlist(enum THEM_SCENE emScene, thBool bIsLoad);
+
+	thBool scanPlistFiles(const char* cszpPath, int* pnPlistCnt, thBool bIsLoad);
+	thBool splitFileSuffix(char* szpFile, const char* cszpSuffix, char* szpFilenameRet);
+
+private:
+	CTHCcBaseHandler();
+	~CTHCcBaseHandler();
+	CTHCcBaseHandler(const CTHCcBaseHandler& pSelf);
+	const CTHCcBaseHandler& operator=(const CTHCcBaseHandler& pSelf);
+
+private:
+	static CTHCcBaseHandler* m_pSelf;
+};
 
 #else
 
@@ -97,27 +122,6 @@ enum THEM_DELAY_UNINIT_FLAG
 	FLAG_UNINIT_COMPLETE
 };
 
-
-class CTHCcBaseHandler
-{
-public:
-	static CTHCcBaseHandler* getInstance();
-
-	thBool getSpriteFrameExists(const char* cszpSpName);
-	thBool setSceneAllSpPlist(enum THEM_SCENE emScene, thBool bIsLoad);
-
-	thBool scanPlistFiles(const char* cszpPath, int* pnPlistCnt, thBool bIsLoad);
-	thBool splitFileSuffix(char* szpFile, const char* cszpSuffix, char* szpFilenameRet);
-
-private:
-	CTHCcBaseHandler();
-	~CTHCcBaseHandler();
-	CTHCcBaseHandler(const CTHCcBaseHandler& pSelf);
-	const CTHCcBaseHandler& operator=(const CTHCcBaseHandler& pSelf);
-
-private:
-	static CTHCcBaseHandler* m_pSelf;
-};
 
 
 #endif

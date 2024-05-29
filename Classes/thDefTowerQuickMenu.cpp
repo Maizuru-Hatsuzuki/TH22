@@ -19,6 +19,7 @@ CThDefTowerQuickMenu::CThDefTowerQuickMenu()
 	m_ptSellHoverBorder = NULL;
 	m_ptMoveHoverBorder = NULL;
 	m_ptSkillHoverBorder = NULL;
+	m_emTagTowerType = THEM_DEFTOWER_TYPE::DEFTOWERTYPE_UNKNOW;
 }
 
 CThDefTowerQuickMenu::~CThDefTowerQuickMenu()
@@ -65,7 +66,7 @@ thBool CThDefTowerQuickMenu::init()
 	m_pMouse->onMouseUp = CC_CALLBACK_1(CThDefTowerQuickMenu::onMouseUp, this);
 	m_pMouse->onMouseDown = CC_CALLBACK_1(CThDefTowerQuickMenu::onMouseDown, this);
 	m_pMouse->onMouseMove = CC_CALLBACK_1(CThDefTowerQuickMenu::onMouseMove, this);
-	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(m_pMouse, 1);
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(m_pMouse, TH_EVENTPRIORITY_QUICKMENU);
 
 	bRet = THTRUE;
 Exit0:
@@ -105,6 +106,7 @@ thBool CThDefTowerQuickMenu::createBasicQm(const float cfX, const float cfY, con
 	CHARACTER_DESC tSellDefTower = { 0 };
 	CHARACTER_FRAMEINFO_PTR ptChacFrameQuickMenuBg = NULL;
 	CHARACTER_FRAMEINFO_PTR ptChacCommandMovement = NULL;
+	CHARACTER_FRAMEINFO_PTR ptChacCommandMovementDisable = NULL;
 	CHARACTER_FRAMEINFO_PTR ptChacSellDefTower = NULL;
 
 	this->setScale(0.2f);
@@ -141,7 +143,21 @@ thBool CThDefTowerQuickMenu::createBasicQm(const float cfX, const float cfY, con
 	
 	bRet = initCharacterWithPlist(&tCommandMovement, &ptChacCommandMovement);
 	TH_PROCESS_ERROR(bRet);
-	ptDefTowerQm->pCommandMovement = ptChacCommandMovement;
+
+	/* 移动(禁用)按钮. */
+	tCommandMovement.nDefaultTexPlistPos = 48;
+	bRet = initCharacterWithPlist(&tCommandMovement, &ptChacCommandMovementDisable);
+	TH_PROCESS_ERROR(bRet);
+
+	if (THEM_DEFTOWER_TYPE::DEFTOWERTYPE_WARRIORS == m_emTagTowerType || THEM_DEFTOWER_TYPE::DEFTOWERTYPE_ARCHER_WARRIORS == m_emTagTowerType)
+	{
+		/* 可移动单位. */
+		ptDefTowerQm->pCommandMovement = ptChacCommandMovement;
+	}
+	else
+	{
+		ptDefTowerQm->pCommandMovement = ptChacCommandMovementDisable;
+	}
 
 	/* 出售按钮. */
 	strcpy_s(tSellDefTower.szarrDefaultTexPlistPos, 64, THINI_DEFAULT_STR);
@@ -175,6 +191,7 @@ thBool CThDefTowerQuickMenu::createQmWarriorLevel4(const float cfX, const float 
 {
 	thBool bRet = THFALSE;
 	m_pTaget = pTaget;
+	m_emTagTowerType = m_pTaget->getDefTowerType();
 
 	bRet = createBasicQm(cfX, cfY, cfTagScale, ptDefTowerQm);
 	TH_PROCESS_ERROR(bRet);
@@ -206,7 +223,7 @@ void CThDefTowerQuickMenu::onMouseUp(EventMouse* pMouse)
 	{
 		m_pTaget->setUninitFlag();
 	}
-
+	pMouse->stopPropagation();
 	return;
 }
 
@@ -231,28 +248,26 @@ void CThDefTowerQuickMenu::onMouseMove(EventMouse* pMouse)
 
 	/* 检查出售按钮. */
 	bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pSellTower->pSpCharacter, vecMousePos);
+	m_ptSellHoverBorder->pSpCharacter->setVisible(bRet);
 	if (bRet)
 	{
 		m_ptSellHoverBorder->pSpCharacter->setPosition(m_ptQm->pSellTower->pSpCharacter->getPosition());
 		m_ptSellHoverBorder->pSpCharacter->setScale(m_ptQm->pSellTower->pSpCharacter->getScale());
-		m_ptSellHoverBorder->pSpCharacter->setVisible(THTRUE);
 	}
 	else
 	{
-		m_ptSellHoverBorder->pSpCharacter->setVisible(THFALSE);
 	}
 
 	/* 检查移动按钮. */
 	bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pCommandMovement->pSpCharacter, vecMousePos);
+	m_ptMoveHoverBorder->pSpCharacter->setVisible(bRet);
 	if (bRet)
 	{
 		m_ptMoveHoverBorder->pSpCharacter->setPosition(m_ptQm->pCommandMovement->pSpCharacter->getPosition());
 		m_ptMoveHoverBorder->pSpCharacter->setScale(m_ptQm->pCommandMovement->pSpCharacter->getScale());
-		m_ptMoveHoverBorder->pSpCharacter->setVisible(THTRUE);
 	}
 	else
 	{
-		m_ptMoveHoverBorder->pSpCharacter->setVisible(THFALSE);
 	}
 
 	return;

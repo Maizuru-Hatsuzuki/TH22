@@ -33,10 +33,10 @@ thBool CThDefTowerWarrior::init(
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
-	EventListenerMouse* pMouse = EventListenerMouse::create();
-	pMouse->onMouseUp = CC_CALLBACK_1(CThDefTowerWarrior::onMouseUp, this);
-	pMouse->onMouseDown = CC_CALLBACK_1(CThDefTowerWarrior::onMouseDown, this);
-	pMouse->onMouseMove = CC_CALLBACK_1(CThDefTowerWarrior::onMouseMove, this);
+	m_pEventMouse = EventListenerMouse::create();
+	m_pEventMouse->onMouseUp = CC_CALLBACK_1(CThDefTowerWarrior::onMouseUp, this);
+	m_pEventMouse->onMouseDown = CC_CALLBACK_1(CThDefTowerWarrior::onMouseDown, this);
+	m_pEventMouse->onMouseMove = CC_CALLBACK_1(CThDefTowerWarrior::onMouseMove, this);
 
 	m_ptAniMap = cptAniMap;
 	m_bIsFlip = THFALSE;
@@ -53,7 +53,7 @@ thBool CThDefTowerWarrior::init(
 	bFnRet = initWarriors(cptSpDesc, csSpArrVacantPos, cptAniMoveTo);
 	TH_PROCESS_ERROR(bFnRet);
 
-	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(pMouse, m_ptWarriorFrameInfo->pSpCharacter);
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(m_pEventMouse, TH_EVENTPRIORITY_DEFTOWERWARRIOR);
 
 	bRet = THTRUE;
 Exit0:
@@ -63,6 +63,7 @@ Exit0:
 void CThDefTowerWarrior::uninit()
 {
 	unscheduleUpdate();
+	Director::getInstance()->getEventDispatcher()->removeEventListener(m_pEventMouse);
 
 	m_fsmWarriorObject->uninit();
 	THDELETE(m_fsmWarriorObject);
@@ -317,7 +318,8 @@ void CThDefTowerWarrior::onMouseUp(EventMouse* pEvent)
 {
 	thBool bRet = THFALSE;
 
-	bRet = pEvent->getCurrentTarget()->getBoundingBox().containsPoint(pEvent->getLocationInView());
+	bRet = m_ptWarriorFrameInfo->pSpCharacter->getBoundingBox().containsPoint(pEvent->getLocationInView());
+	m_ptWarriorHaloFrameInfo->pSpCharacter->setVisible(bRet);
 	if (bRet)
 	{
 
@@ -326,7 +328,9 @@ void CThDefTowerWarrior::onMouseUp(EventMouse* pEvent)
 		ASSERT(bRet);
 #endif // _DEBUG
 	}
-
+	else
+	{
+	}
 	return;
 }
 

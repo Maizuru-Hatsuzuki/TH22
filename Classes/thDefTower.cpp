@@ -44,7 +44,7 @@ thBool CThDefTower::init(
 	m_emStepUninit						= THEM_DELAY_UNINIT_FLAG::FLAG_NOTNEED_UNINIT;
 	m_dLastSummonWarriors				= 0.f;
 	m_dLastAttack						= 0.f;
-	m_pMouse							= EventListenerMouse::create();
+	m_pEventMouse						= EventListenerMouse::create();
 	m_ptBulletDesc						= NULL;
 	m_ptTowerStatus						= NULL;
 	m_ptSmoke							= NULL;
@@ -110,10 +110,10 @@ thBool CThDefTower::init(
 		TH_PROCESS_ERROR(bFnRet);
 	}
 
-	m_pMouse->onMouseUp = CC_CALLBACK_1(CThDefTower::onMouseUp, this);
-	m_pMouse->onMouseMove = CC_CALLBACK_1(CThDefTower::onMouseMove, this);
-	m_pMouse->onMouseDown = CC_CALLBACK_1(CThDefTower::onMouseDown, this);
-	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(m_pMouse, 2);
+	m_pEventMouse->onMouseUp = CC_CALLBACK_1(CThDefTower::onMouseUp, this);
+	m_pEventMouse->onMouseMove = CC_CALLBACK_1(CThDefTower::onMouseMove, this);
+	m_pEventMouse->onMouseDown = CC_CALLBACK_1(CThDefTower::onMouseDown, this);
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(m_pEventMouse, TH_EVENTPRIORITY_DEFTOWER);
 
 	/* 子弹贴图 */
 	m_pBatchNodeBullet = SpriteBatchNode::create(szarrBulletPlistPng);
@@ -144,7 +144,7 @@ void CThDefTower::uninit()
 	this->uninitDefTowerWarriorsDesc();
 	this->removeAllChildrenWithCleanup(THTRUE);
 	this->removeFromParentAndCleanup(THTRUE);
-	Director::getInstance()->getEventDispatcher()->removeEventListener(m_pMouse);
+	Director::getInstance()->getEventDispatcher()->removeEventListener(m_pEventMouse);
 
 	for (int i = 0; i < THMAX_SP_COUNT; i++)
 	{
@@ -322,8 +322,8 @@ thBool CThDefTower::_initBasicAnimate(short* psOffset)
 	const short csOffset = 2;
 	const char* szparrIniPath[csOffset] =
 	{
-		"data\\AnimateConfig\\Basic\\AniCreateTowerSmoke.ini",
-		"data\\AnimateConfig\\Basic\\AniDestoryTowerSmoke.ini"
+		"Resources\\data\\AnimateConfig\\Basic\\AniCreateTowerSmoke.ini",
+		"Resources\\data\\AnimateConfig\\Basic\\AniDestoryTowerSmoke.ini"
 	};
 
 	/* 创建烟雾. */
@@ -494,6 +494,11 @@ void CThDefTower::getCharacterFrameInfoInGroup(const char* cszpTag, CHARACTER_FR
 	return;
 }
 
+enum THEM_DEFTOWER_TYPE CThDefTower::getDefTowerType()
+{
+	return m_emTowerType;
+}
+
 void CThDefTower::getAniFrameInfoByTag(const char* cszpTag, CHARACTER_ANI_FRAMEINFO_PTR* ppRet)
 {
 	for (short i = 0; i < THMAX_ANI_COUNT; i++)
@@ -648,28 +653,33 @@ thBool CThDefTower::getTowerInfoWarriors(
 {
 	thBool bRet = THFALSE;
 	char sztmpPath[MAX_PATH] = { 0 };
+	char szarrChacIni[MAX_PATH] = { 0 };
+	char szarrChacConstructionIni[MAX_PATH] = { 0 };
 
-	TH_RUN_SUCCESS(NULL != szpTowerDescRet, sprintf_s(szpTowerDescRet, MAX_PATH, "data\\CharacterConfig\\Barracks\\%s\\ChacBarracks.ini", szpLv));
-	TH_RUN_SUCCESS(NULL != szpDefTowerConstruction, strcpy_s(szpDefTowerConstruction, MAX_PATH, "data\\CharacterConfig\\DefTowerSubsoil\\ChacDefTowerConstructionBarracks.ini"));
+	TH_GETWINRESPATH(szarrChacIni, "data\\CharacterConfig\\Barracks\\%s\\ChacBarracks.ini", szpLv);
+	TH_GETWINRESPATH(szarrChacConstructionIni, "data\\CharacterConfig\\DefTowerSubsoil\\ChacDefTowerConstructionBarracks.ini");
+
+	TH_RUN_SUCCESS(NULL != szpTowerDescRet, sprintf_s(szpTowerDescRet, MAX_PATH, szarrChacIni));
+	TH_RUN_SUCCESS(NULL != szpDefTowerConstruction, strcpy_s(szpDefTowerConstruction, MAX_PATH, szarrChacConstructionIni));
 
 	if (NULL != arrpAniRet && NULL != psAniSizeRet)
 	{
-		sprintf_s(sztmpPath, "data\\CharacterConfig\\Barracks\\%s\\AniWarriorsMove.ini", szpLv);
+		TH_GETWINRESPATH(sztmpPath, "data\\CharacterConfig\\Barracks\\%s\\AniWarriorsMove.ini", szpLv);
 		arrpAniRet[0] = THMALLOC(char, MAX_PATH);
 		TH_PROCESS_ERROR(arrpAniRet[0]);
 		strcpy_s(arrpAniRet[0], MAX_PATH, sztmpPath);
 
-		sprintf_s(sztmpPath, "data\\CharacterConfig\\Barracks\\%s\\AniOpenTheDoor.ini", szpLv);
+		TH_GETWINRESPATH(sztmpPath, "data\\CharacterConfig\\Barracks\\%s\\AniOpenTheDoor.ini", szpLv);
 		arrpAniRet[1] = THMALLOC(char, MAX_PATH);
 		TH_PROCESS_ERROR(arrpAniRet[1]);
 		strcpy_s(arrpAniRet[1], MAX_PATH, sztmpPath);
 
-		sprintf_s(sztmpPath, "data\\CharacterConfig\\Barracks\\%s\\AniCloseTheDoor.ini", szpLv);
+		TH_GETWINRESPATH(sztmpPath, "data\\CharacterConfig\\Barracks\\%s\\AniCloseTheDoor.ini", szpLv);
 		arrpAniRet[2] = THMALLOC(char, MAX_PATH);
 		TH_PROCESS_ERROR(arrpAniRet[2]);
 		strcpy_s(arrpAniRet[2], MAX_PATH, sztmpPath);
 
-		sprintf_s(sztmpPath, "data\\CharacterConfig\\Barracks\\%s\\AniTagWarriorsDie.ini", szpLv);
+		TH_GETWINRESPATH(sztmpPath, "data\\CharacterConfig\\Barracks\\%s\\AniTagWarriorsDie.ini", szpLv);
 		arrpAniRet[3] = THMALLOC(char, MAX_PATH);
 		TH_PROCESS_ERROR(arrpAniRet[3]);
 		strcpy_s(arrpAniRet[3], MAX_PATH, sztmpPath);
@@ -678,7 +688,7 @@ thBool CThDefTower::getTowerInfoWarriors(
 	}
 	if (NULL != arrpWarriorsRet && NULL != psWarriorsCnt)
 	{
-		sprintf_s(sztmpPath, "data\\CharacterConfig\\Barracks\\%s\\ChacWarrior.ini", szpLv);
+		TH_GETWINRESPATH(sztmpPath, "data\\CharacterConfig\\Barracks\\%s\\ChacWarrior.ini", szpLv);
 		arrpWarriorsRet[0] = THMALLOC(char, MAX_PATH);
 		TH_PROCESS_ERROR(arrpWarriorsRet[0]);
 		strcpy_s(arrpWarriorsRet[0], MAX_PATH, sztmpPath);
@@ -707,7 +717,6 @@ thBool CThDefTower::_getSpArrayVacantPos(short* psRet)
 	return bFull;
 }
 
-/* 从 1 开始, 0 做保留位. */
 thBool CThDefTower::_getWarArrayVacantPos(short* psRet)
 {
 	thBool bFull = THTRUE;
@@ -792,7 +801,7 @@ thBool CThDefTower::setPlayAniBuildSmoke(thBool bIsBuild)
 	strcpy_s(tChacSmoke.szarrDefaultTexPlistPos, 64, THINI_DEFAULT_STR);
 	tChacSmoke.fPosX = m_ptTower->pSpCharacter->getPositionX();
 	tChacSmoke.fPosY = m_ptTower->pSpCharacter->getPositionY();
-	tChacSmoke.fScale = 0.6;
+	tChacSmoke.fScale = 0.6f;
 
 	if (THTRUE == bIsBuild)
 	{
@@ -1020,6 +1029,8 @@ Exit0:
 void CThDefTower::onMouseUp(EventMouse* pEvent)
 {
 	thBool bRet = THFALSE;
+
+	/* 上层优先级(QM - 1)阻止了事件传播到这里, 如果要在这里写逻辑, 先改上层事件器的 onMouseUp 的 stopPropagation. */
 
 	bRet = THTRUE;
 Exit0:

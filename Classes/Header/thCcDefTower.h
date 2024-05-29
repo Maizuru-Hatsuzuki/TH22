@@ -82,6 +82,7 @@ private:
 	CHARACTER_FRAMEINFO_PTR m_ptWarriorHaloFrameInfo;
 	CHARACTER_ANI_MAP_PTR m_ptAniMap;
 	CThFSMCharacter* m_fsmWarriorObject;
+	EventListenerMouse* m_pEventMouse;
 };
 
 typedef CThDefTowerWarrior* CThDefTowerWarrior_ptr;
@@ -113,6 +114,7 @@ public:
 
 	virtual void getCharacterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet);
 	virtual void getCharacterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet);
+	enum THEM_DEFTOWER_TYPE getDefTowerType();
 	void getUninitFlag(enum THEM_DELAY_UNINIT_FLAG* pRet) const;
 	void getAniTagByDesc(const char* cszpDesc, int* pnRet);
 	void getAniFrameInfoByTag(const char* cszpTag, CHARACTER_ANI_FRAMEINFO_PTR* ppRet);
@@ -174,7 +176,7 @@ private:
 	double							m_dLastDieWarriors;
 	double							m_dLastAttack;
 	Vec2							m_vecAnchorPoint;
-	EventListenerMouse*				m_pMouse;
+	EventListenerMouse*				m_pEventMouse;
 	CHARACTER_ANI_TAG				m_tAniTag;
 	CHARACTER_FRAMEINFO_PTR			m_ptTower;
 	CHARACTER_FRAMEINFO_PTR			m_ptSmoke;
@@ -226,6 +228,7 @@ private:
 	CHARACTER_FRAMEINFO_PTR m_ptMoveHoverBorder;
 	CHARACTER_FRAMEINFO_PTR m_ptSkillHoverBorder;
 	EventListenerMouse* m_pMouse;
+	enum THEM_DEFTOWER_TYPE m_emTagTowerType;
 };
 
 

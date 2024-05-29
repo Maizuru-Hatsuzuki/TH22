@@ -30,9 +30,9 @@ Exit0:
 
 TH_DLLEXPORT void TecUninitBitmap(THEC_BITMAP_PTR pBitmap)
 {
+	THFREE(pBitmap->arrBitmap);
 	for (unsigned int i = 0; i < pBitmap->unArrCount; i++)
 	{
-		THFREE(pBitmap->arrBitmap[i]);
 	}
 	THFREE(pBitmap);
 	return;
