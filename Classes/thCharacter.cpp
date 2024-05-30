@@ -112,9 +112,8 @@ void CThBaseCharacter::_initCharacterDescInfo(CHARACTER_DESC_PTR pDesc, CHARACTE
 thBool CThBaseCharacter::initCharacterAnimation(CHARACTER_ANI_DESC_PTR pAniDesc, Animate** ppRet) const
 {
 	thBool bRet = THFALSE;
-	SpriteFrameCache* pSpFrameCache = SpriteFrameCache::getInstance();
-	TH_PROCESS_ERROR(pSpFrameCache);
-	bRet = CthCcAnimation::getInstance()->createPlayAnimationWithPList(pAniDesc, ppRet);
+
+	bRet = CthCcFrameByFrameAnimation::getInstance()->createAnimationWithPList(pAniDesc, ppRet);
 	TH_PROCESS_ERROR(bRet);
 
 	(*ppRet)->retain();
@@ -190,7 +189,7 @@ thBool CThBaseCharacter::getCharacterAnimateFrameInfo(CHARACTER_ANI_DESC_PTR pAn
 {
 	thBool bRet = THFALSE;
 	pRet->pAnimate = NULL;
-	bRet = CthCcAnimation::getInstance()->createPlayAnimationWithPList(pAniDesc, &pRet->pAnimate);
+	bRet = CthCcFrameByFrameAnimation::getInstance()->createAnimationWithPList(pAniDesc, &pRet->pAnimate);
 	TH_PROCESS_ERROR(pRet->pAnimate);
 
 	bRet = THTRUE;

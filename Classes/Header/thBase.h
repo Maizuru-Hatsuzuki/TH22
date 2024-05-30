@@ -56,6 +56,8 @@
 
 #define THSP_FLAG_DIE 0
 #define THSP_FLAG_CLEAN -1
+#define THSP_FLAG_ENABLE 1
+#define THSP_FLAG_DISABLE 2
 
 #define TH_EVENTPRIORITY_QUICKMENU 1
 #define TH_EVENTPRIORITY_DEFTOWER 2
@@ -81,6 +83,7 @@ public:
 	static CTHCcBaseHandler* getInstance();
 
 	thBool getSpriteFrameExists(const char* cszpSpName);
+	void setShowWinMouseCursor(thBool bIsShow);
 	thBool setSceneAllSpPlist(enum THEM_SCENE emScene, thBool bIsLoad);
 
 	thBool scanPlistFiles(const char* cszpPath, int* pnPlistCnt, thBool bIsLoad);

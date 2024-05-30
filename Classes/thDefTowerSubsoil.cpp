@@ -121,7 +121,7 @@ thBool CThDefTowerSubsoil::initDefTowerConstructionLoadingBar()
 	/* 创建进度条 */
 	m_pSpLoading = Sprite::createWithSpriteFrameName("TowerConLoading.png");
 	TH_PROCESS_ERROR(m_pSpLoading);
-	bRet = CthCcAnimation::getInstance()->createLoadingBar(m_pSpLoading, cfLoadingTime, 100, &tLoadingDesc, &pActionLoading, &m_pLoading);
+	bRet = CthCcFrameByFrameAnimation::getInstance()->createLoadingBar(m_pSpLoading, cfLoadingTime, 100, &tLoadingDesc, &pActionLoading, &m_pLoading);
 	TH_PROCESS_ERROR(bRet);
 
 	this->addChild(m_pSpLoadingBg);

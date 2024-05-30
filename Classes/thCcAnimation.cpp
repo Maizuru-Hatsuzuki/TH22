@@ -9,26 +9,26 @@
 #include "thCcAnimation.h"
 
 
-CthCcAnimation* CthCcAnimation::m_pSelf;
+CthCcFrameByFrameAnimation* CthCcFrameByFrameAnimation::m_pSelf;
 
-CthCcAnimation::CthCcAnimation()
+CthCcFrameByFrameAnimation::CthCcFrameByFrameAnimation()
 {
 }
 
-CthCcAnimation::~CthCcAnimation()
+CthCcFrameByFrameAnimation::~CthCcFrameByFrameAnimation()
 {
 }
 
-CthCcAnimation* CthCcAnimation::getInstance()
+CthCcFrameByFrameAnimation* CthCcFrameByFrameAnimation::getInstance()
 {
 	if (NULL == m_pSelf)
 	{
-		m_pSelf = new (std::nothrow) CthCcAnimation();
+		m_pSelf = new (std::nothrow) CthCcFrameByFrameAnimation();
 	}
 	return m_pSelf;
 }
 
-thBool CthCcAnimation::createPlayAnimationWithPList(CHARACTER_ANI_DESC_PTR ptAniDesc, Animate** ppRet)
+thBool CthCcFrameByFrameAnimation::createAnimationWithPList(CHARACTER_ANI_DESC_PTR ptAniDesc, Animate** ppRet)
 {
 	thBool bRet = THFALSE;
 	int nFrameCount = 0;
@@ -63,7 +63,32 @@ Exit0:
 	return bRet;
 }
 
-thBool CthCcAnimation::createLoadingBar(Sprite* pSpLoading, const float cfInterval, const float cfPersent, CHARACTER_DESC_PTR ptSpLoading, ProgressTo** ppActionRet, ProgressTimer** ppLoadingPicRet)
+thBool CthCcFrameByFrameAnimation::createAnimationWithPListIni(const char* cszpIniPath, CHARACTER_ANI_FRAMEINFO_PTR* ppRet)
+{
+	thBool bRet = THFALSE;
+	CHARACTER_ANI_DESC_PTR ptmpAniDesc = NULL;
+	CHARACTER_ANI_FRAMEINFO_PTR pRet = NULL;
+
+	bRet = CthCcCharacterLoadHandler::getInstance()->getCharacterAniDescFromIni(cszpIniPath, &ptmpAniDesc);
+	TH_PROCESS_ERROR(bRet);
+	
+	pRet = THMALLOC(CHARACTER_ANI_FRAMEINFO, sizeof(CHARACTER_ANI_FRAMEINFO));
+	TH_PROCESS_ERROR(pRet);
+	pRet->pAnimate = NULL;
+	strcpy_s(pRet->szarrDesc, strlen(ptmpAniDesc->szarrAniDesc) + 1, ptmpAniDesc->szarrAniDesc);
+
+	bRet = createAnimationWithPList(ptmpAniDesc, &pRet->pAnimate);
+	TH_PROCESS_ERROR(bRet);
+
+	CthCcCharacterLoadHandler::getInstance()->uninitCharacterAniDesc(ptmpAniDesc);
+	
+	*ppRet = pRet;
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+thBool CthCcFrameByFrameAnimation::createLoadingBar(Sprite* pSpLoading, const float cfInterval, const float cfPersent, CHARACTER_DESC_PTR ptSpLoading, ProgressTo** ppActionRet, ProgressTimer** ppLoadingPicRet)
 {
 	thBool bRet = THFALSE;
 	ProgressTo* pLoading = ProgressTo::create(cfInterval, cfPersent);

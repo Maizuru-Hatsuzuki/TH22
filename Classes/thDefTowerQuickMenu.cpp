@@ -7,6 +7,7 @@
 
 
 #include "thCcDefTower.h"
+#include "thCcAnimation.h"
 #include "thBaseMacro.h"
 
 
@@ -19,6 +20,9 @@ CThDefTowerQuickMenu::CThDefTowerQuickMenu()
 	m_ptSellHoverBorder = NULL;
 	m_ptMoveHoverBorder = NULL;
 	m_ptSkillHoverBorder = NULL;
+	m_ptMoveRangeHalo = NULL;
+	m_ptMoveSelectingMouse = NULL;
+	m_ptAniMovePosSelectingMouse = NULL;
 	m_emTagTowerType = THEM_DEFTOWER_TYPE::DEFTOWERTYPE_UNKNOW;
 }
 
@@ -32,6 +36,7 @@ thBool CThDefTowerQuickMenu::init()
 	const char* cszpSpTex = "Quickmenu Material_";
 	CHARACTER_DESC tSellHoverBorder = { 0 };
 	CHARACTER_DESC tMoveHoverBorder = { 0 };
+	CHARACTER_DESC tMoveRangeHalo = { 0 };
 	CHARACTER_DESC tSkillHoverBorder = { 0 };
 	m_pMouse = EventListenerMouse::create();
 
@@ -61,12 +66,70 @@ thBool CThDefTowerQuickMenu::init()
 	{
 
 	}
+	if (NULL == m_ptMoveRangeHalo)
+	{
+		strcpy_s(tSkillHoverBorder.szarrDefaultTexPlistPos, 64, THINI_DEFAULT_STR);
+		strcpy_s(tSkillHoverBorder.szarrSpriteTex, 64, "HUD Material_");
+		strcpy_s(tSkillHoverBorder.szarrSpriteName, 64, "warrior move range");
+		tSkillHoverBorder.nDefaultTexPlistPos = 412;
+
+		initCharacterWithPlist(&tSkillHoverBorder, &m_ptMoveRangeHalo);
+		m_ptMoveRangeHalo->pSpCharacter->setVisible(THFALSE);
+		this->addChild(m_ptMoveRangeHalo->pSpCharacter);
+	}
+
+	bRet = initBasicAni();
+	TH_PROCESS_ERROR(bRet);
 
 	/* 创建悬浮和点击事件. */
 	m_pMouse->onMouseUp = CC_CALLBACK_1(CThDefTowerQuickMenu::onMouseUp, this);
 	m_pMouse->onMouseDown = CC_CALLBACK_1(CThDefTowerQuickMenu::onMouseDown, this);
 	m_pMouse->onMouseMove = CC_CALLBACK_1(CThDefTowerQuickMenu::onMouseMove, this);
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(m_pMouse, TH_EVENTPRIORITY_QUICKMENU);
+
+	scheduleUpdate();
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+thBool CThDefTowerQuickMenu::initBasicAni()
+{
+	thBool bRet = THFALSE;
+	char szarrPathAniSelecting[MAX_PATH] = { 0 };
+	char szarrPathAniSelected[MAX_PATH] = { 0 };
+	char szarrPathAniSelectedError[MAX_PATH] = { 0 };
+	CHARACTER_DESC tSelectingMouse = { 0 };
+
+	/* 创建动画所需的精灵. */
+	if (NULL == m_ptMoveSelectingMouse)
+	{
+		strcpy_s(tSelectingMouse.szarrDefaultTexPlistPos, 64, THINI_DEFAULT_STR);
+		strcpy_s(tSelectingMouse.szarrSpriteTex, 64, "posMouse");
+		strcpy_s(tSelectingMouse.szarrSpriteName, 64, "sp_selectingMouse");
+		tSelectingMouse.nDefaultTexPlistPos = 1;
+
+		initCharacterWithPlist(&tSelectingMouse, &m_ptMoveSelectingMouse);
+		m_ptMoveSelectingMouse->pSpCharacter->setVisible(THFALSE);
+		this->addChild(m_ptMoveSelectingMouse->pSpCharacter);
+	}
+	
+	/* 创建动画. */
+	TH_GETWINRESPATH(szarrPathAniSelecting, "data\\AnimateConfig\\Basic\\AniMoveSelectingMouse.ini");
+
+	if (NULL == m_ptAniMovePosSelectingMouse)
+	{
+		bRet = CthCcFrameByFrameAnimation::getInstance()->createAnimationWithPListIni(szarrPathAniSelecting, &m_ptAniMovePosSelectingMouse);
+		TH_PROCESS_ERROR(bRet);
+		TH_PROCESS_ERROR(m_ptMoveSelectingMouse);
+		m_ptMoveSelectingMouse->pSpCharacter->runAction(m_ptAniMovePosSelectingMouse->pAnimate);
+	}
+	if (NULL == m_ptAniMovePosSelectedMouse)
+	{
+	}
+	if (NULL == m_ptAniMovePosSelectedErrorMouse)
+	{
+	}
 
 	bRet = THTRUE;
 Exit0:
@@ -78,6 +141,11 @@ void CThDefTowerQuickMenu::uninit()
 	THFREE(m_ptSellHoverBorder);
 	THFREE(m_ptMoveHoverBorder);
 	THFREE(m_ptSkillHoverBorder);
+	THFREE(m_ptMoveRangeHalo);
+	THFREE(m_ptMoveSelectingMouse);
+	THFREE(m_ptAniMovePosSelectingMouse);
+
+	unscheduleUpdate();
 	Director::getInstance()->getEventDispatcher()->removeEventListener(m_pMouse);
 	return;
 }
@@ -153,10 +221,12 @@ thBool CThDefTowerQuickMenu::createBasicQm(const float cfX, const float cfY, con
 	{
 		/* 可移动单位. */
 		ptDefTowerQm->pCommandMovement = ptChacCommandMovement;
+		ptDefTowerQm->pCommandMovement->pSpCharacter->setTag(THSP_FLAG_ENABLE);
 	}
 	else
 	{
 		ptDefTowerQm->pCommandMovement = ptChacCommandMovementDisable;
+		ptDefTowerQm->pCommandMovement->pSpCharacter->setTag(THSP_FLAG_DISABLE);
 	}
 
 	/* 出售按钮. */
@@ -196,6 +266,11 @@ thBool CThDefTowerQuickMenu::createQmWarriorLevel4(const float cfX, const float 
 	bRet = createBasicQm(cfX, cfY, cfTagScale, ptDefTowerQm);
 	TH_PROCESS_ERROR(bRet);
 
+	/* 设置一下范围圈的坐标. 防御塔锚点是 0.5, 0, 也同步修改一下. */
+	m_ptMoveRangeHalo->pSpCharacter->setPosition(pTaget->getPosition());
+	m_ptMoveRangeHalo->pSpCharacter->setScaleY(0.75f);
+	m_ptMoveRangeHalo->pSpCharacter->setScaleX(1.05f);
+
 	bRet = THTRUE;
 Exit0:
 	return bRet;
@@ -217,11 +292,33 @@ void CThDefTowerQuickMenu::onMouseUp(EventMouse* pMouse)
 {
 	thBool bRet = THFALSE;
 	Vec2 vecMousePos = pMouse->getLocationInView();
+	int nFnRet = 0;
+	int nSpMoveTag = m_ptQm->pCommandMovement->pSpCharacter->getTag();
+
 	/* 检查出售按钮. */
 	bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pSellTower->pSpCharacter, vecMousePos);
 	if (bRet)
 	{
 		m_pTaget->setUninitFlag();
+	}
+	/* 检查移动按钮. */
+	bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pCommandMovement->pSpCharacter, vecMousePos);
+	if (bRet && THSP_FLAG_ENABLE == nSpMoveTag)
+	{
+		m_ptMoveRangeHalo->pSpCharacter->setVisible(THTRUE);
+		m_ptMoveSelectingMouse->pSpCharacter->setVisible(THTRUE);
+		CTHCcBaseHandler::getInstance()->setShowWinMouseCursor(THFALSE);
+		}
+	else
+	{
+		m_ptMoveRangeHalo->pSpCharacter->setVisible(THFALSE);
+		m_ptMoveSelectingMouse->pSpCharacter->setVisible(THFALSE);
+	}
+
+	if (THTRUE == m_ptMoveSelectingMouse->pSpCharacter->isVisible())
+	{
+		/* 如果移动光标显示了, 此时是选择移动, 关掉后恢复鼠标光标. */
+		CTHCcBaseHandler::getInstance()->setShowWinMouseCursor(THTRUE);
 	}
 	pMouse->stopPropagation();
 	return;
@@ -233,7 +330,7 @@ void CThDefTowerQuickMenu::onMouseDown(EventMouse* pMouse)
 	Vec2 vecMousePos = pMouse->getLocationInView();
 
 	/* 如果是按钮, 阻止事件传播. */
-	bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pSellTower->pSpCharacter, vecMousePos);
+	bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pSellTower->pSpCharacter, vecMousePos) || CThBaseCharacter::getIsHoverSprite(m_ptQm->pCommandMovement->pSpCharacter, vecMousePos);
 	if (bRet)
 	{
 		pMouse->stopPropagation();
@@ -245,6 +342,7 @@ void CThDefTowerQuickMenu::onMouseMove(EventMouse* pMouse)
 {
 	thBool bRet = THFALSE;
 	Vec2 vecMousePos = pMouse->getLocationInView();
+	Vec2 vecMoveMouseLocationInNode = m_ptMoveSelectingMouse->pSpCharacter->getParent()->convertToNodeSpaceAR(vecMousePos);
 
 	/* 检查出售按钮. */
 	bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pSellTower->pSpCharacter, vecMousePos);
@@ -260,6 +358,7 @@ void CThDefTowerQuickMenu::onMouseMove(EventMouse* pMouse)
 
 	/* 检查移动按钮. */
 	bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pCommandMovement->pSpCharacter, vecMousePos);
+	m_ptMoveSelectingMouse->pSpCharacter->setPosition(vecMoveMouseLocationInNode);
 	m_ptMoveHoverBorder->pSpCharacter->setVisible(bRet);
 	if (bRet)
 	{
@@ -270,5 +369,10 @@ void CThDefTowerQuickMenu::onMouseMove(EventMouse* pMouse)
 	{
 	}
 
+	return;
+}
+
+void CThDefTowerQuickMenu::update(float dt)
+{
 	return;
 }

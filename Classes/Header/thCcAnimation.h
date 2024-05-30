@@ -11,24 +11,25 @@
 #include "thCcCharacter.h"
 
 
-class CthCcAnimation
+class CthCcFrameByFrameAnimation
 {
 public:
-	static CthCcAnimation* getInstance();
-	thBool createPlayAnimationWithPList(CHARACTER_ANI_DESC_PTR ptAniDesc, Animate** ppRet);
+	static CthCcFrameByFrameAnimation* getInstance();
+	thBool createAnimationWithPList(CHARACTER_ANI_DESC_PTR ptAniDesc, Animate** ppRet);
+	thBool createAnimationWithPListIni(const char* cszpIniPath, CHARACTER_ANI_FRAMEINFO_PTR* ppRet);
 	thBool createLoadingBar(Sprite* pSpLoading, const float cfInterval, const float cfPersent, CHARACTER_DESC_PTR ptSpLoading, ProgressTo** ppActionRet, ProgressTimer** ppLoadingPicRet);
 
 public:
 
 
 private:
-	CthCcAnimation();
-	~CthCcAnimation();
-	CthCcAnimation(const CthCcAnimation& pSelf);
-	const CthCcAnimation& operator=(const CthCcAnimation& pSelf);
+	CthCcFrameByFrameAnimation();
+	~CthCcFrameByFrameAnimation();
+	CthCcFrameByFrameAnimation(const CthCcFrameByFrameAnimation& pSelf);
+	const CthCcFrameByFrameAnimation& operator=(const CthCcFrameByFrameAnimation& pSelf);
 
 private:
-	static CthCcAnimation* m_pSelf;
+	static CthCcFrameByFrameAnimation* m_pSelf;
 };
 
 #endif

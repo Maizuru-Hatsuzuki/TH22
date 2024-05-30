@@ -50,6 +50,26 @@ thBool CTHCcBaseHandler::getSpriteFrameExists(const char* cszpSpName)
 	return bRet;
 }
 
+void CTHCcBaseHandler::setShowWinMouseCursor(thBool bIsShow)
+{
+	int nCnt = 0;
+	if (THTRUE == bIsShow)
+	{
+		do 
+		{
+			nCnt = ShowCursor(TRUE);
+		} while (nCnt < 0);
+	}
+	else
+	{
+		do 
+		{
+			nCnt = ShowCursor(FALSE);
+		} while (nCnt >= 0);
+	}
+	return;
+}
+
 thBool CTHCcBaseHandler::setSceneAllSpPlist(enum THEM_SCENE emScene, thBool bIsLoad)
 {
 	thBool bRet = THFALSE;

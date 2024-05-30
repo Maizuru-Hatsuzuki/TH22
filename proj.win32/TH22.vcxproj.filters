@@ -210,5 +210,8 @@
     <None Include="..\Resources\data\AnimateConfig\Basic\AniDestoryTowerSmoke.ini">
       <Filter>Config\Animate\Basic</Filter>
     </None>
+    <None Include="..\Resources\data\AnimateConfig\Basic\AniMoveSelectingMouse.ini">
+      <Filter>Config\Animate\Basic</Filter>
+    </None>
   </ItemGroup>
 </Project>

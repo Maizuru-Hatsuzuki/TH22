@@ -202,6 +202,7 @@ class CThDefTowerQuickMenu:
 {
 public:
 	thBool init();
+	thBool initBasicAni();
 	void uninit();
 	static CThDefTowerQuickMenu* getInstance();
 	thBool createBasicQm(const float cfX, const float cfY, const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm);
@@ -213,6 +214,7 @@ public:
 	void onMouseUp(EventMouse* pMouse);
 	void onMouseDown(EventMouse* pMouse);
 	void onMouseMove(EventMouse* pMouse);
+	void update(float dt);
 
 private:
 	CThDefTowerQuickMenu();
@@ -227,6 +229,14 @@ private:
 	CHARACTER_FRAMEINFO_PTR m_ptSellHoverBorder;
 	CHARACTER_FRAMEINFO_PTR m_ptMoveHoverBorder;
 	CHARACTER_FRAMEINFO_PTR m_ptSkillHoverBorder;
+	CHARACTER_FRAMEINFO_PTR m_ptMoveRangeHalo;
+	CHARACTER_FRAMEINFO_PTR m_ptMoveSelectingMouse;
+	CHARACTER_FRAMEINFO_PTR m_ptMoveSelectedMouse;
+	CHARACTER_FRAMEINFO_PTR m_ptMoveSelectedErrorMouse;
+
+	CHARACTER_ANI_FRAMEINFO_PTR m_ptAniMovePosSelectingMouse;
+	CHARACTER_ANI_FRAMEINFO_PTR m_ptAniMovePosSelectedMouse;
+	CHARACTER_ANI_FRAMEINFO_PTR m_ptAniMovePosSelectedErrorMouse;
 	EventListenerMouse* m_pMouse;
 	enum THEM_DEFTOWER_TYPE m_emTagTowerType;
 };
