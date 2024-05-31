@@ -285,7 +285,7 @@ thBool CThDefTower::initAnimate(char** szarrpAniDesc, const short csSize)
 	short sOffset = 0;
 	short sAniGroupOffset = 0;
 
-	TH_PROCESS_SUCCESS(THMAX_ANI_COUNT < csSize);
+	TH_PROCESS_ERROR(THMAX_ANI_COUNT > csSize);
 
 	bFnRet = _initBasicAnimate(&sOffset);
 	TH_PROCESS_ERROR(bFnRet);
@@ -308,6 +308,9 @@ thBool CThDefTower::initAnimate(char** szarrpAniDesc, const short csSize)
 			CthCcCharacterLoadHandler::getInstance()->uninitCharacterAniDesc(ptmpAniDesc);
 		}
 	}
+
+	bRet = setPlayerAniBasic();
+	TH_PROCESS_ERROR(bRet);
 
 	bRet = THTRUE;
 Exit0:
@@ -359,7 +362,7 @@ thBool CThDefTower::initWarriors(const short csCnt, short sSpArrVacantPos)
 	CHARACTER_ANI_FRAMEINFO_PTR ptAniMoveTo = NULL;
 	CThDefTowerWarrior* ptmpWarrior = NULL;
 
-	TH_PROCESS_SUCCESS(THMAX_DEFTOWER_TARLEVEL_WARRIORS < csCnt);
+	TH_PROCESS_ERROR(THMAX_DEFTOWER_TARLEVEL_WARRIORS >= csCnt);
 	for (int i = 0; i < csCnt; i++)
 	{
 		/* 重建精灵. */
@@ -370,7 +373,7 @@ thBool CThDefTower::initWarriors(const short csCnt, short sSpArrVacantPos)
 		}
 		/* 检查是否满容量.*/
 		bFnRet = _getWarArrayVacantPos(&sSpArrVacantPos);
-		TH_PROCESS_SUCCESS(bFnRet);
+		TH_PROCESS_ERROR(!bFnRet);
 		
 		/* 如果 j == 0, 就代表这一位映射的 sSpArrVacantPos 战士已经被释放. */
 		for (short j = 0; j < THMAX_DEFTOWER_TARLEVEL_WARRIORS; j++)
@@ -390,6 +393,8 @@ thBool CThDefTower::initWarriors(const short csCnt, short sSpArrVacantPos)
 			CThDefTower::ms_fWarriorsBirthAngle += 15.f;
 			CThDefTower::ms_fWarriorsBirthAngle = fmodf(CThDefTower::ms_fWarriorsBirthAngle, 360.f);
 		}
+		ptSpDesc->fPosX = m_ptTower->pSpCharacter->getPositionX();
+		ptSpDesc->fPosY = m_ptTower->pSpCharacter->getPositionY();
 
 		ptmpWarrior = THNEW_CLASS(CThDefTowerWarrior);
 		TH_PROCESS_ERROR(ptmpWarrior);
@@ -431,7 +436,7 @@ thBool CThDefTower::initBullet(float fShootAngle)
 
 	bFnRet = _getSpArrayVacantPos(&sVancantPos);
 	/* 检查是否满容量. */
-	TH_PROCESS_SUCCESS(bFnRet);
+	TH_PROCESS_ERROR(!bFnRet);
 
 	bFnRet = initCharacterWithPlist(m_ptBulletDesc, &ptFrBullet);
 	TH_PROCESS_ERROR(bFnRet);
@@ -664,27 +669,37 @@ thBool CThDefTower::getTowerInfoWarriors(
 
 	if (NULL != arrpAniRet && NULL != psAniSizeRet)
 	{
-		TH_GETWINRESPATH(sztmpPath, "data\\CharacterConfig\\Barracks\\%s\\AniWarriorsMove.ini", szpLv);
+		TH_GETWINRESPATH(sztmpPath, "data\\AnimateConfig\\Warriors\\AniWarriorsMove.ini");
 		arrpAniRet[0] = THMALLOC(char, MAX_PATH);
 		TH_PROCESS_ERROR(arrpAniRet[0]);
 		strcpy_s(arrpAniRet[0], MAX_PATH, sztmpPath);
 
-		TH_GETWINRESPATH(sztmpPath, "data\\CharacterConfig\\Barracks\\%s\\AniOpenTheDoor.ini", szpLv);
+		TH_GETWINRESPATH(sztmpPath, "data\\AnimateConfig\\Warriors\\AniOpenTheDoor.ini");
 		arrpAniRet[1] = THMALLOC(char, MAX_PATH);
 		TH_PROCESS_ERROR(arrpAniRet[1]);
 		strcpy_s(arrpAniRet[1], MAX_PATH, sztmpPath);
 
-		TH_GETWINRESPATH(sztmpPath, "data\\CharacterConfig\\Barracks\\%s\\AniCloseTheDoor.ini", szpLv);
+		TH_GETWINRESPATH(sztmpPath, "data\\AnimateConfig\\Warriors\\AniCloseTheDoor.ini");
 		arrpAniRet[2] = THMALLOC(char, MAX_PATH);
 		TH_PROCESS_ERROR(arrpAniRet[2]);
 		strcpy_s(arrpAniRet[2], MAX_PATH, sztmpPath);
 
-		TH_GETWINRESPATH(sztmpPath, "data\\CharacterConfig\\Barracks\\%s\\AniTagWarriorsDie.ini", szpLv);
+		TH_GETWINRESPATH(sztmpPath, "data\\AnimateConfig\\Warriors\\AniTagWarriorsDie.ini");
 		arrpAniRet[3] = THMALLOC(char, MAX_PATH);
 		TH_PROCESS_ERROR(arrpAniRet[3]);
 		strcpy_s(arrpAniRet[3], MAX_PATH, sztmpPath);
 
-		*psAniSizeRet = 4;
+		TH_GETWINRESPATH(sztmpPath, "data\\AnimateConfig\\Warriors\\AniTagWarriorsDie.ini");
+		arrpAniRet[3] = THMALLOC(char, MAX_PATH);
+		TH_PROCESS_ERROR(arrpAniRet[3]);
+		strcpy_s(arrpAniRet[3], MAX_PATH, sztmpPath);
+
+		TH_GETWINRESPATH(sztmpPath, "data\\AnimateConfig\\Warriors\\AniFlag.ini");
+		arrpAniRet[4] = THMALLOC(char, MAX_PATH);
+		TH_PROCESS_ERROR(arrpAniRet[4]);
+		strcpy_s(arrpAniRet[4], MAX_PATH, sztmpPath);
+
+		*psAniSizeRet = 5;
 	}
 	if (NULL != arrpWarriorsRet && NULL != psWarriorsCnt)
 	{
@@ -738,6 +753,33 @@ void CThDefTower::setWarriorExistsByAngle(const float cfAngle, const short csTag
 {
 	m_arrpWarriors[csTag]->setWarriorBirthMoveAngle(cfAngle);
 	return;
+}
+
+/* 特殊防御塔的一些专用动画, 在初始化的时候就要播放, 动画对象存放在 m_arrpAniGroup 里, 根据 szAniDesc 去查. */
+thBool CThDefTower::setPlayerAniBasic()
+{
+	thBool bRet = THFALSE;
+
+	switch (m_emTowerType)
+	{
+	case DEFTOWERTYPE_UNKNOW:
+		break;
+	case DEFTOWERTYPE_ARCHER:
+		break;
+	case DEFTOWERTYPE_WARRIORS:
+		bRet = _setPlayerAniBasicWarriorTower();
+		TH_PROCESS_ERROR(bRet);
+		break;
+
+	case DEFTOWERTYPE_ARCHER_WARRIORS:
+		break;
+	default:
+		break;
+	}
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
 }
 
 thBool CThDefTower::setPlayAniTowerSummon(const short* arrnCondAniTag, const short cnSize, const thBool bIsSummoning)
@@ -872,6 +914,49 @@ void CThDefTower::_setSpTowerPositionTweaksWarrior()
 		break;
 	}
 	return;
+}
+
+thBool CThDefTower::_setPlayerAniBasicWarriorTower()
+{
+	thBool bRet = THFALSE;
+	short sVancantPos = 0;
+	char szarrTmpSpIni[MAX_PATH] = { 0 };
+	CHARACTER_DESC_PTR ptTmpChacDesc = NULL;
+	CHARACTER_ANI_FRAMEINFO_PTR ptTmpAni = NULL;
+
+	switch (m_ptTower->emCurLevel)
+	{
+	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4:
+		/* 塔尖旗. */
+		bRet = _getSpArrayVacantPos(&sVancantPos);
+		TH_PROCESS_ERROR(!bRet);
+
+		TH_GETWINRESPATH(szarrTmpSpIni, "data\\CharacterConfig\\Barracks\\LV4\\ChacBarracksFlag.ini");
+		bRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(szarrTmpSpIni, &ptTmpChacDesc);
+		TH_PROCESS_ERROR(bRet);
+
+		bRet = initCharacterWithPlist(ptTmpChacDesc, &m_arrpSpGroup[sVancantPos]);
+		TH_PROCESS_ERROR(bRet);
+		m_arrpSpGroup[sVancantPos]->pSpCharacter->setPositionX(m_ptTower->pSpCharacter->getPositionX() + 10);
+		m_arrpSpGroup[sVancantPos]->pSpCharacter->setPositionY(m_ptTower->pSpCharacter->getPositionY() + m_ptTower->pSpCharacter->getBoundingBox().size.height - 11);
+		m_arrpSpGroup[sVancantPos]->pSpCharacter->setScale(m_ptTower->pSpCharacter->getScale());
+
+		this->addChild(m_arrpSpGroup[sVancantPos]->pSpCharacter);
+
+		getAniFrameInfoByTag("TowerFlag", &ptTmpAni);
+		TH_PROCESS_ERROR(ptTmpAni);
+		m_arrpSpGroup[sVancantPos]->pSpCharacter->runAction(ptTmpAni->pAnimate);
+
+		break;
+
+	default:
+		break;
+	}
+
+	bRet = THTRUE;
+Exit0:
+	CthCcCharacterLoadHandler::getInstance()->uninitCharacterDesc(ptTmpChacDesc);
+	return bRet;
 }
 
 thBool CThDefTower::_setPlayAniOpenTheDoor()

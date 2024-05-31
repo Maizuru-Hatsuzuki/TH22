@@ -241,7 +241,7 @@ thBool CThBaseCharacterAction::createActionMoveTo(float fSpeed, float fDstX, flo
 	cocos2d::Vector<FiniteTimeAction*> vecSeq(THMAX_SEQACTION);
 	Sequence* pActionSeq = NULL;
 
-	TH_PROCESS_SUCCESS(THMAX_SEQACTION < csCallbackSize);
+	TH_PROCESS_ERROR(THMAX_SEQACTION > csCallbackSize);
 	vecSeq.insert(0, pMoveTo);
 
 	if (NULL != arrfnCallback)

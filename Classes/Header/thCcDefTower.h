@@ -122,6 +122,7 @@ public:
 
 	void setUninitFlag();
 	void setWarriorExistsByAngle(const float cfAngle, const short csTag);
+	thBool setPlayerAniBasic();
 	thBool setPlayAniTowerSummon(const short* arrnCondAniTag, const short cnSize, const thBool bIsSummoning);
 	thBool setPlayAniBuildSmoke(thBool bIsBuild);
 
@@ -158,6 +159,7 @@ private:
 	thBool _getWarArrayVacantPos(short* psRet);
 	void _setSpTowerPositionTweaks();
 	void _setSpTowerPositionTweaksWarrior();
+	thBool _setPlayerAniBasicWarriorTower();
 	thBool _setPlayAniOpenTheDoor();
 	thBool _setPlayAniCloseTheDoor();
 	thBool _setPlayAniWarriorsDie(CThDefTowerWarrior_ptr pSp);

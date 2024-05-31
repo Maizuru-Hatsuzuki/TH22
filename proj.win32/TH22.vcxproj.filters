@@ -70,6 +70,9 @@
     <Filter Include="Config\Animate\Basic">
       <UniqueIdentifier>{171b62b0-ce59-4f01-b9ab-82661bca8112}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Config\Animate\Warriors">
+      <UniqueIdentifier>{9f1fc134-6f56-49e0-a953-dd4e00c231c3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -186,18 +189,6 @@
     <None Include="..\Resources\data\CharacterConfig\Bullet\ChacBulButterfly.ini">
       <Filter>Config\Character\Bullet</Filter>
     </None>
-    <None Include="..\Resources\data\CharacterConfig\Barracks\LV4\AniCloseTheDoor.ini">
-      <Filter>Config\Character\Barracks\LV4</Filter>
-    </None>
-    <None Include="..\Resources\data\CharacterConfig\Barracks\LV4\AniOpenTheDoor.ini">
-      <Filter>Config\Character\Barracks\LV4</Filter>
-    </None>
-    <None Include="..\Resources\data\CharacterConfig\Barracks\LV4\AniTagWarriorsDie.ini">
-      <Filter>Config\Character\Barracks\LV4</Filter>
-    </None>
-    <None Include="..\Resources\data\CharacterConfig\Barracks\LV4\AniWarriorsMove.ini">
-      <Filter>Config\Character\Barracks\LV4</Filter>
-    </None>
     <None Include="..\Resources\data\CharacterConfig\Barracks\LV4\ChacBarracks.ini">
       <Filter>Config\Character\Barracks\LV4</Filter>
     </None>
@@ -212,6 +203,24 @@
     </None>
     <None Include="..\Resources\data\AnimateConfig\Basic\AniMoveSelectingMouse.ini">
       <Filter>Config\Animate\Basic</Filter>
+    </None>
+    <None Include="..\Resources\data\CharacterConfig\Barracks\LV4\ChacBarracksFlag.ini">
+      <Filter>Config\Character\Barracks\LV4</Filter>
+    </None>
+    <None Include="..\Resources\data\AnimateConfig\Warriors\AniCloseTheDoor.ini">
+      <Filter>Config\Animate\Warriors</Filter>
+    </None>
+    <None Include="..\Resources\data\AnimateConfig\Warriors\AniOpenTheDoor.ini">
+      <Filter>Config\Animate\Warriors</Filter>
+    </None>
+    <None Include="..\Resources\data\AnimateConfig\Warriors\AniTagWarriorsDie.ini">
+      <Filter>Config\Animate\Warriors</Filter>
+    </None>
+    <None Include="..\Resources\data\AnimateConfig\Warriors\AniWarriorsMove.ini">
+      <Filter>Config\Animate\Warriors</Filter>
+    </None>
+    <None Include="..\Resources\data\AnimateConfig\Warriors\AniFlag.ini">
+      <Filter>Config\Animate\Warriors</Filter>
     </None>
   </ItemGroup>
 </Project>

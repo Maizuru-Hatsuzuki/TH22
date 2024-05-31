@@ -63,12 +63,15 @@ bool thSceneDungeon::init()
 	bool bRet = THFALSE;
 	bool bFnRet = THFALSE;
 	const int cnDbgTag = 1;
-
-	CTHCcBaseHandler::getInstance()->setSceneAllSpPlist(THEM_SCENE::THSCENE_DUNGEON, THTRUE);
 	char szarrSubSoilAPlistPath[MAX_PATH] = { 0 };
-	CThDefTowerSubsoil* pSubsoilA = new CThDefTowerSubsoil;
+	CThDefTowerSubsoil* pSubsoilA = NULL;
 
+	/* »ù´¡ init. */
+	CTHCcBaseHandler::getInstance()->setSceneAllSpPlist(THEM_SCENE::THSCENE_DUNGEON, THTRUE);
+
+	pSubsoilA = new CThDefTowerSubsoil;
 	TH_GETWINRESPATH(szarrSubSoilAPlistPath, "data\\CharacterConfig\\DefTowerSubsoil\\ChacGrasslandA.ini");
+
 	pSubsoilA->init(szarrSubSoilAPlistPath, 10.f);
 	pSubsoilA->setDefTowerProfessionalType(THEM_DEFTOWER_TYPE::DEFTOWERTYPE_WARRIORS);
 	this->addChild(pSubsoilA);

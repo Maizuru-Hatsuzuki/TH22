@@ -46,6 +46,6 @@ do											\
 	}										\
 } while (0);
 
-
+#define TH_EXIT_SUCCESS(Condition) { if (Condition) { goto Exit0; } };
 
 #endif // !__KBASEMACRO_H__
