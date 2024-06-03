@@ -338,7 +338,7 @@ void CThDefTowerSubsoil::update(float dt)
 			break;
 		case FLAG_NEED_UNINIT:
 			break;
-		case FLAG_END_ANI:
+		case FLAG_WAIT_ANI:
 			m_ptSubsoil->pSpCharacter->setSpriteFrame(m_pSpFrDefaultSubsoil);
 			break;
 

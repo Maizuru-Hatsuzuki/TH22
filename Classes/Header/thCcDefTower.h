@@ -13,6 +13,10 @@
 #include "thBase.h"
 
 
+#define TH_ANITAG_MOVEERROR 1
+#define TH_ANITAG_MOVING	2
+
+
 class CThDefTowerWarrior :
 	public CThBaseCharacter
 {
@@ -212,6 +216,8 @@ public:
 
 	thBool createQmWarriorLevel4(const float cfX, const float cfY, const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget);
 	thBool destoryQmWarriorLevel4(DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget);
+	thBool getMouseCursorIsPlayAni();
+	void setMouseCursorAni(enum THEM_QM_MOUSECURSOR emMouseType);
 
 	void onMouseUp(EventMouse* pMouse);
 	void onMouseDown(EventMouse* pMouse);
@@ -228,6 +234,7 @@ private:
 	static CThDefTowerQuickMenu* m_pSelf;
 	DEFTOWER_QUICKMENU_PTR m_ptQm;
 	CThDefTower_ptr m_pTaget;
+	CHARACTER_FRAMEINFO_PTR m_ptCurrentMouse;
 	CHARACTER_FRAMEINFO_PTR m_ptSellHoverBorder;
 	CHARACTER_FRAMEINFO_PTR m_ptMoveHoverBorder;
 	CHARACTER_FRAMEINFO_PTR m_ptSkillHoverBorder;
@@ -241,6 +248,7 @@ private:
 	CHARACTER_ANI_FRAMEINFO_PTR m_ptAniMovePosSelectedErrorMouse;
 	EventListenerMouse* m_pMouse;
 	enum THEM_DEFTOWER_TYPE m_emTagTowerType;
+	enum THEM_DELAY_UNINIT_FLAG m_emStepUninit;
 };
 
 

@@ -222,5 +222,11 @@
     <None Include="..\Resources\data\AnimateConfig\Warriors\AniFlag.ini">
       <Filter>Config\Animate\Warriors</Filter>
     </None>
+    <None Include="..\Resources\data\AnimateConfig\Basic\AniMoveSelectedErrorMouse.ini">
+      <Filter>Config\Animate\Basic</Filter>
+    </None>
+    <None Include="..\Resources\data\AnimateConfig\Basic\AniMoveSelectedMouse.ini">
+      <Filter>Config\Animate\Basic</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -16,16 +16,22 @@ CThDefTowerQuickMenu* CThDefTowerQuickMenu::m_pSelf;
 
 CThDefTowerQuickMenu::CThDefTowerQuickMenu()
 {
-	m_ptQm = NULL;
-	m_pTaget = NULL;
-	m_ptSellHoverBorder = NULL;
-	m_ptMoveHoverBorder = NULL;
-	m_ptSkillHoverBorder = NULL;
-	m_ptMoveRangeHalo = NULL;
-	m_ptMoveSelectingMouse = NULL;
-	m_ptAniMovePosSelectingMouse = NULL;
-	m_pMouse = NULL;
-	m_emTagTowerType = THEM_DEFTOWER_TYPE::DEFTOWERTYPE_UNKNOW;
+	m_pMouse								= NULL;
+	m_ptQm									= NULL;
+	m_pTaget								= NULL;
+	m_ptSellHoverBorder						= NULL;
+	m_ptMoveHoverBorder						= NULL;
+	m_ptSkillHoverBorder					= NULL;
+	m_ptMoveRangeHalo						= NULL;
+	m_ptMoveSelectingMouse					= NULL;
+	m_ptMoveSelectedMouse					= NULL;
+	m_ptMoveSelectedErrorMouse				= NULL;
+	m_ptAniMovePosSelectingMouse			= NULL;
+	m_ptAniMovePosSelectedMouse				= NULL;
+	m_ptAniMovePosSelectedErrorMouse		= NULL;
+	m_ptCurrentMouse						= NULL;
+	m_emTagTowerType						= THEM_DEFTOWER_TYPE::DEFTOWERTYPE_UNKNOW;
+	m_emStepUninit							= THEM_DELAY_UNINIT_FLAG::FLAG_NOTNEED_UNINIT;
 }
 
 CThDefTowerQuickMenu::~CThDefTowerQuickMenu()
@@ -36,10 +42,7 @@ thBool CThDefTowerQuickMenu::init()
 {
 	thBool bRet = THFALSE;
 	const char* cszpSpTex = "Quickmenu Material_";
-	CHARACTER_DESC tSellHoverBorder = { 0 };
-	CHARACTER_DESC tMoveHoverBorder = { 0 };
-	CHARACTER_DESC tMoveRangeHalo = { 0 };
-	CHARACTER_DESC tSkillHoverBorder = { 0 };
+	CHARACTER_DESC tTmpChacDesc = { 0 };
 
 	/* 如果 m_pMouse 有值, 就代表已经初始化过了. */
 	TH_PROCESS_SUCCESS(m_pMouse);
@@ -47,24 +50,14 @@ thBool CThDefTowerQuickMenu::init()
 
 	if (NULL == m_ptSellHoverBorder)
 	{
-		strcpy_s(tSellHoverBorder.szarrDefaultTexPlistPos, 64, THINI_DEFAULT_STR);
-		strcpy_s(tSellHoverBorder.szarrSpriteTex, 64, cszpSpTex);
-		strcpy_s(tSellHoverBorder.szarrSpriteName, 64, "Quickmenu sell border");
-		tSellHoverBorder.nDefaultTexPlistPos = 34;
-
-		bRet = initCharacterWithPlist(&tSellHoverBorder, &m_ptSellHoverBorder);
+		bRet = initCharacterWithPlistSimple("Quickmenu sell border", cszpSpTex, 34, &m_ptSellHoverBorder);
 		TH_PROCESS_ERROR(bRet);
 		m_ptSellHoverBorder->pSpCharacter->setVisible(THFALSE);
 		this->addChild(m_ptSellHoverBorder->pSpCharacter);
 	}
 	if (NULL == m_ptMoveHoverBorder)
 	{
-		strcpy_s(tMoveHoverBorder.szarrDefaultTexPlistPos, 64, THINI_DEFAULT_STR);
-		strcpy_s(tMoveHoverBorder.szarrSpriteTex, 64, cszpSpTex);
-		strcpy_s(tMoveHoverBorder.szarrSpriteName, 64, "Quickmenu move border");
-		tMoveHoverBorder.nDefaultTexPlistPos = 63;
-
-		bRet = initCharacterWithPlist(&tMoveHoverBorder, &m_ptMoveHoverBorder);
+		bRet = initCharacterWithPlistSimple("Quickmenu move border", cszpSpTex, 63, &m_ptMoveHoverBorder);
 		TH_PROCESS_ERROR(bRet);
 		m_ptMoveHoverBorder->pSpCharacter->setVisible(THFALSE);
 		this->addChild(m_ptMoveHoverBorder->pSpCharacter);
@@ -75,12 +68,7 @@ thBool CThDefTowerQuickMenu::init()
 	}
 	if (NULL == m_ptMoveRangeHalo)
 	{
-		strcpy_s(tSkillHoverBorder.szarrDefaultTexPlistPos, 64, THINI_DEFAULT_STR);
-		strcpy_s(tSkillHoverBorder.szarrSpriteTex, 64, "HUD Material_");
-		strcpy_s(tSkillHoverBorder.szarrSpriteName, 64, "warrior move range");
-		tSkillHoverBorder.nDefaultTexPlistPos = 412;
-
-		bRet = initCharacterWithPlist(&tSkillHoverBorder, &m_ptMoveRangeHalo);
+		bRet = initCharacterWithPlistSimple("Warrior move range", "HUD Material_", 412, &m_ptMoveRangeHalo);
 		TH_PROCESS_ERROR(bRet);
 		m_ptMoveRangeHalo->pSpCharacter->setVisible(THFALSE);
 		this->addChild(m_ptMoveRangeHalo->pSpCharacter);
@@ -104,39 +92,54 @@ Exit0:
 thBool CThDefTowerQuickMenu::initBasicAni()
 {
 	thBool bRet = THFALSE;
-	char szarrPathAniSelecting[MAX_PATH] = { 0 };
-	char szarrPathAniSelected[MAX_PATH] = { 0 };
-	char szarrPathAniSelectedError[MAX_PATH] = { 0 };
-	CHARACTER_DESC tSelectingMouse = { 0 };
+	char szarrPathAni[MAX_PATH] = { 0 };
+	CHARACTER_DESC tTmpChacDesc = { 0 };
 
 	/* 创建动画所需的精灵. */
 	if (NULL == m_ptMoveSelectingMouse)
 	{
-		strcpy_s(tSelectingMouse.szarrDefaultTexPlistPos, 64, THINI_DEFAULT_STR);
-		strcpy_s(tSelectingMouse.szarrSpriteTex, 64, "posMouse");
-		strcpy_s(tSelectingMouse.szarrSpriteName, 64, "sp_selectingMouse");
-		tSelectingMouse.nDefaultTexPlistPos = 1;
-
-		initCharacterWithPlist(&tSelectingMouse, &m_ptMoveSelectingMouse);
+		bRet = initCharacterWithPlistSimple("sp_selectingMouse", "posMouse", 1, &m_ptMoveSelectingMouse);
+		TH_PROCESS_ERROR(bRet);
 		m_ptMoveSelectingMouse->pSpCharacter->setVisible(THFALSE);
 		this->addChild(m_ptMoveSelectingMouse->pSpCharacter);
 	}
+	if (NULL == m_ptMoveSelectedMouse)
+	{
+		bRet = initCharacterWithPlistSimple("sp_selectedMouse", "moveFlag", 18, &m_ptMoveSelectedMouse);
+		TH_PROCESS_ERROR(bRet);
+		m_ptMoveSelectedMouse->pSpCharacter->setVisible(THFALSE);
+		this->addChild(m_ptMoveSelectedMouse->pSpCharacter);
+	}
+	if (NULL == m_ptMoveSelectedErrorMouse)
+	{
+		bRet = initCharacterWithPlistSimple("sp_selectedErrorMouse", "moveErr", 1, &m_ptMoveSelectedErrorMouse);
+		TH_PROCESS_ERROR(bRet);
+		m_ptMoveSelectedErrorMouse->pSpCharacter->setVisible(THFALSE);
+		this->addChild(m_ptMoveSelectedErrorMouse->pSpCharacter);
+	}
 	
 	/* 创建动画. */
-	TH_GETWINRESPATH(szarrPathAniSelecting, "data\\AnimateConfig\\Basic\\AniMoveSelectingMouse.ini");
-
 	if (NULL == m_ptAniMovePosSelectingMouse)
 	{
-		bRet = CthCcFrameByFrameAnimation::getInstance()->createAnimationWithPListIni(szarrPathAniSelecting, &m_ptAniMovePosSelectingMouse);
-		TH_PROCESS_ERROR(bRet);
-		TH_PROCESS_ERROR(m_ptMoveSelectingMouse);
+		TH_GETWINRESPATH(szarrPathAni, "data\\AnimateConfig\\Basic\\AniMoveSelectingMouse.ini");
+		bRet = CthCcFrameByFrameAnimation::getInstance()->createAnimationWithPListIni(szarrPathAni, &m_ptAniMovePosSelectingMouse);
+		TH_PROCESS_ERROR(bRet && m_ptMoveSelectingMouse);
 		m_ptMoveSelectingMouse->pSpCharacter->runAction(m_ptAniMovePosSelectingMouse->pAnimate);
 	}
 	if (NULL == m_ptAniMovePosSelectedMouse)
 	{
+		TH_GETWINRESPATH(szarrPathAni, "data\\AnimateConfig\\Basic\\AniMoveSelectedMouse.ini");
+		bRet = CthCcFrameByFrameAnimation::getInstance()->createAnimationWithPListIni(szarrPathAni, &m_ptAniMovePosSelectedMouse);
+		TH_PROCESS_ERROR(bRet && m_ptAniMovePosSelectedMouse);
+		m_ptAniMovePosSelectedMouse->pAnimate->retain();
+		m_ptAniMovePosSelectedMouse->pAnimate->setTag(TH_ANITAG_MOVING);
 	}
 	if (NULL == m_ptAniMovePosSelectedErrorMouse)
 	{
+		TH_GETWINRESPATH(szarrPathAni, "data\\AnimateConfig\\Basic\\AniMoveSelectedErrorMouse.ini");
+		bRet = CthCcFrameByFrameAnimation::getInstance()->createAnimationWithPListIni(szarrPathAni, &m_ptAniMovePosSelectedErrorMouse);
+		TH_PROCESS_ERROR(bRet && m_ptAniMovePosSelectedErrorMouse);
+		m_ptAniMovePosSelectedErrorMouse->pAnimate->retain();
 	}
 
 	bRet = THTRUE;
@@ -151,7 +154,14 @@ void CThDefTowerQuickMenu::uninit()
 	THFREE(m_ptSkillHoverBorder);
 	THFREE(m_ptMoveRangeHalo);
 	THFREE(m_ptMoveSelectingMouse);
+	THFREE(m_ptMoveSelectedMouse);
+	THFREE(m_ptMoveSelectedErrorMouse);
 	THFREE(m_ptAniMovePosSelectingMouse);
+	THFREE(m_ptAniMovePosSelectedMouse);
+	THFREE(m_ptAniMovePosSelectedErrorMouse);
+	
+	/* m_ptCurrentMouse 不是堆上的内存, 直接置空. */
+	m_ptCurrentMouse = NULL;
 
 	unscheduleUpdate();
 	CTHCcBaseHandler::getInstance()->setShowWinMouseCursor(THTRUE);
@@ -169,6 +179,54 @@ CThDefTowerQuickMenu* CThDefTowerQuickMenu::getInstance()
 	}
 
 	return m_pSelf;
+}
+
+thBool CThDefTowerQuickMenu::getMouseCursorIsPlayAni()
+{
+	thBool bRet = THFALSE;
+
+	bRet = m_ptMoveSelectedErrorMouse->pSpCharacter->getActionByTag(TH_ANITAG_MOVEERROR) || m_ptMoveSelectedMouse->pSpCharacter->getActionByTag(TH_ANITAG_MOVING);
+	
+	return bRet;
+}
+
+void CThDefTowerQuickMenu::setMouseCursorAni(enum THEM_QM_MOUSECURSOR emMouseType)
+{
+	Sequence* pAniSeqMouseErr = NULL;
+	CallFunc* fnSwitchSelectingMouse = NULL;
+
+	TH_RUN_SUCCESS(NULL != m_ptCurrentMouse, m_ptCurrentMouse->pSpCharacter->setVisible(THFALSE));
+
+	switch (emMouseType)
+	{
+	case CUR_SELECTING_POSITION:
+		m_ptMoveSelectingMouse->pSpCharacter->setVisible(THTRUE);
+		CTHCcBaseHandler::getInstance()->setShowWinMouseCursor(THFALSE);
+		m_ptCurrentMouse = m_ptMoveSelectingMouse;
+		break;
+
+	case CUR_SELECTED_POSITION:
+		m_ptMoveSelectedMouse->pSpCharacter->setVisible(THTRUE);
+		CTHCcBaseHandler::getInstance()->setShowWinMouseCursor(THFALSE);
+		m_ptMoveSelectedMouse->pSpCharacter->runAction(m_ptAniMovePosSelectedMouse->pAnimate);
+		m_ptCurrentMouse = m_ptMoveSelectedMouse;
+		break;
+
+	case CUR_SELECTERR_POSITION:
+		fnSwitchSelectingMouse = CallFunc::create(CC_CALLBACK_0(CThDefTowerQuickMenu::setMouseCursorAni, this, THEM_QM_MOUSECURSOR::CUR_SELECTING_POSITION));
+		pAniSeqMouseErr = Sequence::create(m_ptAniMovePosSelectedErrorMouse->pAnimate, fnSwitchSelectingMouse, NULL);
+		pAniSeqMouseErr->setTag(TH_ANITAG_MOVEERROR);
+
+		m_ptMoveSelectedErrorMouse->pSpCharacter->setVisible(THTRUE);
+		m_ptMoveSelectedErrorMouse->pSpCharacter->runAction(pAniSeqMouseErr);
+		m_ptCurrentMouse = m_ptMoveSelectedErrorMouse;
+		break;
+
+	default:
+		break;
+	}
+
+	return ;
 }
 
 thBool CThDefTowerQuickMenu::createBasicQm(const float cfX, const float cfY, const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm)
@@ -195,13 +253,8 @@ thBool CThDefTowerQuickMenu::createBasicQm(const float cfX, const float cfY, con
 	TH_PROCESS_ERROR(NULL != ptDefTowerQm);
 	m_ptQm = ptDefTowerQm;
 	/* 快速菜单背景(圈). */
-	strcpy_s(tQuickMenuBg.szarrDefaultTexPlistPos, 64, THINI_DEFAULT_STR);
-	strcpy_s(tQuickMenuBg.szarrSpriteTex, 64, cszpSpTex);
-	strcpy_s(tQuickMenuBg.szarrSpriteName, 64, "Quickmenu bg");
-	tQuickMenuBg.nDefaultTexPlistPos = 96;
-
-	bRet = initCharacterWithPlist(&tQuickMenuBg, &ptChacFrameQuickMenuBg);
-	TH_PROCESS_ERROR(bRet);
+	bRet = initCharacterWithPlistSimple("Quickmenu bg", cszpSpTex, 96, &ptChacFrameQuickMenuBg);
+	TH_PROCESS_ERROR(bRet && ptChacFrameQuickMenuBg);
 	ptDefTowerQm->pBg = ptChacFrameQuickMenuBg;
 
 	/* 根据圈计算一些定位数据. */
@@ -233,6 +286,7 @@ thBool CThDefTowerQuickMenu::createBasicQm(const float cfX, const float cfY, con
 	}
 	else
 	{
+		/* 不可移动单位. */
 		ptDefTowerQm->pCommandMovement = ptChacCommandMovementDisable;
 		ptDefTowerQm->pCommandMovement->pSpCharacter->setTag(THSP_FLAG_DISABLE);
 	}
@@ -270,6 +324,7 @@ thBool CThDefTowerQuickMenu::createQmWarriorLevel4(const float cfX, const float 
 	thBool bRet = THFALSE;
 	m_pTaget = pTaget;
 	m_emTagTowerType = m_pTaget->getDefTowerType();
+	m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_NOTNEED_UNINIT;
 
 	bRet = init();
 	TH_PROCESS_ERROR(bRet);
@@ -290,8 +345,8 @@ thBool CThDefTowerQuickMenu::destoryQmWarriorLevel4(DEFTOWER_QUICKMENU_PTR ptDef
 {
 	thBool bRet = THFALSE;
 	
-	uninit();
-	this->removeAllChildrenWithCleanup(THTRUE);
+	/* 因为有鼠标精灵动画播放, 所以也要做延迟释放. */
+	m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_NEED_UNINIT;
 
 	bRet = THTRUE;
 Exit0:
@@ -308,7 +363,6 @@ void CThDefTowerQuickMenu::onMouseUp(EventMouse* pMouse)
 	TH_EXIT_SUCCESS(NULL == m_ptQm);
 
 	nSpMoveTag = m_ptQm->pCommandMovement->pSpCharacter->getTag();
-
 	/* 检查出售按钮. */
 	bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pSellTower->pSpCharacter, vecMousePos);
 	if (bRet)
@@ -320,36 +374,64 @@ void CThDefTowerQuickMenu::onMouseUp(EventMouse* pMouse)
 	if (bRet && THSP_FLAG_ENABLE == nSpMoveTag)
 	{
 		m_ptMoveRangeHalo->pSpCharacter->setVisible(THTRUE);
-		m_ptMoveSelectingMouse->pSpCharacter->setVisible(THTRUE);
-		CTHCcBaseHandler::getInstance()->setShowWinMouseCursor(THFALSE);
-	}
-	else
-	{
-		m_ptMoveRangeHalo->pSpCharacter->setVisible(THFALSE);
-		m_ptMoveSelectingMouse->pSpCharacter->setVisible(THFALSE);
+		setMouseCursorAni(THEM_QM_MOUSECURSOR::CUR_SELECTING_POSITION);
 	}
 
 	pMouse->stopPropagation();
 	
+	bRet = THTRUE;
 Exit0:
+	ASSERT(bRet);
 	return;
 }
 
 void CThDefTowerQuickMenu::onMouseDown(EventMouse* pMouse)
 {
 	thBool bRet = THFALSE;
+	CHARACTER_FRAMEINFO_PTR ptTower = NULL;
 	Vec2 vecMousePos = pMouse->getLocationInView();
+	
 
 	TH_EXIT_SUCCESS(NULL == m_ptQm);
 
-	/* 如果是按钮, 阻止事件传播. */
-	bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pSellTower->pSpCharacter, vecMousePos) || CThBaseCharacter::getIsHoverSprite(m_ptQm->pCommandMovement->pSpCharacter, vecMousePos);
-	if (bRet)
+	/* 如果正在播放动画则 PASS. */
+	if (THFALSE == getMouseCursorIsPlayAni())
 	{
+		/* 如果是按钮, 阻止事件传播. */
+		bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pSellTower->pSpCharacter, vecMousePos) || CThBaseCharacter::getIsHoverSprite(m_ptQm->pCommandMovement->pSpCharacter, vecMousePos);
+		if (bRet)
+		{
+			pMouse->stopPropagation();
+		}
+
+		/* 指挥移动 */
+		if (THTRUE == m_ptMoveSelectingMouse->pSpCharacter->isVisible())
+		{
+			m_pTaget->getCharacterFrameInfo(&ptTower);
+			bRet = CThBaseCharacter::getIsHoverSprite(m_ptMoveRangeHalo->pSpCharacter, vecMousePos) && !CThBaseCharacter::getIsHoverSprite(ptTower->pSpCharacter, vecMousePos);
+			if (bRet)
+			{
+				/* 可通行. */
+				setMouseCursorAni(THEM_QM_MOUSECURSOR::CUR_SELECTED_POSITION);
+			}
+			else
+			{
+				/* 立入禁止. */
+				setMouseCursorAni(THEM_QM_MOUSECURSOR::CUR_SELECTERR_POSITION);
+				pMouse->stopPropagation();
+			}
+		}
+	}
+	/* 移动错误时可以持续点击. */
+	if (NULL != m_ptMoveSelectedErrorMouse->pSpCharacter->getActionByTag(TH_ANITAG_MOVEERROR))
+	{
+		setMouseCursorAni(THEM_QM_MOUSECURSOR::CUR_SELECTERR_POSITION);
 		pMouse->stopPropagation();
 	}
 
+	bRet = THTRUE;
 Exit0:
+	ASSERT(bRet);
 	return;
 }
 
@@ -361,7 +443,11 @@ void CThDefTowerQuickMenu::onMouseMove(EventMouse* pMouse)
 	
 	TH_EXIT_SUCCESS(NULL == m_ptQm);
 
+	/* 需要跟随鼠标指针的按钮精灵坐标实时计算. */
 	vecMoveMouseLocationInNode = m_ptMoveSelectingMouse->pSpCharacter->getParent()->convertToNodeSpaceAR(vecMousePos);
+	m_ptMoveSelectingMouse->pSpCharacter->setPosition(vecMoveMouseLocationInNode);
+	m_ptMoveSelectedMouse->pSpCharacter->setPosition(vecMoveMouseLocationInNode);
+	m_ptMoveSelectedErrorMouse->pSpCharacter->setPosition(vecMoveMouseLocationInNode);
 
 	/* 检查出售按钮. */
 	bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pSellTower->pSpCharacter, vecMousePos);
@@ -377,7 +463,6 @@ void CThDefTowerQuickMenu::onMouseMove(EventMouse* pMouse)
 
 	/* 检查移动按钮. */
 	bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pCommandMovement->pSpCharacter, vecMousePos);
-	m_ptMoveSelectingMouse->pSpCharacter->setPosition(vecMoveMouseLocationInNode);
 	m_ptMoveHoverBorder->pSpCharacter->setVisible(bRet);
 	if (bRet)
 	{
@@ -394,5 +479,49 @@ Exit0:
 
 void CThDefTowerQuickMenu::update(float dt)
 {
+	thBool bFnRet = THFALSE;
+	Action* pAni = NULL;
+	Vector<cocos2d::Node*> vecAllChild = this->getChildren();
+	int nAniSummonTag = 0;
+
+	switch (m_emStepUninit)
+	{
+	case FLAG_NOTNEED_UNINIT:
+		break;
+	case FLAG_NEED_UNINIT:
+		for (ssize_t i = 0; i < vecAllChild.size(); i++)
+		{
+			vecAllChild.at(i)->setVisible(THFALSE);
+		}
+
+		m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_WAIT_ANI;
+		break;
+
+	case FLAG_WAIT_ANI:
+		/* 检查动画是否播放完成. */
+		bFnRet = getMouseCursorIsPlayAni();
+		if (THFALSE == bFnRet)
+		{
+			m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_UNINIT;
+		}
+		break;
+
+	case FLAG_UNINIT:
+		uninit();
+		this->removeAllChildrenWithCleanup(THTRUE);
+		this->removeFromParentAndCleanup(THTRUE);
+		m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_UNINIT_COMPLETE;
+		break;
+
+	case FLAG_UNINIT_COMPLETE:
+		break;
+	default:
+		break;
+	}
+
+	bFnRet = THTRUE;
+
+Exit0:
+	ASSERT(bFnRet);
 	return;
 }

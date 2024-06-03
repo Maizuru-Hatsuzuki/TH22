@@ -90,6 +90,24 @@ Exit0:
 	return bRet;
 }
 
+thBool CThBaseCharacter::initCharacterWithPlistSimple(const char* cszpDesc, const char* cszpSpTex, const int cnPos, CHARACTER_FRAMEINFO_PTR* ppRet)
+{
+	thBool bRet = THFALSE;
+	CHARACTER_DESC tTmpChacDesc = { 0 };
+
+	strcpy_s(tTmpChacDesc.szarrDefaultTexPlistPos, 64, THINI_DEFAULT_STR);
+	strcpy_s(tTmpChacDesc.szarrSpriteTex, 64, cszpSpTex);
+	strcpy_s(tTmpChacDesc.szarrSpriteName, 64, cszpDesc);
+	tTmpChacDesc.nDefaultTexPlistPos = cnPos;
+
+	bRet = initCharacterWithPlist(&tTmpChacDesc, ppRet);
+	TH_PROCESS_ERROR(bRet);
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
 void CThBaseCharacter::_initCharacterDescInfo(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR ptCharFrame)
 {
 	ptCharFrame->nHP = pDesc->nHP;

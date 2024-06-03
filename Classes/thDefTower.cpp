@@ -1055,7 +1055,6 @@ thBool CThDefTower::_setCreateQmWarrior(const thBool cbIsCreate)
 		case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4:
 			bRet = CThDefTowerQuickMenu::getInstance()->destoryQmWarriorLevel4(&m_tChacFrameQuickMenuBg, this);
 			TH_PROCESS_ERROR(bRet);
-			this->removeChild(CThDefTowerQuickMenu::getInstance());
 			break;
 
 		default:
@@ -1235,10 +1234,10 @@ void CThDefTower::update(float dt)
 		bFnRet = setPlayAniBuildSmoke(THFALSE);
 		TH_PROCESS_ERROR(bFnRet);
 
-		m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_END_ANI;
+		m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_WAIT_ANI;
 		break;
 
-	case FLAG_END_ANI:
+	case FLAG_WAIT_ANI:
 		/* 检查动画是否播放完成. */
 		getAniTagByDesc("AniTagBuildSmoke", &nAniSummonTag);
 		TH_PROCESS_ERROR(nAniSummonTag);

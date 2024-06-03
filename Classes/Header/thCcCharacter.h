@@ -13,6 +13,14 @@
 #include "thBase.h"
 
 
+enum THEM_QM_MOUSECURSOR
+{
+	CUR_UNKNOW,
+	CUR_SELECTING_POSITION,
+	CUR_SELECTED_POSITION,
+	CUR_SELECTERR_POSITION,
+};
+
 enum THEM_BULLET
 {
 	BULLET_BUTTERFLY,
@@ -213,6 +221,7 @@ public:
 
 	thBool	initCharacter(std::string strSpFile, CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR* ppRet, thBool bInitSp);
 	thBool	initCharacterWithPlist(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR* ppRet);
+	thBool	initCharacterWithPlistSimple(const char* cszpDesc, const char* cszpSpTex, const int cnPos, CHARACTER_FRAMEINFO_PTR* ppRet);
 	void	uninitCharacter(CHARACTER_FRAMEINFO_PTR pCharater);
 	thBool	initCharacterAnimation(CHARACTER_ANI_DESC_PTR pAniDesc, Animate** ppRet) const ;
 
