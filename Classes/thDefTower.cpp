@@ -92,14 +92,13 @@ thBool CThDefTower::init(
 	TH_PROCESS_ERROR(bFnRet);
 	_setSpTowerPositionTweaks();
 	m_ptTower->pSpCharacter->setAnchorPoint(m_vecAnchorPoint);
-	this->addChild(m_ptTower->pSpCharacter);
 
 	bFnRet = initAnimate(szarrpAniDesc, csAniDescSize);
 	TH_PROCESS_ERROR(bFnRet);
 	if (THEM_DEFTOWER_TYPE::DEFTOWERTYPE_WARRIORS == m_emTowerType || THEM_DEFTOWER_TYPE::DEFTOWERTYPE_ARCHER_WARRIORS == m_emTowerType)
 	{
 		/* 计算战士固定位置坐标. */
-		_initWarriorsMovePos(ptCharacterDesc, fFaceAngle);
+		_initAllWarriorsMovePosWithAngle(ptCharacterDesc, fFaceAngle);
 
 		/* 播放开门动画并初始化战士精灵. */
 		bFnRet = initDefTowerWarriorsDesc(ptWarriors);
@@ -109,6 +108,8 @@ thBool CThDefTower::init(
 		bFnRet = initWarriors(m_ptTowerStatus->sMaxWarriors, m_sVacantPos);
 		TH_PROCESS_ERROR(bFnRet);
 	}
+	/* 放在战士之后 addChild, 控制下 Z 值确保最前渲染. */
+	this->addChild(m_ptTower->pSpCharacter);
 
 	m_pEventMouse->onMouseUp = CC_CALLBACK_1(CThDefTower::onMouseUp, this);
 	m_pEventMouse->onMouseMove = CC_CALLBACK_1(CThDefTower::onMouseMove, this);
@@ -184,10 +185,9 @@ Exit0:
 	return;
 }
 
-void CThDefTower::_initWarriorsMovePos(const CHARACTER_DESC_PTR cptCharacterDesc, const float cfFaceAngle)
+void CThDefTower::_initAllWarriorsMovePosWithAngle(const CHARACTER_DESC_PTR cptCharacterDesc, const float cfFaceAngle)
 {
-	float fWarriorsSeparationAngle = 40.f;
-	const float cfWarriorsSeparationDis = 25.f;
+	float fWarriorsSeparationAngle = THSP_WARRIOR_SEPARATION_ANGLE;
 	float fWarriorCenterPointX = 0.f;
 	float fWarriorCenterPointY = 0.f;
 
@@ -199,8 +199,8 @@ void CThDefTower::_initWarriorsMovePos(const CHARACTER_DESC_PTR cptCharacterDesc
 	{
 		if (s < m_ptTowerStatus->sMaxWarriors)
 		{
-			m_arrfWarriorMovePos[s][0] = fWarriorCenterPointX + cfWarriorsSeparationDis * cos(fWarriorsSeparationAngle * (M_PI / 180));
-			m_arrfWarriorMovePos[s][1] = fWarriorCenterPointY + cfWarriorsSeparationDis * sin(fWarriorsSeparationAngle * (M_PI / 180));
+			m_arrfWarriorMovePos[s][0] = fWarriorCenterPointX + THSP_WARRIOR_SEPARATION * cos(fWarriorsSeparationAngle * (M_PI / 180));
+			m_arrfWarriorMovePos[s][1] = fWarriorCenterPointY + THSP_WARRIOR_SEPARATION * sin(fWarriorsSeparationAngle * (M_PI / 180));
 			fWarriorsSeparationAngle += 90.f;
 			fWarriorsSeparationAngle = fmod(fWarriorsSeparationAngle, 360.f);
 		}
@@ -210,6 +210,29 @@ void CThDefTower::_initWarriorsMovePos(const CHARACTER_DESC_PTR cptCharacterDesc
 			m_arrfWarriorMovePos[s][1] = 0.f;
 		}
 	}
+	return;
+}
+
+void CThDefTower::_initAllWarriorsMovePosWithXY(const float cfX, const float cfY)
+{
+	float fWarriorsSeparationAngle = THSP_WARRIOR_SEPARATION_ANGLE;
+
+	for (short s = 0; s < THMAX_DEFTOWER_TARLEVEL_WARRIORS; s++)
+	{
+		if (s < m_ptTowerStatus->sMaxWarriors)
+		{
+			m_arrfWarriorMovePos[s][0] = cfX + THSP_WARRIOR_SEPARATION * cos(fWarriorsSeparationAngle * (M_PI / 180));
+			m_arrfWarriorMovePos[s][1] = cfY + THSP_WARRIOR_SEPARATION * sin(fWarriorsSeparationAngle * (M_PI / 180));
+			fWarriorsSeparationAngle += 90.f;
+			fWarriorsSeparationAngle = fmod(fWarriorsSeparationAngle, 360.f);
+		}
+		else
+		{
+			m_arrfWarriorMovePos[s][0] = 0.f;
+			m_arrfWarriorMovePos[s][1] = 0.f;
+		}
+	}
+
 	return;
 }
 
@@ -357,7 +380,6 @@ thBool CThDefTower::initWarriors(const short csCnt, short sSpArrVacantPos)
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
 	char szarrTmpSpName[32] = { 0 };
-	short sWarriorType = 0;
 	CHARACTER_DESC_PTR ptSpDesc = NULL;
 	CHARACTER_ANI_FRAMEINFO_PTR ptAniMoveTo = NULL;
 	CThDefTowerWarrior* ptmpWarrior = NULL;
@@ -366,11 +388,11 @@ thBool CThDefTower::initWarriors(const short csCnt, short sSpArrVacantPos)
 	for (int i = 0; i < csCnt; i++)
 	{
 		/* 重建精灵. */
-		while (NULL == ptSpDesc)
-		{
-			sWarriorType = (rand() % THMAX_DEFTOWER_TARLEVEL_WARRIORS);
-			ptSpDesc = m_arrpWarriorsDesc[m_ptTower->emCurLevel][sWarriorType];
-		}
+		getRandWarriorTypeDesc(&ptSpDesc);
+		TH_PROCESS_ERROR(ptSpDesc);
+		getAniFrameInfoByTag(ptSpDesc->ptAniMap->szarrAniMoveTransverse, &ptAniMoveTo);
+		TH_PROCESS_ERROR(ptAniMoveTo);
+		
 		/* 检查是否满容量.*/
 		bFnRet = _getWarArrayVacantPos(&sSpArrVacantPos);
 		TH_PROCESS_ERROR(!bFnRet);
@@ -385,8 +407,6 @@ thBool CThDefTower::initWarriors(const short csCnt, short sSpArrVacantPos)
 			}
 		}
 
-		getAniFrameInfoByTag(ptSpDesc->ptAniMap->szarrAniMoveTransverse, &ptAniMoveTo);
-		TH_PROCESS_ERROR(ptAniMoveTo);
 		getWarriorExistsByAngle(CThDefTower::ms_fWarriorsBirthAngle, &bFnRet);
 		if (THTRUE == bFnRet)
 		{
@@ -499,9 +519,19 @@ void CThDefTower::getCharacterFrameInfoInGroup(const char* cszpTag, CHARACTER_FR
 	return;
 }
 
-enum THEM_DEFTOWER_TYPE CThDefTower::getDefTowerType()
+void CThDefTower::getRandWarriorTypeDesc(CHARACTER_DESC_PTR* ppRet)
 {
-	return m_emTowerType;
+	CHARACTER_DESC_PTR ptSpDesc = NULL;
+	short sWarriorType = 0;
+
+	while (NULL == ptSpDesc)
+	{
+		sWarriorType = (rand() % THMAX_DEFTOWER_TARLEVEL_WARRIORS);
+		ptSpDesc = m_arrpWarriorsDesc[m_ptTower->emCurLevel][sWarriorType];
+	}
+
+	*ppRet = ptSpDesc;
+	return;
 }
 
 void CThDefTower::getAniFrameInfoByTag(const char* cszpTag, CHARACTER_ANI_FRAMEINFO_PTR* ppRet)
@@ -536,6 +566,12 @@ void CThDefTower::getUninitFlag(enum THEM_DELAY_UNINIT_FLAG* pRet) const
 	*pRet = m_emStepUninit;
 	return;
 }
+
+enum THEM_DEFTOWER_TYPE CThDefTower::getDefTowerType()
+{
+	return m_emTowerType;
+}
+
 
 thBool CThDefTower::getTowerInfo(
 	enum THEM_CHARACTER_LEVEL emLevel, enum THEM_DEFTOWER_TYPE emTowerType, DEFTOWER_WARRIORS_PTR ptWarrior,
@@ -753,6 +789,24 @@ void CThDefTower::setWarriorExistsByAngle(const float cfAngle, const short csTag
 {
 	m_arrpWarriors[csTag]->setWarriorBirthMoveAngle(cfAngle);
 	return;
+}
+
+thBool CThDefTower::setWarriorsOverallMovement(const float cfX, const float cfY)
+{
+	thBool bRet = THFALSE;
+	CHARACTER_ANI_FRAMEINFO_PTR ptAniMoveTo = NULL;
+
+	/* 根据中心点重新计算每个战士的实际坐标. */
+	for (short s = 0; s < m_ptTowerStatus->sMaxWarriors; s++)
+	{
+		_initAllWarriorsMovePosWithXY(cfX, cfY);
+		bRet = m_arrpWarriors[m_arrsWarriorsVacantPos[s]]->usSetWarriorMove(m_arrfWarriorMovePos[s][0], m_arrfWarriorMovePos[s][1], s, NULL);
+		TH_PROCESS_ERROR(bRet);
+	}
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
 }
 
 /* 特殊防御塔的一些专用动画, 在初始化的时候就要播放, 动画对象存放在 m_arrpAniGroup 里, 根据 szAniDesc 去查. */

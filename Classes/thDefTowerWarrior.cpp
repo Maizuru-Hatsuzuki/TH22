@@ -38,15 +38,16 @@ thBool CThDefTowerWarrior::init(
 	m_pEventMouse->onMouseDown = CC_CALLBACK_1(CThDefTowerWarrior::onMouseDown, this);
 	m_pEventMouse->onMouseMove = CC_CALLBACK_1(CThDefTowerWarrior::onMouseMove, this);
 
-	m_ptAniMap = cptAniMap;
-	m_bIsFlip = THFALSE;
-	m_ptWarriorFrameInfo = NULL;
-	m_fWarriorBirthMoveAngle = cfWarriorsBirthAngle;
-	m_fWarriorBirthX = cfWarriorsBirthX;
-	m_fWarriorBirthY = cfWarriorsBirthY;
-	m_arrfWarriorMovePos = arrfDstXY;
-	m_fsmWarriorObject = THNEW_CLASS(CThFSMCharacter);
-	m_emCurFsmStatus = THEM_CHARACTER_FSM_EVENT::FSM_EVENT_STAND;
+	m_bIsFlip					= THFALSE;
+	m_ptAniMap					= cptAniMap;
+	m_ptWarriorFrameInfo		= NULL;
+	m_ptAniMoveTo				= cptAniMoveTo;
+	m_fWarriorBirthMoveAngle	= cfWarriorsBirthAngle;
+	m_fWarriorBirthX			= cfWarriorsBirthX;
+	m_fWarriorBirthY			= cfWarriorsBirthY;
+	m_fsmWarriorObject			= THNEW_CLASS(CThFSMCharacter);
+	m_emCurFsmStatus			= THEM_CHARACTER_FSM_EVENT::FSM_EVENT_STAND;
+	m_arrfWarriorMovePos		= arrfDstXY;
 
 	bFnRet = initFsmEvent();
 	TH_PROCESS_ERROR(bFnRet);
@@ -203,7 +204,7 @@ void CThDefTowerWarrior::getCharacterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet)
 
 const short CThDefTowerWarrior::getWarriorVacantPos() const
 {
-	return m_csSpArrVacantPos;
+	return m_sSpArrVacantPos;
 }
 
 const float CThDefTowerWarrior::getWarriorBirthMoveAngle() const
@@ -253,7 +254,7 @@ thBool CThDefTowerWarrior::usSetWarriorMove(const float cfDstX, const float cfDs
 	void* varrpFsmRet[3] = { 0 };
 	Sequence* pSeMoveTo = NULL;
 	Sequence* pSeHaloMoveTo = NULL;
-	m_csSpArrVacantPos = csSpArrVacantPos;
+	m_sSpArrVacantPos = csSpArrVacantPos;
 
 	getCharacterMoveSpeed(
 		m_ptWarriorFrameInfo->pSpCharacter->getPositionX(),
@@ -271,7 +272,7 @@ thBool CThDefTowerWarrior::usSetWarriorMove(const float cfDstX, const float cfDs
 	TH_PROCESS_ERROR(bFnRet);
 
 	// 判断左移还是右移
-	if (m_fWarriorBirthX > cfDstX)
+	if (m_ptWarriorFrameInfo->pSpCharacter->getPositionX() > cfDstX)
 	{
 		// 左.
 		m_ptWarriorFrameInfo->pSpCharacter->setFlippedX(true);
@@ -279,11 +280,19 @@ thBool CThDefTowerWarrior::usSetWarriorMove(const float cfDstX, const float cfDs
 	else
 	{
 		// 右.
+		m_ptWarriorFrameInfo->pSpCharacter->setFlippedX(false);
 	}
 
 	varrpFsmRet[0] = pSeMoveTo;
 	varrpFsmRet[1] = pSeHaloMoveTo;
-	varrpFsmRet[2] = cptAniMoveTo;
+	if (NULL == cptAniMoveTo)
+	{
+		varrpFsmRet[2] = m_ptAniMoveTo;
+	}
+	else
+	{
+		varrpFsmRet[2] = cptAniMoveTo;
+	}
 
 	bFnRet = m_fsmWarriorObject->switchEvent(m_emCurFsmStatus, THEM_CHARACTER_FSM_EVENT::FSM_EVENT_MOVE, varrpFsmRet);
 	TH_PROCESS_ERROR(bFnRet);
@@ -297,7 +306,7 @@ thBool CThDefTowerWarrior::usSetWarriorDie(const short csSpArrVacantPos, const C
 {
 	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
-	m_csSpArrVacantPos = csSpArrVacantPos;
+	m_sSpArrVacantPos = csSpArrVacantPos;
 	void* varrpFsmRet[2] = { NULL, cptAniMoveTo };
 
 	bFnRet = m_fsmWarriorObject->switchEvent(m_emCurFsmStatus, THEM_CHARACTER_FSM_EVENT::FSM_EVENT_DIE, varrpFsmRet);
@@ -417,9 +426,11 @@ thBool CThDefTowerWarrior::fsmEventInitMove(void* vpEnv, void** parrArgs)
 
 	pEnv->setCurFsmStatus(THEM_CHARACTER_FSM_EVENT::FSM_EVENT_MOVE);
 	/* 战士移动. */
+	setPlayerStopAllAction(pEnv->m_ptWarriorFrameInfo->pSpCharacter);
+	setPlayerStopAllAction(pEnv->m_ptWarriorHaloFrameInfo->pSpCharacter);
 	pEnv->m_ptWarriorFrameInfo->pSpCharacter->runAction(cptAni->pAnimate->clone());
 	pEnv->m_ptWarriorFrameInfo->pSpCharacter->runAction(pSeMoveTo);
-	pSeMoveTo->setTag(pEnv->m_csSpArrVacantPos);
+	pSeMoveTo->setTag(pEnv->m_sSpArrVacantPos);
 	/* 光环移动. */
 	pEnv->m_ptWarriorHaloFrameInfo->pSpCharacter->runAction(pSeHaloMoveTo);
 
@@ -434,7 +445,7 @@ thBool CThDefTowerWarrior::fsmEventUpdateMove(void* vpEnv, void** parrArgs)
 	thBool bFnRet = THFALSE;
 	CThDefTowerWarrior* pEnv = static_cast<CThDefTowerWarrior*>(vpEnv);
 
-	if (NULL == pEnv->m_ptWarriorFrameInfo->pSpCharacter->getActionByTag(pEnv->m_csSpArrVacantPos))
+	if (NULL == pEnv->m_ptWarriorFrameInfo->pSpCharacter->getActionByTag(pEnv->m_sSpArrVacantPos))
 	{
 		CHACFSM_SWITCH_STAND(pEnv, m_fsmWarriorObject);
 	}
@@ -464,7 +475,7 @@ thBool CThDefTowerWarrior::fsmEventInitDie(void* vpEnv, void** parrArgs)
 
 	pEnv->setCurFsmStatus(THEM_CHARACTER_FSM_EVENT::FSM_EVENT_DIE);
 	pEnv->m_ptWarriorFrameInfo->pSpCharacter->runAction(pAniClone);
-	pAniClone->setTag(pEnv->m_csSpArrVacantPos);
+	pAniClone->setTag(pEnv->m_sSpArrVacantPos);
 
 	bRet = THTRUE;
 Exit0:
@@ -478,7 +489,7 @@ thBool CThDefTowerWarrior::fsmEventUpdateDie(void* vpEnv, void** parrArgs)
 	thBool bFnRet = THFALSE;
 	CThDefTowerWarrior* pEnv = static_cast<CThDefTowerWarrior*>(vpEnv);
 
-	if (NULL == pEnv->m_ptWarriorFrameInfo->pSpCharacter->getActionByTag(pEnv->m_csSpArrVacantPos))
+	if (NULL == pEnv->m_ptWarriorFrameInfo->pSpCharacter->getActionByTag(pEnv->m_sSpArrVacantPos))
 	{
 		CHACFSM_SWITCH_STAND(pEnv, m_fsmWarriorObject);
 	}

@@ -215,24 +215,25 @@ Exit0:
 	return bRet;
 }
 
-thBool CThBaseCharacter::getIsHoverSprite(Sprite* pSp, Vec2 vecMouseLocationInWorld)
+thBool CThBaseCharacter::getIsHoverSprite(Sprite* pSp, Vec2 vecMouseLocationInWorld, const thBool cbIsArChange)
 {
 	thBool bRet = THFALSE;
-	Vec2 vecLocaltionInNode = pSp->convertToNodeSpace(vecMouseLocationInWorld);
+	Vec2 vecLocaltionInNode;
+
+	if (THFALSE == cbIsArChange)
+	{
+		vecLocaltionInNode = pSp->convertToNodeSpace(vecMouseLocationInWorld);
+	}
+	else
+	{
+		vecLocaltionInNode = pSp->convertToNodeSpaceAR(vecMouseLocationInWorld);
+	}
+
 	Size sizeSell = pSp->getBoundingBox().size;
 
 	bRet = Rect(0, 0, sizeSell.width, sizeSell.height).containsPoint(vecLocaltionInNode);
 	return bRet;
 }
-
-thBool CThBaseCharacter::getIsClickSprite(Sprite* pSp, Vec2 vecMouseLocation)
-{
-	thBool bRet = THFALSE;
-	
-	bRet = pSp->getBoundingBox().containsPoint(vecMouseLocation);
-	return bRet;
-}
-
 
 CThBaseCharacterAction::CThBaseCharacterAction()
 {

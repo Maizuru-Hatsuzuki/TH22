@@ -151,6 +151,8 @@ thBool CThDefTowerSubsoil::initDefTowerConstruction()
 	/* 创建建造中建筑纹理. */
 	bFnRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(szarrConstructionIni, &ptSubsoilDesc);
 	TH_PROCESS_ERROR(bFnRet);
+	ptSubsoilDesc->fPosX = m_ptSubsoil->pSpCharacter->getPositionX();
+	ptSubsoilDesc->fPosY = m_ptSubsoil->pSpCharacter->getPositionY();
 	bFnRet = initCharacterWithPlist(ptSubsoilDesc, &m_ptConstruction);
 	TH_PROCESS_ERROR(bFnRet);
 	m_ptConstruction->pSpCharacter->setPositionY(m_ptConstruction->pSpCharacter->getPositionY() + 17);

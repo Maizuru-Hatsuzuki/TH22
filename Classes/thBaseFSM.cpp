@@ -97,7 +97,7 @@ thBool CThFSMCharacter::switchEvent(enum THEM_CHARACTER_FSM_EVENT emCurEvent, en
 		{
 			fnRelease = pCurFsmEvent->fnRelease;
 		}
-		else if (NULL != pCurFsmEvent && pCurFsmEvent->emStatus == emNextEvent)
+		if (NULL != pCurFsmEvent && pCurFsmEvent->emStatus == emNextEvent)
 		{
 			fnInit = pCurFsmEvent->fnInit;
 		}

@@ -5,11 +5,18 @@
 * Description	: th cocos2dx engine debug.
 ********************************************************/
 
+#ifndef __THCCDBG_H__
+#define __THCCDBG_H__
 
 #include "thCcCharacter.h"
 
 
-class CThCCDbg:
+#ifndef THDBG_FLAG_MOVERANGEHALO
+#define THDBG_FLAG_MOVERANGEHALO 0
+#endif
+
+
+class CThCCDbg :
 	public Node
 {
 public:
@@ -23,7 +30,7 @@ private:
 };
 
 
-class CThCCDbgWithCharacter:
+class CThCCDbgWithCharacter :
 	public CThCCDbg
 {
 
@@ -49,3 +56,5 @@ private:
 };
 
 typedef CThCCDbgWithCharacter TDBG_CHARACTER;
+
+#endif

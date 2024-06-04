@@ -13,6 +13,7 @@
 #include "thBase.h"
 
 
+#define TH_ANITAG_ALLANI	0
 #define TH_ANITAG_MOVEERROR 1
 #define TH_ANITAG_MOVING	2
 
@@ -78,13 +79,14 @@ private:
 	float m_fWarriorBirthX;
 	float m_fWarriorBirthY;
 	double m_dInPositionTime;
-	short m_csSpArrVacantPos;
+	short m_sSpArrVacantPos;
 	enum THEM_CHARACTER_FSM_EVENT m_emCurFsmStatus;
 	thBool m_bIsFlip;
 	time_t m_tLastStandFlipTime;
 	CHARACTER_FRAMEINFO_PTR m_ptWarriorFrameInfo;
 	CHARACTER_FRAMEINFO_PTR m_ptWarriorHaloFrameInfo;
 	CHARACTER_ANI_MAP_PTR m_ptAniMap;
+	CHARACTER_ANI_FRAMEINFO_PTR m_ptAniMoveTo;
 	CThFSMCharacter* m_fsmWarriorObject;
 	EventListenerMouse* m_pEventMouse;
 };
@@ -123,9 +125,11 @@ public:
 	void getAniTagByDesc(const char* cszpDesc, int* pnRet);
 	void getAniFrameInfoByTag(const char* cszpTag, CHARACTER_ANI_FRAMEINFO_PTR* ppRet);
 	void getWarriorExistsByAngle(const float cfAngle, thBool* pbRet);
+	void getRandWarriorTypeDesc(CHARACTER_DESC_PTR* ppRet);
 
 	void setUninitFlag();
 	void setWarriorExistsByAngle(const float cfAngle, const short csTag);
+	thBool setWarriorsOverallMovement(const float cfX, const float cfY);
 	thBool setPlayerAniBasic();
 	thBool setPlayAniTowerSummon(const short* arrnCondAniTag, const short cnSize, const thBool bIsSummoning);
 	thBool setPlayAniBuildSmoke(thBool bIsBuild);
@@ -158,7 +162,8 @@ public:
 
 private:
 	thBool _initBasicAnimate(short* psOffset);
-	void _initWarriorsMovePos(const CHARACTER_DESC_PTR cptCharacterDesc, const float cfFaceAngle);
+	void _initAllWarriorsMovePosWithAngle(const CHARACTER_DESC_PTR cptCharacterDesc, const float cfFaceAngle);
+	void _initAllWarriorsMovePosWithXY(const float cfX, const float cfY);
 	thBool _getSpArrayVacantPos(short* psRet);
 	thBool _getWarArrayVacantPos(short* psRet);
 	void _setSpTowerPositionTweaks();
@@ -216,7 +221,8 @@ public:
 
 	thBool createQmWarriorLevel4(const float cfX, const float cfY, const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget);
 	thBool destoryQmWarriorLevel4(DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget);
-	thBool getMouseCursorIsPlayAni();
+	thBool getMouseCursorIsPlayAni(const int cnAniTag);
+	thBool getIsClickInMoveRangeHalo(Vec2 vecPosInView);
 	void setMouseCursorAni(enum THEM_QM_MOUSECURSOR emMouseType);
 
 	void onMouseUp(EventMouse* pMouse);
@@ -249,6 +255,8 @@ private:
 	EventListenerMouse* m_pMouse;
 	enum THEM_DEFTOWER_TYPE m_emTagTowerType;
 	enum THEM_DELAY_UNINIT_FLAG m_emStepUninit;
+
+	DrawNode* m_pMoveRangeHaloJudge;
 };
 
 
