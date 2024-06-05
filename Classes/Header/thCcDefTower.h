@@ -123,11 +123,12 @@ public:
 	virtual void getCharacterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet);
 	virtual void getCharacterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet);
 	enum THEM_DEFTOWER_TYPE getDefTowerType();
-	void getUninitFlag(enum THEM_DELAY_UNINIT_FLAG* pRet) const;
+	enum THEM_DELAY_UNINIT_FLAG getDefTowerDelayUninitType() const;
 	void getAniTagByDesc(const char* cszpDesc, int* pnRet);
 	void getAniFrameInfoByTag(const char* cszpTag, CHARACTER_ANI_FRAMEINFO_PTR* ppRet);
 	void getWarriorExistsByAngle(const float cfAngle, thBool* pbRet);
 	void getRandWarriorTypeDesc(CHARACTER_DESC_PTR* ppRet);
+	void getIsHoverDefTower(thBool* pbRet);
 
 	void setUninitFlag();
 	void setWarriorExistsByAngle(const float cfAngle, const short csTag);
@@ -189,6 +190,7 @@ private:
 	double							m_dLastSummonWarriors;
 	double							m_dLastDieWarriors;
 	double							m_dLastAttack;
+	thBool							m_bIsHoverTower;
 	Vec2							m_vecAnchorPoint;
 	EventListenerMouse*				m_pEventMouse;
 	CHARACTER_ANI_TAG				m_tAniTag;
@@ -226,7 +228,7 @@ public:
 	thBool destoryQmWarriorLevel4(DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget);
 	thBool getMouseCursorIsPlayAni(const int cnAniTag);
 	thBool getIsClickInMoveRangeHalo(Vec2 vecPosInView);
-	enum THEM_DELAY_UNINIT_FLAG getDefTowerType();
+	enum THEM_DELAY_UNINIT_FLAG getDefTowerDelayUninitType() const;
 	void setMouseCursorAni(enum THEM_QM_MOUSECURSOR emMouseType);
 	void setStopUninit();
 

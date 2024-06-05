@@ -274,8 +274,17 @@ void CThDefTowerSubsoil::onMouseDown(EventMouse* pEvent)
 void CThDefTowerSubsoil::onMouseMove(EventMouse* pEvent)
 {
 	thBool bRet = THFALSE;
+	thBool bFnRet = THFALSE;
 
-	bRet = pEvent->getCurrentTarget()->getBoundingBox().containsPoint(pEvent->getLocationInView());
+	if (NULL != m_pDefTower)
+	{
+		m_pDefTower->getIsHoverDefTower(&bFnRet);
+		bRet = pEvent->getCurrentTarget()->getBoundingBox().containsPoint(pEvent->getLocationInView()) || bFnRet;
+	}
+	else
+	{
+		bRet = pEvent->getCurrentTarget()->getBoundingBox().containsPoint(pEvent->getLocationInView());
+	}
 	onHoverSubsoil(bRet);
 
 	return;
@@ -340,7 +349,7 @@ void CThDefTowerSubsoil::update(float dt)
 
 	if (NULL != m_pDefTower)
 	{
-		m_pDefTower->getUninitFlag(&emTowerUnitFlag);
+		emTowerUnitFlag = m_pDefTower->getDefTowerDelayUninitType();
 		switch (emTowerUnitFlag)
 		{
 		case FLAG_NOTNEED_UNINIT:

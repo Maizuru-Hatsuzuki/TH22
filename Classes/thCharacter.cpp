@@ -215,15 +215,31 @@ Exit0:
 	return bRet;
 }
 
-thBool CThBaseCharacter::getIsHoverSprite(Sprite* pSpTag, Vec2 vecPosInView)
+thBool CThBaseCharacter::getIsHoverSprite(Sprite* pSpTag, Vec2 vecPosInView, const thBool cbIsArChange)
 {
 	thBool bRet = THFALSE;
-	Vec2 vecPosInSpNode = pSpTag->getParent()->convertToNodeSpace(vecPosInView);
+	Vec2 vecPosInSpNode;
+	Vec2 vecAnchorOffset;
+	Vec2 vecSpArCet;
 	Vec2 vecMoveHaloPos = pSpTag->getPosition();
-	float fDistance = vecPosInSpNode.distance(vecMoveHaloPos);
-	float fRadius = pSpTag->getBoundingBox().size.width / 2;
+	float fRadiusX = pSpTag->getBoundingBox().size.width / 2;
+	float fRadiusY = pSpTag->getBoundingBox().size.height / 2;
+	float fDistance = 0.f;
 
-	if (fDistance <= fRadius)
+	if (THTRUE == cbIsArChange)
+	{
+		vecPosInSpNode = pSpTag->getParent()->convertToNodeSpaceAR(vecPosInView);
+		vecAnchorOffset = Vec2(pSpTag->getAnchorPoint().x * pSpTag->getBoundingBox().size.width, pSpTag->getAnchorPoint().y * pSpTag->getBoundingBox().size.height);
+		vecSpArCet = vecMoveHaloPos - vecAnchorOffset + Vec2(fRadiusX, fRadiusY);
+		fDistance = vecPosInSpNode.distance(vecSpArCet);
+	}
+	else
+	{
+		vecPosInSpNode = pSpTag->getParent()->convertToNodeSpace(vecPosInView);
+		fDistance = vecPosInSpNode.distance(vecMoveHaloPos);
+	}
+
+	if (fDistance <= fRadiusX && fDistance <= fRadiusY)
 	{
 		bRet = THTRUE;
 	}

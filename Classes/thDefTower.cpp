@@ -44,6 +44,7 @@ thBool CThDefTower::init(
 	m_emStepUninit						= THEM_DELAY_UNINIT_FLAG::FLAG_NOTNEED_UNINIT;
 	m_dLastSummonWarriors				= 0.f;
 	m_dLastAttack						= 0.f;
+	m_bIsHoverTower						= THFALSE;
 	m_pEventMouse						= EventListenerMouse::create();
 	m_ptBulletDesc						= NULL;
 	m_ptTowerStatus						= NULL;
@@ -555,10 +556,15 @@ void CThDefTower::getWarriorExistsByAngle(const float cfAngle, thBool* pbRet)
 	return;
 }
 
-void CThDefTower::getUninitFlag(enum THEM_DELAY_UNINIT_FLAG* pRet) const
+void CThDefTower::getIsHoverDefTower(thBool* pbRet)
 {
-	*pRet = m_emStepUninit;
+	*pbRet = m_bIsHoverTower;
 	return;
+}
+
+enum THEM_DELAY_UNINIT_FLAG CThDefTower::getDefTowerDelayUninitType() const
+{
+	return m_emStepUninit;
 }
 
 enum THEM_DEFTOWER_TYPE CThDefTower::getDefTowerType()
@@ -1213,7 +1219,9 @@ Exit0:
 
 void CThDefTower::onMouseMove(EventMouse* pEvent)
 {
-
+	Vec2 vecPosInView = pEvent->getLocationInView();
+	m_bIsHoverTower = CThBaseCharacter::getIsHoverSprite(m_ptTower->pSpCharacter, vecPosInView, THTRUE);
+	return;
 }
 
 thBool CThDefTower::thOnClickCreateQucikMenu()
