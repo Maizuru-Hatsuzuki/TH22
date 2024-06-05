@@ -46,10 +46,7 @@ thBool CThDefTowerQuickMenu::init()
 	CHARACTER_DESC tTmpChacDesc = { 0 };
 
 	/* 如果 m_pMouse 有值, 就代表已经初始化过了. */
-	if (m_pMouse)
-	{
-		goto Exit1;
-	}
+	TH_PROCESS_SUCCESS(m_pMouse);
 	m_pMouse = EventListenerMouse::create();
 
 	if (NULL == m_ptSellHoverBorder)
@@ -424,7 +421,7 @@ void CThDefTowerQuickMenu::onMouseUp(EventMouse* pMouse)
 	int nFnRet = 0;
 	int nSpMoveTag = 0;
 
-	TH_EXIT_SUCCESS(NULL == m_ptQm);
+	TH_PROCESS_SUCCESS(NULL == m_ptQm);
 
 	nSpMoveTag = m_ptQm->pCommandMovement->pSpCharacter->getTag();
 	/* 检查出售按钮. */
@@ -443,6 +440,7 @@ void CThDefTowerQuickMenu::onMouseUp(EventMouse* pMouse)
 
 	pMouse->stopPropagation();
 	
+Exit1:
 	bRet = THTRUE;
 Exit0:
 	ASSERT(bRet);
@@ -455,7 +453,7 @@ void CThDefTowerQuickMenu::onMouseDown(EventMouse* pMouse)
 	CHARACTER_FRAMEINFO_PTR ptTower = NULL;
 	Vec2 vecMousePos = pMouse->getLocationInView();
 	
-	TH_EXIT_SUCCESS(NULL == m_ptQm);
+	TH_PROCESS_SUCCESS(NULL == m_ptQm);
 
 	/* 如果正在播放错误动画则 PASS. */
 	if (THFALSE == getMouseCursorIsPlayAni(TH_ANITAG_MOVEERROR))
@@ -498,6 +496,7 @@ void CThDefTowerQuickMenu::onMouseDown(EventMouse* pMouse)
 		pMouse->stopPropagation();
 	}
 
+Exit1:
 	bRet = THTRUE;
 Exit0:
 	ASSERT(bRet);
@@ -510,7 +509,7 @@ void CThDefTowerQuickMenu::onMouseMove(EventMouse* pMouse)
 	Vec2 vecMousePos = pMouse->getLocationInView();
 	Vec2 vecMoveMouseLocationInNode;
 	
-	TH_EXIT_SUCCESS(NULL == m_ptQm);
+	TH_PROCESS_SUCCESS(NULL == m_ptQm);
 
 	/* 需要跟随鼠标指针的按钮精灵坐标实时计算. */
 	vecMoveMouseLocationInNode = m_ptMoveSelectingMouse->pSpCharacter->getParent()->convertToNodeSpaceAR(vecMousePos);
@@ -545,13 +544,14 @@ void CThDefTowerQuickMenu::onMouseMove(EventMouse* pMouse)
 	{
 	}
 
+Exit1:
 Exit0:
 	return;
 }
 
-void CThDefTowerQuickMenu::update(float dt)
+thBool CThDefTowerQuickMenu::delayUninitMonitoring()
 {
-	thBool bFnRet = THFALSE;
+	thBool bRet = THFALSE;
 	Action* pAni = NULL;
 	Vector<cocos2d::Node*> vecAllChild = this->getChildren();
 	int nAniSummonTag = 0;
@@ -574,8 +574,8 @@ void CThDefTowerQuickMenu::update(float dt)
 
 	case FLAG_UNITING:
 		/* 检查动画是否播放完成. */
-		bFnRet = getMouseCursorIsPlayAni(TH_ANITAG_ALLANI);
-		if (THFALSE == bFnRet)
+		bRet = getMouseCursorIsPlayAni(TH_ANITAG_ALLANI);
+		if (THFALSE == bRet)
 		{
 			m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_UNINIT;
 		}
@@ -594,9 +594,20 @@ void CThDefTowerQuickMenu::update(float dt)
 		break;
 	}
 
-	bFnRet = THTRUE;
-
+	bRet = THTRUE;
 Exit0:
-	ASSERT(bFnRet);
+	return bRet;
+}
+
+void CThDefTowerQuickMenu::update(float dt)
+{
+	thBool bRet = THFALSE;
+	
+	bRet = delayUninitMonitoring();
+	TH_PROCESS_ERROR(bRet);
+
+	bRet = THTRUE;
+Exit0:
+	ASSERT(bRet);
 	return;
 }

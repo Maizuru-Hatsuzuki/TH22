@@ -240,6 +240,7 @@ public:
 	virtual void onMouseMove(EventMouse* pEvent)												= 0;
 
 	virtual thBool globalMonitoring()															= 0;
+	virtual thBool delayUninitMonitoring()														= 0;
 
 private:
 	void _initCharacterDescInfo(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR ptCharFrame);

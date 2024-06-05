@@ -32,7 +32,7 @@ do											\
 	if (Condition)							\
 	{										\
 		printf("[TH_PROCESS_SUCCESS] ERR '%s' at line %d in %s::%s.\n", #Condition, __LINE__, __FILE__, __FUNCTION__);	\
-		goto Exit0;							\
+		goto Exit1;							\
 	}										\
 } while (0);
 
@@ -46,6 +46,5 @@ do											\
 	}										\
 } while (0);
 
-#define TH_EXIT_SUCCESS(Condition) { if (Condition) { goto Exit0; } };
 
 #endif // !__KBASEMACRO_H__

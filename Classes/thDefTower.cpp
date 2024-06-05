@@ -1271,14 +1271,46 @@ Exit0:
 
 void CThDefTower::update(float dt)
 {
+	thBool bRet = THFALSE;
+
+	bRet = globalMonitoring();
+	TH_PROCESS_ERROR(bRet);
+
+	bRet = delayUninitMonitoring();
+	TH_PROCESS_ERROR(bRet);
+
+	//bFnRet = execTowerShoot(m_ptTowerStatus->sMaxBullets);
+	//ASSERT(bFnRet);
+	
+	bRet = THTRUE;
+Exit0:
+	ASSERT(bRet);
+	return;
+}
+
+thBool CThDefTower::globalMonitoring()
+{
+	thBool bRet = THFALSE;
 	thBool bFnRet = THFALSE;
+	
+	if (THEM_DEFTOWER_TYPE::DEFTOWERTYPE_WARRIORS == m_emTowerType || THEM_DEFTOWER_TYPE::DEFTOWERTYPE_ARCHER_WARRIORS == m_emTowerType)
+	{
+		bFnRet = globalMonitoringWarriors();
+		TH_PROCESS_ERROR(bFnRet);
+	}
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+thBool CThDefTower::delayUninitMonitoring()
+{
+	thBool bRet = THFALSE;
 	Action* pAcDestorySmoke = NULL;
 	Vector<cocos2d::Node*> vecAllChild = this->getChildren();
 	ssize_t lQmSpCnt = CThDefTowerQuickMenu::getInstance()->getChildrenCount();
 	int nAniSummonTag = 0;
-
-	bFnRet = globalMonitoring();
-	TH_PROCESS_ERROR(bFnRet);
 
 	/* uninit 操作需要播放一个烟雾动画, 所以这里单独做延迟处理释放. */
 	switch (m_emStepUninit)
@@ -1290,8 +1322,8 @@ void CThDefTower::update(float dt)
 		{
 			vecAllChild.at(i)->setVisible(THFALSE);
 		}
-		bFnRet = setPlayAniBuildSmoke(THFALSE);
-		TH_PROCESS_ERROR(bFnRet);
+		bRet = setPlayAniBuildSmoke(THFALSE);
+		TH_PROCESS_ERROR(bRet);
 
 		m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_UNITING;
 		break;
@@ -1304,8 +1336,8 @@ void CThDefTower::update(float dt)
 
 		if (0L != lQmSpCnt && THEM_DELAY_UNINIT_FLAG::FLAG_NOTNEED_UNINIT == CThDefTowerQuickMenu::getInstance()->getDefTowerType())
 		{
-			bFnRet = thOnClickDestoryQucikMenu();
-			TH_PROCESS_ERROR(bFnRet);
+			bRet = thOnClickDestoryQucikMenu();
+			TH_PROCESS_ERROR(bRet);
 		}
 
 		if (NULL == pAcDestorySmoke && THEM_DELAY_UNINIT_FLAG::FLAG_UNINIT_COMPLETE == CThDefTowerQuickMenu::getInstance()->getDefTowerType())
@@ -1325,26 +1357,6 @@ void CThDefTower::update(float dt)
 
 	default:
 		break;
-	}
-
-	//bFnRet = execTowerShoot(m_ptTowerStatus->sMaxBullets);
-	//ASSERT(bFnRet);
-	
-	bFnRet = THTRUE;
-Exit0:
-	ASSERT(bFnRet);
-	return;
-}
-
-thBool CThDefTower::globalMonitoring()
-{
-	thBool bRet = THFALSE;
-	thBool bFnRet = THFALSE;
-	
-	if (THEM_DEFTOWER_TYPE::DEFTOWERTYPE_WARRIORS == m_emTowerType || THEM_DEFTOWER_TYPE::DEFTOWERTYPE_ARCHER_WARRIORS == m_emTowerType)
-	{
-		bFnRet = globalMonitoringWarriors();
-		TH_PROCESS_ERROR(bFnRet);
 	}
 
 	bRet = THTRUE;

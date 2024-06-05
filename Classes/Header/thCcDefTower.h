@@ -61,6 +61,8 @@ public:
 	virtual void onMouseMove(EventMouse* pEvent);
 	virtual void update(float dt);
 
+	virtual thBool delayUninitMonitoring();
+
 	virtual thBool globalMonitoring();
 
 	static thBool fsmEventInitStand(void* vpEnv, void** parrArgs);
@@ -142,6 +144,7 @@ public:
 
 	virtual void update(float dt);
 	virtual thBool globalMonitoring();
+	virtual thBool delayUninitMonitoring();
 	thBool globalMonitoringWarriors();
 
 	thBool thOnClickCreateQucikMenu();
@@ -232,6 +235,8 @@ public:
 	void onMouseMove(EventMouse* pMouse);
 	void update(float dt);
 
+	virtual thBool delayUninitMonitoring();
+
 private:
 	CThDefTowerQuickMenu();
 	~CThDefTowerQuickMenu();
@@ -288,6 +293,7 @@ public:
 	void onHoverSubsoil(const thBool cbIsHover);
 
 	virtual thBool globalMonitoring();
+	virtual thBool delayUninitMonitoring();
 	virtual void update(float dt);
 
 private:

@@ -358,6 +358,15 @@ thBool CThDefTowerWarrior::globalMonitoring()
 	return THTRUE;
 }
 
+thBool CThDefTowerWarrior::delayUninitMonitoring()
+{
+	thBool bRet = THFALSE;
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
 void CThDefTowerWarrior::update(float dt)
 {
 	m_fsmWarriorObject->main(m_emCurFsmStatus);

@@ -311,14 +311,21 @@ void CThDefTowerSubsoil::onHoverSubsoil(const thBool cbIsHover)
 thBool CThDefTowerSubsoil::globalMonitoring()
 {
 	thBool bRet = THFALSE;
-	thBool bFnRet = THFALSE;
-
-
 
 	bRet = THTRUE;
 Exit0:
 	return bRet;
 }
+
+thBool CThDefTowerSubsoil::delayUninitMonitoring()
+{
+	thBool bRet = THFALSE;
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
 
 void CThDefTowerSubsoil::update(float dt)
 {
