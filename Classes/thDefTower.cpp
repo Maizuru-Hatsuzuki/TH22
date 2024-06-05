@@ -1184,6 +1184,16 @@ void CThDefTower::onMouseDown(EventMouse* pEvent)
 			m_arrpWarriors[m_arrsWarriorsVacantPos[s]]->setWarriorHaloIsVisible(THTRUE);
 		}
 	}
+	else if (THTRUE == CThDefTowerQuickMenu::getInstance()->getMouseCursorIsPlayAni(TH_ANITAG_MOVING))
+	{
+		/* 加个移动判断, 如果正在移动(selected 动画正在播放)时, 允许重新create. */
+		CThDefTowerQuickMenu::getInstance()->setStopUninit();
+
+		for (short s = 0; s < m_ptTowerStatus->sMaxWarriors; s++)
+		{
+			m_arrpWarriors[m_arrsWarriorsVacantPos[s]]->setWarriorHaloIsVisible(THTRUE);
+		}
+	}
 	else
 	{
 		bRet = thOnClickDestoryQucikMenu();
@@ -1195,6 +1205,7 @@ void CThDefTower::onMouseDown(EventMouse* pEvent)
 		}
 	}
 
+	bRet = THTRUE;
 Exit0:
 	ASSERT(bRet);
 	return;

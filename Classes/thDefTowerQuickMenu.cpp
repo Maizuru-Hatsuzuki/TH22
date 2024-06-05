@@ -46,7 +46,10 @@ thBool CThDefTowerQuickMenu::init()
 	CHARACTER_DESC tTmpChacDesc = { 0 };
 
 	/* 如果 m_pMouse 有值, 就代表已经初始化过了. */
-	TH_PROCESS_SUCCESS(m_pMouse);
+	if (m_pMouse)
+	{
+		goto Exit1;
+	}
 	m_pMouse = EventListenerMouse::create();
 
 	if (NULL == m_ptSellHoverBorder)
@@ -103,6 +106,8 @@ thBool CThDefTowerQuickMenu::init()
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithFixedPriority(m_pMouse, TH_EVENTPRIORITY_QUICKMENU);
 
 	scheduleUpdate();
+
+Exit1:
 	bRet = THTRUE;
 Exit0:
 	return bRet;
@@ -281,6 +286,12 @@ void CThDefTowerQuickMenu::setMouseCursorAni(enum THEM_QM_MOUSECURSOR emMouseTyp
 	}
 
 	return ;
+}
+
+void CThDefTowerQuickMenu::setStopUninit()
+{
+	m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_UNINIT;
+	return;
 }
 
 thBool CThDefTowerQuickMenu::createBasicQm(const float cfX, const float cfY, const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm)

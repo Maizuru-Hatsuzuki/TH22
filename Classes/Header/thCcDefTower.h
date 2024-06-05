@@ -225,6 +225,7 @@ public:
 	thBool getIsClickInMoveRangeHalo(Vec2 vecPosInView);
 	enum THEM_DELAY_UNINIT_FLAG getDefTowerType();
 	void setMouseCursorAni(enum THEM_QM_MOUSECURSOR emMouseType);
+	void setStopUninit();
 
 	void onMouseUp(EventMouse* pMouse);
 	void onMouseDown(EventMouse* pMouse);
