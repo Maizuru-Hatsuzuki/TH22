@@ -139,7 +139,6 @@ Exit0:
 void CThDefTower::uninit()
 {
 	thBool bRet = THFALSE;
-	ssize_t lQmSpCnt = CThDefTowerQuickMenu::getInstance()->getChildrenCount();
 
 	this->unscheduleUpdate();
 	this->uninitDefTowerWarriorsDesc();
@@ -168,18 +167,13 @@ void CThDefTower::uninit()
 		}
 	}
 
-	if (0L != lQmSpCnt)
-	{
-		bRet = thOnClickDestoryQucikMenu();
-		TH_PROCESS_ERROR(bRet);
-	}
-
 	THFREE(m_arrpSpGroup);
 	THFREE(m_arrpAniGroup);
 	THFREE(m_arrpWarriors);
 	THFREE(m_ptTower);
 	THFREE(m_ptTowerStatus);
 
+	bRet = THTRUE;
 Exit0:
 	ASSERT(bRet);
 	return;
@@ -571,7 +565,6 @@ enum THEM_DEFTOWER_TYPE CThDefTower::getDefTowerType()
 {
 	return m_emTowerType;
 }
-
 
 thBool CThDefTower::getTowerInfo(
 	enum THEM_CHARACTER_LEVEL emLevel, enum THEM_DEFTOWER_TYPE emTowerType, DEFTOWER_WARRIORS_PTR ptWarrior,
@@ -1270,6 +1263,7 @@ void CThDefTower::update(float dt)
 	thBool bFnRet = THFALSE;
 	Action* pAcDestorySmoke = NULL;
 	Vector<cocos2d::Node*> vecAllChild = this->getChildren();
+	ssize_t lQmSpCnt = CThDefTowerQuickMenu::getInstance()->getChildrenCount();
 	int nAniSummonTag = 0;
 
 	bFnRet = globalMonitoring();
@@ -1288,17 +1282,24 @@ void CThDefTower::update(float dt)
 		bFnRet = setPlayAniBuildSmoke(THFALSE);
 		TH_PROCESS_ERROR(bFnRet);
 
-		m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_WAIT_ANI;
+		m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_UNITING;
 		break;
 
-	case FLAG_WAIT_ANI:
+	case FLAG_UNITING:
 		/* 检查动画是否播放完成. */
 		getAniTagByDesc("AniTagBuildSmoke", &nAniSummonTag);
 		TH_PROCESS_ERROR(nAniSummonTag);
 		pAcDestorySmoke = m_ptSmoke->pSpCharacter->getActionByTag(nAniSummonTag);
-		if (NULL == pAcDestorySmoke)
+
+		if (0L != lQmSpCnt && THEM_DELAY_UNINIT_FLAG::FLAG_NOTNEED_UNINIT == CThDefTowerQuickMenu::getInstance()->getDefTowerType())
 		{
-			/* 烟雾动画播放完了, 可以最终释放了. */
+			bFnRet = thOnClickDestoryQucikMenu();
+			TH_PROCESS_ERROR(bFnRet);
+		}
+
+		if (NULL == pAcDestorySmoke && THEM_DELAY_UNINIT_FLAG::FLAG_UNINIT_COMPLETE == CThDefTowerQuickMenu::getInstance()->getDefTowerType())
+		{
+			/* 可以最终释放了. */
 			m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_UNINIT;
 		}
 		break;
@@ -1318,6 +1319,7 @@ void CThDefTower::update(float dt)
 	//bFnRet = execTowerShoot(m_ptTowerStatus->sMaxBullets);
 	//ASSERT(bFnRet);
 	
+	bFnRet = THTRUE;
 Exit0:
 	ASSERT(bFnRet);
 	return;

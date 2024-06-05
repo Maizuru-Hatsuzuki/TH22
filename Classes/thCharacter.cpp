@@ -215,23 +215,19 @@ Exit0:
 	return bRet;
 }
 
-thBool CThBaseCharacter::getIsHoverSprite(Sprite* pSp, Vec2 vecMouseLocationInWorld, const thBool cbIsArChange)
+thBool CThBaseCharacter::getIsHoverSprite(Sprite* pSpTag, Vec2 vecPosInView)
 {
 	thBool bRet = THFALSE;
-	Vec2 vecLocaltionInNode;
+	Vec2 vecPosInSpNode = pSpTag->getParent()->convertToNodeSpace(vecPosInView);
+	Vec2 vecMoveHaloPos = pSpTag->getPosition();
+	float fDistance = vecPosInSpNode.distance(vecMoveHaloPos);
+	float fRadius = pSpTag->getBoundingBox().size.width / 2;
 
-	if (THFALSE == cbIsArChange)
+	if (fDistance <= fRadius)
 	{
-		vecLocaltionInNode = pSp->convertToNodeSpace(vecMouseLocationInWorld);
-	}
-	else
-	{
-		vecLocaltionInNode = pSp->convertToNodeSpaceAR(vecMouseLocationInWorld);
+		bRet = THTRUE;
 	}
 
-	Size sizeSell = pSp->getBoundingBox().size;
-
-	bRet = Rect(0, 0, sizeSell.width, sizeSell.height).containsPoint(vecLocaltionInNode);
 	return bRet;
 }
 

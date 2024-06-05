@@ -223,6 +223,7 @@ public:
 	thBool destoryQmWarriorLevel4(DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget);
 	thBool getMouseCursorIsPlayAni(const int cnAniTag);
 	thBool getIsClickInMoveRangeHalo(Vec2 vecPosInView);
+	enum THEM_DELAY_UNINIT_FLAG getDefTowerType();
 	void setMouseCursorAni(enum THEM_QM_MOUSECURSOR emMouseType);
 
 	void onMouseUp(EventMouse* pMouse);

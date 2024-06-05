@@ -226,8 +226,8 @@ thBool CThDefTowerQuickMenu::getMouseCursorIsPlayAni(const int cnAniTag)
 thBool CThDefTowerQuickMenu::getIsClickInMoveRangeHalo(Vec2 vecPosInView)
 {
 	thBool bRet = THFALSE;
-	Vec2 vecMoveHaloPos = m_ptMoveRangeHalo->pSpCharacter->getPosition();
 	Vec2 vecMousePosInHaloJudgeNode = m_pMoveRangeHaloJudge->convertToNodeSpace(vecPosInView);
+	Vec2 vecMoveHaloPos = m_ptMoveRangeHalo->pSpCharacter->getPosition();
 	float fDistanceClickHalo = vecMousePosInHaloJudgeNode.distance(vecMoveHaloPos);
 	float fHaloJudgeRadius = m_ptMoveRangeHalo->pSpCharacter->getBoundingBox().size.width / 2;
 
@@ -237,6 +237,11 @@ thBool CThDefTowerQuickMenu::getIsClickInMoveRangeHalo(Vec2 vecPosInView)
 	}
 
 	return bRet;
+}
+
+enum THEM_DELAY_UNINIT_FLAG CThDefTowerQuickMenu::getDefTowerType()
+{
+	return m_emStepUninit;
 }
 
 void CThDefTowerQuickMenu::setMouseCursorAni(enum THEM_QM_MOUSECURSOR emMouseType)
@@ -412,13 +417,13 @@ void CThDefTowerQuickMenu::onMouseUp(EventMouse* pMouse)
 
 	nSpMoveTag = m_ptQm->pCommandMovement->pSpCharacter->getTag();
 	/* 检查出售按钮. */
-	bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pSellTower->pSpCharacter, vecMousePos, THFALSE);
+	bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pSellTower->pSpCharacter, vecMousePos);
 	if (bRet)
 	{
 		m_pTaget->setUninitFlag();
 	}
 	/* 检查移动按钮. */
-	bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pCommandMovement->pSpCharacter, vecMousePos, THFALSE);
+	bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pCommandMovement->pSpCharacter, vecMousePos);
 	if (bRet && THSP_FLAG_ENABLE == nSpMoveTag)
 	{
 		m_ptMoveRangeHalo->pSpCharacter->setVisible(THTRUE);
@@ -441,13 +446,12 @@ void CThDefTowerQuickMenu::onMouseDown(EventMouse* pMouse)
 	
 	TH_EXIT_SUCCESS(NULL == m_ptQm);
 
-	
 	/* 如果正在播放错误动画则 PASS. */
 	if (THFALSE == getMouseCursorIsPlayAni(TH_ANITAG_MOVEERROR))
 	{
 		/* 如果是按钮, 阻止事件传播. */
-		bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pSellTower->pSpCharacter, vecMousePos, THFALSE) ||
-			CThBaseCharacter::getIsHoverSprite(m_ptQm->pCommandMovement->pSpCharacter, vecMousePos, THFALSE);
+		bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pSellTower->pSpCharacter, vecMousePos) ||
+			CThBaseCharacter::getIsHoverSprite(m_ptQm->pCommandMovement->pSpCharacter, vecMousePos);
 
 		if (bRet)
 		{
@@ -459,7 +463,7 @@ void CThDefTowerQuickMenu::onMouseDown(EventMouse* pMouse)
 		{
 			m_pTaget->getCharacterFrameInfo(&ptTower);
 			bRet = getIsClickInMoveRangeHalo(vecMousePos) &&
-				!CThBaseCharacter::getIsHoverSprite(ptTower->pSpCharacter, vecMousePos, THFALSE);
+				!CThBaseCharacter::getIsHoverSprite(ptTower->pSpCharacter, vecMousePos);
 			
 			if (bRet)
 			{
@@ -507,7 +511,7 @@ void CThDefTowerQuickMenu::onMouseMove(EventMouse* pMouse)
 	}
 
 	/* 检查出售按钮. */
-	bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pSellTower->pSpCharacter, vecMousePos, THFALSE);
+	bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pSellTower->pSpCharacter, vecMousePos);
 	m_ptSellHoverBorder->pSpCharacter->setVisible(bRet);
 	if (bRet)
 	{
@@ -519,7 +523,7 @@ void CThDefTowerQuickMenu::onMouseMove(EventMouse* pMouse)
 	}
 
 	/* 检查移动按钮. */
-	bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pCommandMovement->pSpCharacter, vecMousePos, THFALSE);
+	bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pCommandMovement->pSpCharacter, vecMousePos);
 	m_ptMoveHoverBorder->pSpCharacter->setVisible(bRet);
 	if (bRet)
 	{
@@ -554,10 +558,10 @@ void CThDefTowerQuickMenu::update(float dt)
 			}
 		}
 
-		m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_WAIT_ANI;
+		m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_UNITING;
 		break;
 
-	case FLAG_WAIT_ANI:
+	case FLAG_UNITING:
 		/* 检查动画是否播放完成. */
 		bFnRet = getMouseCursorIsPlayAni(TH_ANITAG_ALLANI);
 		if (THFALSE == bFnRet)
@@ -567,9 +571,9 @@ void CThDefTowerQuickMenu::update(float dt)
 		break;
 
 	case FLAG_UNINIT:
-		uninit();
 		this->removeAllChildrenWithCleanup(THTRUE);
 		this->removeFromParentAndCleanup(THTRUE);
+		uninit();
 		m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_UNINIT_COMPLETE;
 		break;
 

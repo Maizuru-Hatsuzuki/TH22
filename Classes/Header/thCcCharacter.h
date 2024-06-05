@@ -230,7 +230,7 @@ public:
 	void getBulletInfo(enum THEM_BULLET emBullet, char* szpTexPathRet, char* szpBulletIniPathRet);
 	virtual void getCharacterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet)								= 0;
 	virtual void getCharacterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet)	= 0;
-	static thBool getIsHoverSprite(Sprite* pSp, Vec2 vecMouseLocationInWorld, const thBool cbIsArChange);
+	static thBool getIsHoverSprite(Sprite* pSpTag, Vec2 vecPosInView);
 
 	void setPlayerRunAction(Action* pAction, Sprite* pSp);
 	static void setPlayerStopAllAction(Sprite* pSp);
