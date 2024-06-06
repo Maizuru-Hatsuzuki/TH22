@@ -192,14 +192,6 @@ struct _tTowerWarriors
 	short sSize;
 };
 
-struct _tDefTowerQuickMenu
-{
-	struct _tCharacterFrameInfo* pBg;
-	struct _tCharacterFrameInfo* pCommandMovement;
-	struct _tCharacterFrameInfo* pSellTower;
-
-};
-
 typedef struct _tAniTag						CHARACTER_ANI_TAG, * CHARACTER_ANI_TAG_PTR;
 typedef struct _tCharacterDesc				CHARACTER_DESC, * CHARACTER_DESC_PTR;
 typedef struct _tCharacterAniMap			CHARACTER_ANI_MAP, * CHARACTER_ANI_MAP_PTR;
@@ -209,7 +201,6 @@ typedef struct _tCharacterAnimateFrameInfo	CHARACTER_ANI_FRAMEINFO, * CHARACTER_
 typedef struct _tSubsoilDesc				SUBSOIL_DESC, * SUBSOIL_DESC_PTR;
 typedef struct _tDefTowerDesc				DEFTOWER_DESC, * DEFTOWER_DESC_PTR;
 typedef struct _tTowerWarriors				DEFTOWER_WARRIORS, * DEFTOWER_WARRIORS_PTR;
-typedef struct _tDefTowerQuickMenu			DEFTOWER_QUICKMENU, * DEFTOWER_QUICKMENU_PTR;
 
 
 class CThBaseCharacter:
@@ -220,8 +211,8 @@ public:
 	virtual ~CThBaseCharacter();
 
 	thBool	initCharacter(std::string strSpFile, CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR* ppRet, thBool bInitSp);
-	thBool	initCharacterWithPlist(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR* ppRet);
-	thBool	initCharacterWithPlistSimple(const char* cszpDesc, const char* cszpSpTex, const int cnPos, CHARACTER_FRAMEINFO_PTR* ppRet);
+	static thBool initCharacterWithPlist(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR* ppRet);
+	static thBool initCharacterWithPlistSimple(const char* cszpDesc, const char* cszpSpTex, const int cnPos, CHARACTER_FRAMEINFO_PTR* ppRet);
 	void	uninitCharacter(CHARACTER_FRAMEINFO_PTR pCharater);
 	thBool	initCharacterAnimation(CHARACTER_ANI_DESC_PTR pAniDesc, Animate** ppRet) const ;
 
@@ -243,7 +234,7 @@ public:
 	virtual thBool delayUninitMonitoring()														= 0;
 
 private:
-	void _initCharacterDescInfo(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR ptCharFrame);
+	static void _initCharacterDescInfo(CHARACTER_DESC_PTR pDesc, CHARACTER_FRAMEINFO_PTR ptCharFrame);
 };
 
 

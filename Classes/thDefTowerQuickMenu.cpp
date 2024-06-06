@@ -51,14 +51,14 @@ thBool CThDefTowerQuickMenu::init()
 
 	if (NULL == m_ptSellHoverBorder)
 	{
-		bRet = initCharacterWithPlistSimple("Quickmenu sell border", cszpSpTex, 34, &m_ptSellHoverBorder);
+		bRet = CThBaseCharacter::initCharacterWithPlistSimple("Quickmenu sell border", cszpSpTex, 34, &m_ptSellHoverBorder);
 		TH_PROCESS_ERROR(bRet);
 		m_ptSellHoverBorder->pSpCharacter->setVisible(THFALSE);
 		this->addChild(m_ptSellHoverBorder->pSpCharacter);
 	}
 	if (NULL == m_ptMoveHoverBorder)
 	{
-		bRet = initCharacterWithPlistSimple("Quickmenu move border", cszpSpTex, 63, &m_ptMoveHoverBorder);
+		bRet = CThBaseCharacter::initCharacterWithPlistSimple("Quickmenu move border", cszpSpTex, 63, &m_ptMoveHoverBorder);
 		TH_PROCESS_ERROR(bRet);
 		m_ptMoveHoverBorder->pSpCharacter->setVisible(THFALSE);
 		this->addChild(m_ptMoveHoverBorder->pSpCharacter);
@@ -69,7 +69,7 @@ thBool CThDefTowerQuickMenu::init()
 	}
 	if (NULL == m_ptMoveRangeHalo)
 	{
-		bRet = initCharacterWithPlistSimple("Warrior move range", "HUD Material_", 412, &m_ptMoveRangeHalo);
+		bRet = CThBaseCharacter::initCharacterWithPlistSimple("Warrior move range", "HUD Material_", 412, &m_ptMoveRangeHalo);
 		TH_PROCESS_ERROR(bRet);
 		m_ptMoveRangeHalo->pSpCharacter->setVisible(THFALSE);
 		m_ptMoveRangeHalo->pSpCharacter->setScaleY(0.75f);
@@ -119,21 +119,21 @@ thBool CThDefTowerQuickMenu::initBasicAni()
 	/* 创建动画所需的精灵. */
 	if (NULL == m_ptMoveSelectingMouse)
 	{
-		bRet = initCharacterWithPlistSimple("sp_selectingMouse", "posMouse", 1, &m_ptMoveSelectingMouse);
+		bRet = CThBaseCharacter::initCharacterWithPlistSimple("sp_selectingMouse", "posMouse", 1, &m_ptMoveSelectingMouse);
 		TH_PROCESS_ERROR(bRet);
 		m_ptMoveSelectingMouse->pSpCharacter->setVisible(THFALSE);
 		this->addChild(m_ptMoveSelectingMouse->pSpCharacter);
 	}
 	if (NULL == m_ptMoveSelectedMouse)
 	{
-		bRet = initCharacterWithPlistSimple("sp_selectedMouse", "wMove", 1, &m_ptMoveSelectedMouse);
+		bRet = CThBaseCharacter::initCharacterWithPlistSimple("sp_selectedMouse", "wMove", 1, &m_ptMoveSelectedMouse);
 		TH_PROCESS_ERROR(bRet);
 		m_ptMoveSelectedMouse->pSpCharacter->setVisible(THFALSE);
 		this->addChild(m_ptMoveSelectedMouse->pSpCharacter);
 	}
 	if (NULL == m_ptMoveSelectedErrorMouse)
 	{
-		bRet = initCharacterWithPlistSimple("sp_selectedErrorMouse", "moveErr", 1, &m_ptMoveSelectedErrorMouse);
+		bRet = CThBaseCharacter::initCharacterWithPlistSimple("sp_selectedErrorMouse", "moveErr", 1, &m_ptMoveSelectedErrorMouse);
 		TH_PROCESS_ERROR(bRet);
 		m_ptMoveSelectedErrorMouse->pSpCharacter->setVisible(THFALSE);
 		this->addChild(m_ptMoveSelectedErrorMouse->pSpCharacter);
@@ -197,8 +197,12 @@ CThDefTowerQuickMenu* CThDefTowerQuickMenu::getInstance()
 	if (NULL == m_pSelf)
 	{
 		m_pSelf = THNEW_CLASS(CThDefTowerQuickMenu);
+		TH_PROCESS_ERROR(bRet);
 	}
 
+	bRet = THTRUE;
+Exit0:
+	ASSERT(bRet);
 	return m_pSelf;
 }
 
@@ -315,7 +319,7 @@ thBool CThDefTowerQuickMenu::createBasicQm(const float cfX, const float cfY, con
 	TH_PROCESS_ERROR(NULL != ptDefTowerQm);
 	m_ptQm = ptDefTowerQm;
 	/* 快速菜单背景(圈). */
-	bRet = initCharacterWithPlistSimple("Quickmenu bg", cszpSpTex, 96, &ptChacFrameQuickMenuBg);
+	bRet = CThBaseCharacter::initCharacterWithPlistSimple("Quickmenu bg", cszpSpTex, 96, &ptChacFrameQuickMenuBg);
 	TH_PROCESS_ERROR(bRet && ptChacFrameQuickMenuBg);
 	ptDefTowerQm->pBg = ptChacFrameQuickMenuBg;
 
@@ -332,12 +336,12 @@ thBool CThDefTowerQuickMenu::createBasicQm(const float cfX, const float cfY, con
 	tCommandMovement.fPosY = -fBgLayerdY * 7.5;
 	tCommandMovement.fScale = 0.7f;
 	
-	bRet = initCharacterWithPlist(&tCommandMovement, &ptChacCommandMovement);
+	bRet = CThBaseCharacter::initCharacterWithPlist(&tCommandMovement, &ptChacCommandMovement);
 	TH_PROCESS_ERROR(bRet);
 
 	/* 移动(禁用)按钮. */
 	tCommandMovement.nDefaultTexPlistPos = 48;
-	bRet = initCharacterWithPlist(&tCommandMovement, &ptChacCommandMovementDisable);
+	bRet = CThBaseCharacter::initCharacterWithPlist(&tCommandMovement, &ptChacCommandMovementDisable);
 	TH_PROCESS_ERROR(bRet);
 
 	if (THEM_DEFTOWER_TYPE::DEFTOWERTYPE_WARRIORS == m_emTagTowerType || THEM_DEFTOWER_TYPE::DEFTOWERTYPE_ARCHER_WARRIORS == m_emTagTowerType)
@@ -361,7 +365,7 @@ thBool CThDefTowerQuickMenu::createBasicQm(const float cfX, const float cfY, con
 	tSellDefTower.fPosY = -fBgLayerdY * 11;
 	tSellDefTower.fScale = 0.75f;
 
-	bRet = initCharacterWithPlist(&tSellDefTower, &ptChacSellDefTower);
+	bRet = CThBaseCharacter::initCharacterWithPlist(&tSellDefTower, &ptChacSellDefTower);
 	TH_PROCESS_ERROR(bRet);
 	ptDefTowerQm->pSellTower = ptChacSellDefTower;
 

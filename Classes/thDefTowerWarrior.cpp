@@ -129,7 +129,7 @@ thBool CThDefTowerWarrior::initWarriors(const CHARACTER_DESC_PTR cptSpDesc, cons
 	fDstX = m_arrfWarriorMovePos[0];
 	fDstY = m_arrfWarriorMovePos[1];
 
-	bFnRet = initCharacterWithPlist(cptSpDesc, &m_ptWarriorFrameInfo);
+	bFnRet = CThBaseCharacter::initCharacterWithPlist(cptSpDesc, &m_ptWarriorFrameInfo);
 	TH_PROCESS_ERROR(bFnRet);
 
 	/* 初始化选中的蓝色光环, 并隐藏. */
@@ -139,7 +139,7 @@ thBool CThDefTowerWarrior::initWarriors(const CHARACTER_DESC_PTR cptSpDesc, cons
 	tSpDescSetTagHalo.nDefaultTexPlistPos = 364;
 	tSpDescSetTagHalo.fScale = m_ptWarriorFrameInfo->pSpCharacter->getScale();
 
-	bFnRet = initCharacterWithPlist(&tSpDescSetTagHalo, &m_ptWarriorHaloFrameInfo);
+	bFnRet = CThBaseCharacter::initCharacterWithPlist(&tSpDescSetTagHalo, &m_ptWarriorHaloFrameInfo);
 	TH_PROCESS_ERROR(bFnRet);
 
 	getWarriorPosition(&fHaloX, &fHaloY, 0.f);

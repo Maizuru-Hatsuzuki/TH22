@@ -9,7 +9,7 @@
 #ifndef __THPLAYERANIMATION_H__
 #define __THPLAYERANIMATION_H__
 
-#include "thCcCharacter.h"
+#include "thCcCharacterSkill.h"
 #include "thBaseFSM.h"
 
 #endif

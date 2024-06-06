@@ -89,7 +89,7 @@ thBool CThDefTower::init(
 	memset(m_arrsWarriorsVacantPos, -1, sizeof(short) * THMAX_DEFTOWER_TARLEVEL_WARRIORS);
 
 	/* 创建防御塔. */
-	bFnRet = initCharacterWithPlist(ptCharacterDesc, &m_ptTower);
+	bFnRet = CThBaseCharacter::initCharacterWithPlist(ptCharacterDesc, &m_ptTower);
 	TH_PROCESS_ERROR(bFnRet);
 	_setSpTowerPositionTweaks();
 	m_ptTower->pSpCharacter->setAnchorPoint(m_vecAnchorPoint);
@@ -453,7 +453,7 @@ thBool CThDefTower::initBullet(float fShootAngle)
 	/* 检查是否满容量. */
 	TH_PROCESS_ERROR(!bFnRet);
 
-	bFnRet = initCharacterWithPlist(m_ptBulletDesc, &ptFrBullet);
+	bFnRet = CThBaseCharacter::initCharacterWithPlist(m_ptBulletDesc, &ptFrBullet);
 	TH_PROCESS_ERROR(bFnRet);
 	m_arrpSpGroup[sVancantPos] = ptFrBullet;
 
@@ -917,7 +917,7 @@ thBool CThDefTower::setPlayAniBuildSmoke(thBool bIsBuild)
 
 	if (NULL == m_ptSmoke)
 	{
-		bRet = initCharacterWithPlist(&tChacSmoke, &m_ptSmoke);
+		bRet = CThBaseCharacter::initCharacterWithPlist(&tChacSmoke, &m_ptSmoke);
 		TH_PROCESS_ERROR(bRet);
 		m_ptSmoke->pSpCharacter->setAnchorPoint(m_vecAnchorPoint);
 		this->addChild(m_ptSmoke->pSpCharacter);
@@ -988,7 +988,7 @@ thBool CThDefTower::_setPlayerAniBasicWarriorTower()
 		bRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(szarrTmpSpIni, &ptTmpChacDesc);
 		TH_PROCESS_ERROR(bRet);
 
-		bRet = initCharacterWithPlist(ptTmpChacDesc, &m_arrpSpGroup[sVancantPos]);
+		bRet = CThBaseCharacter::initCharacterWithPlist(ptTmpChacDesc, &m_arrpSpGroup[sVancantPos]);
 		TH_PROCESS_ERROR(bRet);
 		m_arrpSpGroup[sVancantPos]->pSpCharacter->setPositionX(m_ptTower->pSpCharacter->getPositionX() + 10);
 		m_arrpSpGroup[sVancantPos]->pSpCharacter->setPositionY(m_ptTower->pSpCharacter->getPositionY() + m_ptTower->pSpCharacter->getBoundingBox().size.height - 11);

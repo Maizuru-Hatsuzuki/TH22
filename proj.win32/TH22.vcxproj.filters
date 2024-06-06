@@ -73,6 +73,9 @@
     <Filter Include="Config\Animate\Warriors">
       <UniqueIdentifier>{9f1fc134-6f56-49e0-a953-dd4e00c231c3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Config\Character\Skill">
+      <UniqueIdentifier>{96f1258b-f446-4d8f-b457-9a2b4e6521d8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -118,6 +121,9 @@
       <Filter>Src\THBase</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\thDefTowerQuickMenu.cpp">
+      <Filter>Src\THCharacter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\thCharacterSkill.cpp">
       <Filter>Src\THCharacter</Filter>
     </ClCompile>
   </ItemGroup>
@@ -166,6 +172,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\Header\dirent.h">
       <Filter>Header\THBase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Header\thCcCharacterSkill.h">
+      <Filter>Header\THCharacter</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -227,6 +236,12 @@
     </None>
     <None Include="..\Resources\data\AnimateConfig\Basic\AniMoveSelectedMouse.ini">
       <Filter>Config\Animate\Basic</Filter>
+    </None>
+    <None Include="..\Resources\data\CharacterConfig\Skill\ChacSkDollRepair.ini">
+      <Filter>Config\Character\Skill</Filter>
+    </None>
+    <None Include="..\Resources\data\CharacterConfig\Skill\ChacSkDollStrengthem.ini">
+      <Filter>Config\Character\Skill</Filter>
     </None>
   </ItemGroup>
 </Project>

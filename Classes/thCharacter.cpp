@@ -82,7 +82,7 @@ thBool CThBaseCharacter::initCharacterWithPlist(CHARACTER_DESC_PTR pDesc, CHARAC
 	ptCharFrame->pSpCharacter->setPositionX(pDesc->fPosX);
 	ptCharFrame->pSpCharacter->setPositionY(pDesc->fPosY);
 
-	_initCharacterDescInfo(pDesc, ptCharFrame);
+	CThBaseCharacter::_initCharacterDescInfo(pDesc, ptCharFrame);
 
 	*ppRet = ptCharFrame;
 	bRet = THTRUE;
@@ -100,7 +100,7 @@ thBool CThBaseCharacter::initCharacterWithPlistSimple(const char* cszpDesc, cons
 	strcpy_s(tTmpChacDesc.szarrSpriteName, 64, cszpDesc);
 	tTmpChacDesc.nDefaultTexPlistPos = cnPos;
 
-	bRet = initCharacterWithPlist(&tTmpChacDesc, ppRet);
+	bRet = CThBaseCharacter::initCharacterWithPlist(&tTmpChacDesc, ppRet);
 	TH_PROCESS_ERROR(bRet);
 
 	bRet = THTRUE;

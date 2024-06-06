@@ -45,7 +45,7 @@ thBool CThDefTowerSubsoil::init(char* szpSubsoilCharacterDescPath, const float c
 	m_ptSubSoilStatus->fFacingEnemyAngle = cfFacingEnemyAngle;
 
 	/* 创建地基纹理. */
-	bFnRet = initCharacterWithPlist(ptCharacterDesc, &m_ptSubsoil);
+	bFnRet = CThBaseCharacter::initCharacterWithPlist(ptCharacterDesc, &m_ptSubsoil);
 	TH_PROCESS_ERROR(bFnRet);
 	m_ptSubsoil->pSpCharacter->setAnchorPoint(Vec2(0.5, 0));
 	m_fSubsoilScale = m_ptSubsoil->pSpCharacter->getScale();
@@ -153,7 +153,7 @@ thBool CThDefTowerSubsoil::initDefTowerConstruction()
 	TH_PROCESS_ERROR(bFnRet);
 	ptSubsoilDesc->fPosX = m_ptSubsoil->pSpCharacter->getPositionX();
 	ptSubsoilDesc->fPosY = m_ptSubsoil->pSpCharacter->getPositionY();
-	bFnRet = initCharacterWithPlist(ptSubsoilDesc, &m_ptConstruction);
+	bFnRet = CThBaseCharacter::initCharacterWithPlist(ptSubsoilDesc, &m_ptConstruction);
 	TH_PROCESS_ERROR(bFnRet);
 	m_ptConstruction->pSpCharacter->setPositionY(m_ptConstruction->pSpCharacter->getPositionY() + 17);
 	m_ptConstruction->pSpCharacter->setPositionX(m_ptConstruction->pSpCharacter->getPositionX() - 2.5);
