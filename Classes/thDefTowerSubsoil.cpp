@@ -279,12 +279,9 @@ void CThDefTowerSubsoil::onMouseMove(EventMouse* pEvent)
 	if (NULL != m_pDefTower)
 	{
 		m_pDefTower->getIsHoverDefTower(&bFnRet);
-		bRet = pEvent->getCurrentTarget()->getBoundingBox().containsPoint(pEvent->getLocationInView()) || bFnRet;
+		
 	}
-	else
-	{
-		bRet = pEvent->getCurrentTarget()->getBoundingBox().containsPoint(pEvent->getLocationInView());
-	}
+	bRet = pEvent->getCurrentTarget()->getBoundingBox().containsPoint(pEvent->getLocationInView()) || bFnRet;
 	onHoverSubsoil(bRet);
 
 	return;

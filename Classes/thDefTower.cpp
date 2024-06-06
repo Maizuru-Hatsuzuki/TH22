@@ -1342,13 +1342,13 @@ thBool CThDefTower::delayUninitMonitoring()
 		TH_PROCESS_ERROR(nAniSummonTag);
 		pAcDestorySmoke = m_ptSmoke->pSpCharacter->getActionByTag(nAniSummonTag);
 
-		if (0L != lQmSpCnt && THEM_DELAY_UNINIT_FLAG::FLAG_NOTNEED_UNINIT == CThDefTowerQuickMenu::getInstance()->getDefTowerType())
+		if (0L != lQmSpCnt && THEM_DELAY_UNINIT_FLAG::FLAG_NOTNEED_UNINIT == CThDefTowerQuickMenu::getInstance()->getDefTowerDelayUninitType())
 		{
 			bRet = thOnClickDestoryQucikMenu();
 			TH_PROCESS_ERROR(bRet);
 		}
 
-		if (NULL == pAcDestorySmoke && THEM_DELAY_UNINIT_FLAG::FLAG_UNINIT_COMPLETE == CThDefTowerQuickMenu::getInstance()->getDefTowerType())
+		if (NULL == pAcDestorySmoke && THEM_DELAY_UNINIT_FLAG::FLAG_UNINIT_COMPLETE == CThDefTowerQuickMenu::getInstance()->getDefTowerDelayUninitType())
 		{
 			/* 可以最终释放了. */
 			m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_UNINIT;
