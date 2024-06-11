@@ -243,5 +243,8 @@
     <None Include="..\Resources\data\CharacterConfig\Skill\ChacSkDollStrengthem.ini">
       <Filter>Config\Character\Skill</Filter>
     </None>
+    <None Include="..\Resources\data\CharacterConfig\Skill\ChacSkLevelPoint.ini">
+      <Filter>Config\Character\Skill</Filter>
+    </None>
   </ItemGroup>
 </Project>

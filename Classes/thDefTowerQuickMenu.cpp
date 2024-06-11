@@ -180,6 +180,9 @@ void CThDefTowerQuickMenu::uninit()
 	THFREE(m_ptAniMovePosSelectingMouse);
 	THFREE(m_ptAniMovePosSelectedMouse);
 	THFREE(m_ptAniMovePosSelectedErrorMouse);
+	THFREE(m_ptQm->pBg);
+	THFREE(m_ptQm->pCommandMovement);
+	THFREE(m_ptQm->pSellTower);
 	
 	/* m_ptCurrentMouse 不是堆上的内存, 直接置空. */
 	m_ptCurrentMouse = NULL;
@@ -197,7 +200,7 @@ CThDefTowerQuickMenu* CThDefTowerQuickMenu::getInstance()
 	if (NULL == m_pSelf)
 	{
 		m_pSelf = THNEW_CLASS(CThDefTowerQuickMenu);
-		TH_PROCESS_ERROR(bRet);
+		TH_PROCESS_ERROR(m_pSelf);
 	}
 
 	bRet = THTRUE;
@@ -242,6 +245,134 @@ thBool CThDefTowerQuickMenu::getIsClickInMoveRangeHalo(Vec2 vecPosInView)
 		bRet = THTRUE;
 	}
 
+	return bRet;
+}
+
+/* 获取技能图标位置, 最大 5 个. */
+thBool CThDefTowerQuickMenu::getChacSkillPos(const int nSkillCnt, int arrarrnRet[][2])
+{
+	thBool bRet = THFALSE;
+	CHARACTER_FRAMEINFO_PTR ptTower = NULL;
+	float fBgWidth = m_ptQm->pBg->pSpCharacter->getBoundingBox().size.width * m_pTaget->getQmScale();
+	float fBgHight = m_ptQm->pBg->pSpCharacter->getBoundingBox().size.height * m_pTaget->getQmScale();
+	float fBgRadius = 0;
+
+	TH_PROCESS_ERROR(5 > nSkillCnt);
+	switch (nSkillCnt)
+	{
+	case 1:
+	{
+		fBgRadius = m_ptQm->pBg->pSpCharacter->getBoundingBox().size.height / 2;
+		arrarrnRet[0][0] = m_ptQm->pBg->pSpCharacter->getPositionX() + cos(90 * (M_PI / 180));
+		arrarrnRet[0][1] = m_ptQm->pBg->pSpCharacter->getPositionY() + fBgRadius + sin(90 * (M_PI / 180));
+		break;
+	}
+	case 2:
+	{
+		m_pTaget->getCharacterFrameInfo(&ptTower);
+		TH_PROCESS_ERROR(ptTower);
+
+		fBgRadius = sqrtf(
+			fBgWidth * fBgWidth +
+			fBgHight * fBgHight
+		) * 0.34f;
+		arrarrnRet[0][0] = m_ptQm->pBg->pSpCharacter->getPositionX() - fBgRadius - cos(60 * (M_PI / 180));
+		arrarrnRet[0][1] = m_ptQm->pBg->pSpCharacter->getPositionY() + fBgRadius + sin(60 * (M_PI / 180));
+		arrarrnRet[1][0] = m_ptQm->pBg->pSpCharacter->getPositionX() + fBgRadius + cos(60 * (M_PI / 180));
+		arrarrnRet[1][1] = arrarrnRet[0][1];
+		break;
+	}
+	case 3:
+	{
+
+	}
+	case 4:
+	{
+
+	}
+	case 5:
+	{
+
+	}
+	default:
+		break;
+	}
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+thBool CThDefTowerQuickMenu::getChacSkillLevelPointPos(const short csCnt, float* arrfRet, TH_SKILL_PTR pSk)
+{
+	thBool bRet = THFALSE;
+	float fRadius = pSk->pChacFrSkill->pSpCharacter->getBoundingBox().size.height / 2;
+	float fTagX = 0.f;
+	float fTagY = 0.f;
+
+	for (short s = 0; s < csCnt; s++)
+	{
+		TH_GETX(arrfRet) = pSk->pChacFrSkill->pSpCharacter->getPositionX() + cos(90 * (M_PI / 180));
+		TH_GETY(arrfRet) = pSk->pChacFrSkill->pSpCharacter->getPositionY() + fRadius + sin(90 * (M_PI / 180));
+	}
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+thBool CThDefTowerQuickMenu::setChacSkillLevelPoint(enum THEM_CHARACTER_LEVEL emLv, TH_SKILL_PTR pSk)
+{
+	thBool bRet = THFALSE;
+	
+	float fSkHeight = 0.f;
+	float fSkWidth = 0.f;
+
+	float arrfPosRet[2] = { 0 };
+	char szarrSkillPointIni[MAX_PATH] = { 0 };
+	CHARACTER_DESC_PTR pSkPointDesc = NULL;
+
+	TH_PROCESS_ERROR(THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4 >= emLv);
+	TH_GETWINRESPATH(szarrSkillPointIni, "data\\CharacterConfig\\Skill\\ChacSkLevelPoint.ini");
+	bRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(szarrSkillPointIni, &pSkPointDesc);
+	TH_PROCESS_ERROR(bRet);
+
+	for (short s = 0; s < (int)emLv; s++)
+	{
+		bRet = initCharacterWithPlist(pSkPointDesc, &pSk->arrpSkillLevelPoint[s]);
+		TH_PROCESS_ERROR(bRet);
+		/* 函数外进行 addChild, Z 值靠前. */
+	}
+	fSkHeight = pSk->arrpSkillLevelPoint[0]->pSpCharacter->getBoundingBox().size.height;
+	fSkHeight = pSk->arrpSkillLevelPoint[0]->pSpCharacter->getBoundingBox().size.width;
+
+	switch (emLv)
+	{
+	case CHARACTER_LEVEL_1:
+	{
+		bRet = getChacSkillLevelPointPos(int(emLv), arrfPosRet, pSk);
+		TH_PROCESS_ERROR(bRet);
+		pSk->arrpSkillLevelPoint[0]->pSpCharacter->setPositionX(TH_GETX(arrfPosRet));
+		pSk->arrpSkillLevelPoint[0]->pSpCharacter->setPositionY(TH_GETY(arrfPosRet));
+		break;
+	}
+	case CHARACTER_LEVEL_2:
+	{
+
+		break;
+	}
+	case CHARACTER_LEVEL_3:
+		break;
+	case CHARACTER_LEVEL_4:
+		break;
+	case CHARACTER_LEVEL_5:
+		break;
+	case CHARACTER_MAXLEVEL:
+		break;
+	default:
+		break;
+	}
+	bRet = THTRUE;
+Exit0:
 	return bRet;
 }
 
@@ -317,7 +448,6 @@ thBool CThDefTowerQuickMenu::createBasicQm(const float cfX, const float cfY, con
 	this->setPositionY(cfY);
 
 	TH_PROCESS_ERROR(NULL != ptDefTowerQm);
-	m_ptQm = ptDefTowerQm;
 	/* 快速菜单背景(圈). */
 	bRet = CThBaseCharacter::initCharacterWithPlistSimple("Quickmenu bg", cszpSpTex, 96, &ptChacFrameQuickMenuBg);
 	TH_PROCESS_ERROR(bRet && ptChacFrameQuickMenuBg);
@@ -373,9 +503,9 @@ thBool CThDefTowerQuickMenu::createBasicQm(const float cfX, const float cfY, con
 	this->addChild(ptDefTowerQm->pCommandMovement->pSpCharacter, 0, "QM_CommandMove");
 	this->addChild(ptDefTowerQm->pSellTower->pSpCharacter, 0, "QM_Sell");
 
+	m_ptQm = ptDefTowerQm;
 	bRet = THTRUE;
 Exit0:
-	THFREE(ptDefTowerQm->pBg);
 	return bRet;
 }
 
@@ -391,18 +521,42 @@ thBool CThDefTowerQuickMenu::createQmWarriorLevel4(const float cfX, const float 
 	m_pTaget = pTaget;
 	m_emTagTowerType = m_pTaget->getDefTowerType();
 	m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_NOTNEED_UNINIT;
+	int arrarrnSkillPos[2][2] = { 0, 0 };
 
 	bRet = init();
 	TH_PROCESS_ERROR(bRet);
 	bRet = createBasicQm(cfX, cfY, cfTagScale, ptDefTowerQm);
 	TH_PROCESS_ERROR(bRet);
 
+	bRet = CThCcCharacterSkillHanlder::getInstance()->setTargetSkillUnion(ptDefTowerQm->emTowerType, ptDefTowerQm->emCharacterLevel, THTRUE, &m_ptQm->puChacSkill, &m_ptQm->nChacSkillCnt);
+	TH_PROCESS_ERROR(bRet);
+	bRet = getChacSkillPos(m_ptQm->nChacSkillCnt, arrarrnSkillPos);
+	TH_PROCESS_ERROR(bRet);
+
+	GETSK_DOLLREPAIR(m_ptQm)->pSpCharacter->setPositionX(arrarrnSkillPos[0][0]);
+	GETSK_DOLLREPAIR(m_ptQm)->pSpCharacter->setPositionY(arrarrnSkillPos[0][1]);
+	setChacSkillLevelPoint(GETSK_DOLLREPAIR(m_ptQm)->emMaxLevel, m_ptQm->puChacSkill->ptAliceMargatroidLv4Skill->ptSkDollRepair);
+
+	GETSK_DOLLSTRENGTHEM(m_ptQm)->pSpCharacter->setPositionX(arrarrnSkillPos[1][0]);
+	GETSK_DOLLSTRENGTHEM(m_ptQm)->pSpCharacter->setPositionY(arrarrnSkillPos[1][1]);
+
+	this->addChild(GETSK_DOLLREPAIR(m_ptQm)->pSpCharacter);
+	this->addChild(GETSK_DOLLSTRENGTHEM(m_ptQm)->pSpCharacter);
+
+	for (short s = 0; s < (int)GETSK_DOLLREPAIR(m_ptQm)->emMaxLevel; s++)
+	{
+		this->addChild(m_ptQm->puChacSkill->ptAliceMargatroidLv4Skill->ptSkDollRepair->arrpSkillLevelPoint[s]->pSpCharacter);
+	}
 	/* 设置一下范围圈的坐标. 防御塔锚点是 0.5, 0, 也同步修改一下. */
 	m_ptMoveRangeHalo->pSpCharacter->setPosition(pTaget->getPosition());
 	m_ptMoveSelectedMouse->pSpCharacter->setScale(cfTagScale);
 
 	bRet = THTRUE;
 Exit0:
+	if (NULL != m_ptQm->puChacSkill)
+	{
+		CThCcCharacterSkillHanlder::getInstance()->uninitWarriorSkillLv4Union(m_ptQm->puChacSkill);
+	}
 	return bRet;
 }
 

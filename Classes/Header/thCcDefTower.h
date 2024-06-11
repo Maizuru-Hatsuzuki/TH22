@@ -129,6 +129,7 @@ public:
 	void getWarriorExistsByAngle(const float cfAngle, thBool* pbRet);
 	void getRandWarriorTypeDesc(CHARACTER_DESC_PTR* ppRet);
 	void getIsHoverDefTower(thBool* pbRet);
+	const float getQmScale() const;
 
 	void setUninitFlag();
 	void setWarriorExistsByAngle(const float cfAngle, const short csTag);
@@ -185,6 +186,7 @@ private:
 private:
 	short							m_sVacantPos;
 	short							m_arrsWarriorsVacantPos[THMAX_DEFTOWER_TARLEVEL_WARRIORS];
+	float							m_fQmScale;
 	static float					ms_fWarriorsBirthAngle;
 	float							m_arrfWarriorMovePos[THMAX_DEFTOWER_TARLEVEL_WARRIORS][2];
 	double							m_dLastSummonWarriors;
@@ -228,6 +230,9 @@ public:
 	thBool destoryQmWarriorLevel4(DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget);
 	thBool getMouseCursorIsPlayAni(const int cnAniTag);
 	thBool getIsClickInMoveRangeHalo(Vec2 vecPosInView);
+	thBool getChacSkillPos(const int nSkillCnt, int arrarrnRet[][2]);
+	thBool getChacSkillLevelPointPos(const short csCnt, float* arrfRet, TH_SKILL_PTR pSk);
+	thBool setChacSkillLevelPoint(enum THEM_CHARACTER_LEVEL emLv, TH_SKILL_PTR pSk);
 	enum THEM_DELAY_UNINIT_FLAG getDefTowerDelayUninitType() const;
 	void setMouseCursorAni(enum THEM_QM_MOUSECURSOR emMouseType);
 	void setStopUninit();

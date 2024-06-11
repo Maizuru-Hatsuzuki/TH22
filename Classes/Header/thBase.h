@@ -48,6 +48,7 @@
 #define THMAX_CHAR_DESC						128
 #define THMAX_DEFTOWER_TARLEVEL_WARRIORS	4
 #define THMAX_DEFTOWER_SYNC_ANI				32
+#define THMAX_SKILL_LEVEL					3
 
 #define THMOVESPEED_LOW_PLAYER 5.0
 #define THMOVESPEED_NORMAL_PLAYER 4.5
@@ -72,6 +73,10 @@
 #define THMALLOC(t, s) (t*)malloc(s)
 #define THFREE(p) { if (p) { free(p); (p) = NULL; }}
 
+#define TH_GETX(arr) arr[0]
+#define TH_GETY(arr) arr[1]
+
+
 #ifdef __cplusplus
 
 typedef bool thBool;
@@ -80,6 +85,7 @@ typedef bool thBool;
 #define THFALSE false
 #define THNEW_CLASS(p) new p()
 #define THDELETE(p) { if (p) { delete (p); (p) = NULL; }}
+#define TH_UNINIT_CHACDESC(p) { if (p) { CthCcCharacterLoadHandler::getInstance()->uninitCharacterDesc(p); (p) = NULL; }}
 
 class CTHCcBaseHandler
 {

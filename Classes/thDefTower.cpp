@@ -44,12 +44,13 @@ thBool CThDefTower::init(
 	m_emStepUninit						= THEM_DELAY_UNINIT_FLAG::FLAG_NOTNEED_UNINIT;
 	m_dLastSummonWarriors				= 0.f;
 	m_dLastAttack						= 0.f;
+	m_fQmScale							= 0.7f;
 	m_bIsHoverTower						= THFALSE;
 	m_pEventMouse						= EventListenerMouse::create();
 	m_ptBulletDesc						= NULL;
 	m_ptTowerStatus						= NULL;
 	m_ptSmoke							= NULL;
-	m_tChacFrameQuickMenuBg				= { NULL, NULL, NULL };
+	m_tChacFrameQuickMenuBg				= { NULL, NULL, NULL, THEM_DEFTOWER_TYPE::DEFTOWERTYPE_UNKNOW, THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, NULL, 0 };
 	m_tAniTag.sOffset					= THMAX_ANI_COUNT;
 	m_vecAnchorPoint					= Vec2(0.5, 0);
 	/* AniTagTowerSummon nTag = 33 */
@@ -75,6 +76,7 @@ thBool CThDefTower::init(
 	TH_PROCESS_ERROR(bFnRet);
 
 	m_emTowerType = (THEM_DEFTOWER_TYPE)m_ptTowerStatus->nDefTowerProfessional;
+	m_tChacFrameQuickMenuBg.emTowerType = m_emTowerType;
 
 	m_arrpSpGroup = THMALLOC(CHARACTER_FRAMEINFO_PTR, sizeof(CHARACTER_FRAMEINFO_PTR) * THMAX_SP_COUNT);
 	TH_PROCESS_ERROR(m_arrpSpGroup);
@@ -93,6 +95,7 @@ thBool CThDefTower::init(
 	TH_PROCESS_ERROR(bFnRet);
 	_setSpTowerPositionTweaks();
 	m_ptTower->pSpCharacter->setAnchorPoint(m_vecAnchorPoint);
+	m_tChacFrameQuickMenuBg.emCharacterLevel = m_ptTower->emCurLevel;
 
 	bFnRet = initAnimate(szarrpAniDesc, csAniDescSize);
 	TH_PROCESS_ERROR(bFnRet);
@@ -130,10 +133,7 @@ thBool CThDefTower::init(
 
 	bRet = THTRUE;
 Exit0:
-	if (NULL != ptCharacterDesc)
-	{
-		CthCcCharacterLoadHandler::getInstance()->uninitCharacterDesc(ptCharacterDesc);
-	}
+	TH_UNINIT_CHACDESC(ptCharacterDesc);
 	return bRet;
 }
 
@@ -560,6 +560,11 @@ void CThDefTower::getIsHoverDefTower(thBool* pbRet)
 {
 	*pbRet = m_bIsHoverTower;
 	return;
+}
+
+const float CThDefTower::getQmScale() const
+{
+	return m_fQmScale;
 }
 
 enum THEM_DELAY_UNINIT_FLAG CThDefTower::getDefTowerDelayUninitType() const
@@ -1077,7 +1082,7 @@ thBool CThDefTower::_setCreateQmWarrior(const thBool cbIsCreate)
 
 	if (THTRUE == cbIsCreate)
 	{
-		pAcQuickMenuBgScale = ScaleTo::create(0.1f, 0.7f, 0.7f);
+		pAcQuickMenuBgScale = ScaleTo::create(0.1f, m_fQmScale, m_fQmScale);
 
 		switch (m_ptTower->emCurLevel)
 		{

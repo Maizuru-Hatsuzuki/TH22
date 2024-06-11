@@ -27,7 +27,7 @@ CThCcCharacterSkillHanlder* CThCcCharacterSkillHanlder::getInstance()
 	if (NULL == m_pSelf)
 	{
 		m_pSelf = THNEW_CLASS(CThCcCharacterSkillHanlder);
-		TH_PROCESS_ERROR(bRet);
+		TH_PROCESS_ERROR(m_pSelf);
 	}
 
 	bRet = THTRUE;
@@ -36,7 +36,7 @@ Exit0:
 	return m_pSelf;
 }
 
-thBool CThCcCharacterSkillHanlder::setTargetSkillUnion(enum THEM_DEFTOWER_TYPE emChacType, enum THEM_CHARACTER_LEVEL emLevel, const thBool cbIsInit, CHARACTER_SKILL_UNION_PTR* ppRet)
+thBool CThCcCharacterSkillHanlder::setTargetSkillUnion(enum THEM_DEFTOWER_TYPE emChacType, enum THEM_CHARACTER_LEVEL emLevel, const thBool cbIsInit, CHARACTER_SKILL_UNION_PTR* ppRet, int* pnSkillCnt)
 {
 	thBool bRet = THFALSE;
 
@@ -55,7 +55,7 @@ thBool CThCcCharacterSkillHanlder::setTargetSkillUnion(enum THEM_DEFTOWER_TYPE e
 		case DEFTOWERTYPE_ARCHER:
 			break;
 		case DEFTOWERTYPE_WARRIORS:
-			bRet = setWarriorSkillUnion(emLevel, THTRUE, ppRet);
+			bRet = setWarriorSkillUnion(emLevel, THTRUE, ppRet, pnSkillCnt);
 			break;
 		case DEFTOWERTYPE_ARCHER_WARRIORS:
 			break;
@@ -83,7 +83,7 @@ Exit0:
 	return bRet;
 }
 
-thBool CThCcCharacterSkillHanlder::setWarriorSkillUnion(enum THEM_CHARACTER_LEVEL emLevel, const thBool cbIsInit, CHARACTER_SKILL_UNION_PTR* ppRet)
+thBool CThCcCharacterSkillHanlder::setWarriorSkillUnion(enum THEM_CHARACTER_LEVEL emLevel, const thBool cbIsInit, CHARACTER_SKILL_UNION_PTR* ppRet, int* pnSkillCnt)
 {
 	thBool bRet = THFALSE;
 	
@@ -99,7 +99,7 @@ thBool CThCcCharacterSkillHanlder::setWarriorSkillUnion(enum THEM_CHARACTER_LEVE
 	{
 		if (THTRUE == cbIsInit)
 		{
-			bRet = initWarriorSkillLv4Union(ppRet);
+			bRet = initWarriorSkillLv4Union(ppRet, pnSkillCnt);
 			TH_PROCESS_ERROR(bRet);
 		}
 		else
@@ -121,7 +121,7 @@ Exit0:
 	return bRet;
 }
 
-thBool CThCcCharacterSkillHanlder::initWarriorSkillLv4Union(CHARACTER_SKILL_UNION_PTR* ppRet)
+thBool CThCcCharacterSkillHanlder::initWarriorSkillLv4Union(CHARACTER_SKILL_UNION_PTR* ppRet, int* pnSkillCnt)
 {
 	thBool bRet = THFALSE;
 	char szarrTmpSkillIni[MAX_PATH] = { 0 };
@@ -131,38 +131,49 @@ thBool CThCcCharacterSkillHanlder::initWarriorSkillLv4Union(CHARACTER_SKILL_UNIO
 
 	puRet->ptAliceMargatroidLv4Skill = THMALLOC(ALICEMARGATROID_LV4_SKILL, sizeof(ALICEMARGATROID_LV4_SKILL));
 	TH_PROCESS_ERROR(puRet->ptAliceMargatroidLv4Skill);
-	puRet->ptAliceMargatroidLv4Skill->ptSkDollRepair = THMALLOC(TH_SKILL, sizeof(TH_SKILL));
-	TH_PROCESS_ERROR(puRet->ptAliceMargatroidLv4Skill->ptSkDollRepair);
-	puRet->ptAliceMargatroidLv4Skill->ptSkDollStrengthem = THMALLOC(TH_SKILL, sizeof(TH_SKILL));
-	TH_PROCESS_ERROR(puRet->ptAliceMargatroidLv4Skill->ptSkDollStrengthem);
 
 	/* 轮回的西藏人型. */
+	puRet->ptAliceMargatroidLv4Skill->ptSkDollRepair = THMALLOC(TH_SKILL, sizeof(TH_SKILL));
+	TH_PROCESS_ERROR(puRet->ptAliceMargatroidLv4Skill->ptSkDollRepair);
+
 	TH_GETWINRESPATH(szarrTmpSkillIni, "data\\CharacterConfig\\Skill\\ChacSkDollRepair.ini");
 	strcpy_s(puRet->ptAliceMargatroidLv4Skill->ptSkDollRepair->szarrSkill, THMAX_CHAR_DESC, "DollRepair");
 	bRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(szarrTmpSkillIni, &ptChacDesc);
 	TH_PROCESS_ERROR(bRet);
 	bRet = CThBaseCharacter::initCharacterWithPlist(ptChacDesc, &puRet->ptAliceMargatroidLv4Skill->ptSkDollRepair->pChacFrSkill);
 	TH_PROCESS_ERROR(bRet);
-	CthCcCharacterLoadHandler::getInstance()->uninitCharacterDesc(ptChacDesc);
+	memset(puRet->ptAliceMargatroidLv4Skill->ptSkDollRepair->arrpSkillLevelPoint, 0, sizeof(CHARACTER_FRAMEINFO_PTR) * THMAX_SKILL_LEVEL);
+	TH_UNINIT_CHACDESC(ptChacDesc);
 
 	/* 魔彩光的上海人型. */
-	TH_GETWINRESPATH(szarrTmpSkillIni, "data\\CharacterConfig\\Skill\\ChacSkDollRepair.ini");
+	puRet->ptAliceMargatroidLv4Skill->ptSkDollStrengthem = THMALLOC(TH_SKILL, sizeof(TH_SKILL));
+	TH_PROCESS_ERROR(puRet->ptAliceMargatroidLv4Skill->ptSkDollStrengthem);
+
+	TH_GETWINRESPATH(szarrTmpSkillIni, "data\\CharacterConfig\\Skill\\ChacSkDollStrengthem.ini");
 	strcpy_s(puRet->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->szarrSkill, THMAX_CHAR_DESC, "DollStrengthem");
 	bRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(szarrTmpSkillIni, &ptChacDesc);
 	TH_PROCESS_ERROR(bRet);
 	bRet = CThBaseCharacter::initCharacterWithPlist(ptChacDesc, &puRet->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->pChacFrSkill);
 	TH_PROCESS_ERROR(bRet);
-	CthCcCharacterLoadHandler::getInstance()->uninitCharacterDesc(ptChacDesc);
+	memset(puRet->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->arrpSkillLevelPoint, 0, sizeof(CHARACTER_FRAMEINFO_PTR) * THMAX_SKILL_LEVEL);
+	TH_UNINIT_CHACDESC(ptChacDesc);
 
+	*pnSkillCnt = 2;
 	*ppRet = puRet;
 	bRet = THTRUE;
 Exit0:
-	CthCcCharacterLoadHandler::getInstance()->uninitCharacterDesc(ptChacDesc);
+	TH_UNINIT_CHACDESC(ptChacDesc);
 	return bRet;
 }
 
 void CThCcCharacterSkillHanlder::uninitWarriorSkillLv4Union(CHARACTER_SKILL_UNION_PTR pUnion)
 {
+	THFREE(pUnion->ptAliceMargatroidLv4Skill->ptSkDollRepair->pChacFrSkill);
+	THFREE(pUnion->ptAliceMargatroidLv4Skill->ptSkDollRepair);
+	THFREE(pUnion->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->pChacFrSkill);
+	THFREE(pUnion->ptAliceMargatroidLv4Skill->ptSkDollStrengthem);
+	THFREE(pUnion->ptAliceMargatroidLv4Skill);
+	THFREE(pUnion);
 	return;
 }
 

@@ -12,10 +12,15 @@
 #include "thCcCharacter.h"
 
 
+#define GETSK_DOLLREPAIR(p)		p->puChacSkill->ptAliceMargatroidLv4Skill->ptSkDollRepair->pChacFrSkill
+#define GETSK_DOLLSTRENGTHEM(p) p->puChacSkill->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->pChacFrSkill
+
 struct _tSkill
 {
 	char szarrSkill[THMAX_CHAR_DESC];
 	CHARACTER_FRAMEINFO_PTR pChacFrSkill;
+	CHARACTER_FRAMEINFO_PTR arrpSkillLevelPoint[THMAX_SKILL_LEVEL];
+	SpriteFrame* pSpFrLevelUpPoint;
 };
 typedef _tSkill TH_SKILL, * TH_SKILL_PTR;
 
@@ -48,9 +53,10 @@ struct _tDefTowerQuickMenu
 	CHARACTER_FRAMEINFO_PTR pBg;
 	CHARACTER_FRAMEINFO_PTR pCommandMovement;
 	CHARACTER_FRAMEINFO_PTR pSellTower;
-	enum THEM_DEFTOWER_TYPE emCharacterType;
+	enum THEM_DEFTOWER_TYPE emTowerType;
 	enum THEM_CHARACTER_LEVEL emCharacterLevel;
 	CHARACTER_SKILL_UNION_PTR puChacSkill;
+	int nChacSkillCnt;
 };
 typedef struct _tDefTowerQuickMenu DEFTOWER_QUICKMENU, * DEFTOWER_QUICKMENU_PTR;
 
@@ -60,11 +66,11 @@ class CThCcCharacterSkillHanlder
 public:
 	static CThCcCharacterSkillHanlder* getInstance();
 
-	thBool setTargetSkillUnion(enum THEM_DEFTOWER_TYPE emChacType, enum THEM_CHARACTER_LEVEL emLevel, const thBool cbIsInit, CHARACTER_SKILL_UNION_PTR* ppRet);
+	thBool setTargetSkillUnion(enum THEM_DEFTOWER_TYPE emChacType, enum THEM_CHARACTER_LEVEL emLevel, const thBool cbIsInit, CHARACTER_SKILL_UNION_PTR* ppRet, int* pnSkillCnt);
 	thBool getGeneralSkill(CHARACTER_SKILL_UNION_PTR* ppRet);
-	thBool setWarriorSkillUnion(enum THEM_CHARACTER_LEVEL emLevel, const thBool cbIsInit, CHARACTER_SKILL_UNION_PTR* ppRet);
+	thBool setWarriorSkillUnion(enum THEM_CHARACTER_LEVEL emLevel, const thBool cbIsInit, CHARACTER_SKILL_UNION_PTR* ppRet, int* pnSkillCnt);
 
-	thBool initWarriorSkillLv4Union(CHARACTER_SKILL_UNION_PTR* ppRet);
+	thBool initWarriorSkillLv4Union(CHARACTER_SKILL_UNION_PTR* ppRet, int* pnSkillCnt);
 	void uninitWarriorSkillLv4Union(CHARACTER_SKILL_UNION_PTR pUnion);
 
 private:
