@@ -230,17 +230,27 @@ thBool CThDefTowerQuickMenu::getMouseCursorIsPlayAni(const int cnAniTag)
 	switch (cnAniTag)
 	{
 	case TH_ANITAG_MOVEERROR:
+	{
 		TH_RUN_SUCCESS(NULL != m_ptMoveSelectedErrorMouse, bRet = m_ptMoveSelectedErrorMouse->pSpCharacter->getActionByTag(TH_ANITAG_MOVEERROR));
 		break;
-
+	}
 	case TH_ANITAG_MOVING:
+	{
 		TH_RUN_SUCCESS(NULL != m_ptMoveSelectingMouse, bRet = m_ptMoveSelectedMouse->pSpCharacter->getActionByTag(TH_ANITAG_MOVING));
 		break;
-
+	}
+	case TH_ANITAG_SCALEQM:
+	{
+		bRet = this->getActionByTag(TH_ANITAG_SCALEQM);
+		break;
+	}
 	default:
+	{
 		TH_RUN_SUCCESS(NULL != m_ptMoveSelectedErrorMouse, bRet = m_ptMoveSelectedErrorMouse->pSpCharacter->getActionByTag(TH_ANITAG_MOVEERROR));
 		TH_RUN_SUCCESS(NULL != m_ptMoveSelectedMouse, bRet = m_ptMoveSelectedMouse->pSpCharacter->getActionByTag(TH_ANITAG_MOVING));
+		bRet = this->getActionByTag(TH_ANITAG_SCALEQM);
 		break;
+	}
 	}
 	
 	return bRet;
@@ -829,14 +839,17 @@ thBool CThDefTowerQuickMenu::delayUninitMonitoring()
 	case FLAG_NOTNEED_UNINIT:
 		break;
 	case FLAG_NEED_UNINIT:
-		for (ssize_t i = 0; i < vecAllChild.size(); i++)
+		bRet = getMouseCursorIsPlayAni(TH_ANITAG_SCALEQM);
+		if (THFALSE == bRet)
 		{
-			if (m_ptMoveSelectedMouse->pSpCharacter != vecAllChild.at(i))
+			for (ssize_t i = 0; i < vecAllChild.size(); i++)
 			{
-				vecAllChild.at(i)->setVisible(THFALSE);
+				if (m_ptMoveSelectedMouse->pSpCharacter != vecAllChild.at(i))
+				{
+					vecAllChild.at(i)->setVisible(THFALSE);
+				}
 			}
 		}
-
 		m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_UNITING;
 		break;
 

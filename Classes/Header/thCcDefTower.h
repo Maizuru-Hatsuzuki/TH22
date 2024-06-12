@@ -16,6 +16,7 @@
 #define TH_ANITAG_ALLANI	0
 #define TH_ANITAG_MOVEERROR 1
 #define TH_ANITAG_MOVING	2
+#define TH_ANITAG_SCALEQM	3
 
 
 struct _tQmPrice

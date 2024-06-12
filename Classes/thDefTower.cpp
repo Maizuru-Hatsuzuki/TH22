@@ -1155,6 +1155,10 @@ thBool CThDefTower::_setCreateQmWarrior(const thBool cbIsCreate)
 	}
 	else
 	{
+		pAcQuickMenuBgScale = ScaleTo::create(0.1f, 0.f, 0.f);
+		pAcQuickMenuBgScale->setTag(TH_ANITAG_SCALEQM);
+		CThDefTowerQuickMenu::getInstance()->runAction(pAcQuickMenuBgScale);
+
 		switch (m_ptTower->emCurLevel)
 		{
 		case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4:
