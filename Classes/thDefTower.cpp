@@ -89,11 +89,13 @@ thBool CThDefTower::init(
 	memset(m_arrpAniGroup, 0, sizeof(CHARACTER_ANI_FRAMEINFO_PTR) * THMAX_ANI_COUNT);
 	memset(m_arrpWarriors, 0, sizeof(CThDefTowerWarrior_ptr) * THMAX_DEFTOWER_TARLEVEL_WARRIORS);
 	memset(m_arrsWarriorsVacantPos, -1, sizeof(short) * THMAX_DEFTOWER_TARLEVEL_WARRIORS);
+	memset(m_arrpCurSkill, 0, sizeof(TH_SKILL_PTR) * THMAX_TOWER_SKILL_COUNT);
 
 	/* 创建防御塔. */
 	bFnRet = CThBaseCharacter::initCharacterWithPlist(ptCharacterDesc, &m_ptTower);
 	TH_PROCESS_ERROR(bFnRet);
-	_setSpTowerPositionTweaks();
+	bFnRet = _setSpTowerSpecialValues();
+	TH_PROCESS_ERROR(bFnRet);
 	m_ptTower->pSpCharacter->setAnchorPoint(m_vecAnchorPoint);
 	m_tChacFrameQuickMenuBg.emCharacterLevel = m_ptTower->emCurLevel;
 
@@ -166,6 +168,14 @@ void CThDefTower::uninit()
 			m_arrpWarriors[i]->uninit();
 			THDELETE(m_arrpWarriors[i]);
 		}
+	}
+	for (int i = 0; i < THMAX_TOWER_SKILL_COUNT; i++)
+	{
+		if (NULL != m_arrpCurSkill[i])
+		{
+			THFREE(m_arrpCurSkill[i]->pChacFrSkill);
+		}
+		THFREE(m_arrpCurSkill[i]);
 	}
 
 	THFREE(m_arrpSpGroup);
@@ -482,7 +492,7 @@ void CThDefTower::uninitBullet(Node* pNode, const short csBullet)
 	return;
 }
 
-void CThDefTower::getAniTagByDesc(const char* cszpDesc, int* pnRet)
+void CThDefTower::getAniTagByDesc(const char* cszpDesc, int* pnRet) const
 {
 	for (short i = 0; i < THMAX_ANI_TAG; i++)
 	{
@@ -529,7 +539,7 @@ void CThDefTower::getRandWarriorTypeDesc(CHARACTER_DESC_PTR* ppRet)
 	return;
 }
 
-void CThDefTower::getAniFrameInfoByTag(const char* cszpTag, CHARACTER_ANI_FRAMEINFO_PTR* ppRet)
+void CThDefTower::getAniFrameInfoByTag(const char* cszpTag, CHARACTER_ANI_FRAMEINFO_PTR* ppRet) const
 {
 	for (short i = 0; i < THMAX_ANI_COUNT; i++)
 	{
@@ -542,7 +552,7 @@ void CThDefTower::getAniFrameInfoByTag(const char* cszpTag, CHARACTER_ANI_FRAMEI
 	return;
 }
 
-void CThDefTower::getWarriorExistsByAngle(const float cfAngle, thBool* pbRet)
+void CThDefTower::getWarriorExistsByAngle(const float cfAngle, thBool* pbRet) const
 {
 	*pbRet = THFALSE;
 	for (short i = 0; i < THMAX_DEFTOWER_TARLEVEL_WARRIORS; i++)
@@ -556,9 +566,18 @@ void CThDefTower::getWarriorExistsByAngle(const float cfAngle, thBool* pbRet)
 	return;
 }
 
-void CThDefTower::getIsHoverDefTower(thBool* pbRet)
+void CThDefTower::getIsHoverDefTower(thBool* pbRet) const
 {
 	*pbRet = m_bIsHoverTower;
+	return;
+}
+
+void CThDefTower::getCurSkillArray(TH_SKILL_PTR* ppRet, const int cnSize)
+{
+	for (int i = 0; i < cnSize; i++)
+	{
+		ppRet[i] = m_arrpCurSkill[i];
+	}
 	return;
 }
 
@@ -946,32 +965,60 @@ void CThDefTower::setUninitFlag()
 	return;
 }
 
-void CThDefTower::_setSpTowerPositionTweaks()
+/* 调整单独防御塔的特殊值, 比如技能初始化或微调防御塔精灵位置, 有时候美术资源大小有瑕疵, 对不上地基, 在这里微调位置. */
+thBool CThDefTower::_setSpTowerSpecialValues()
 {
-	/* 微调防御塔精灵位置, 有时候美术资源大小有瑕疵, 对不上地基, 在这里微调位置. */
+	thBool bRet = THFALSE;
+	
 	switch (m_emTowerType)
 	{
 	case THEM_DEFTOWER_TYPE::DEFTOWERTYPE_WARRIORS:
-		_setSpTowerPositionTweaksWarrior();
-
+	{
+		bRet = _setSpTowerSpecialValuesWarrior();
+		TH_PROCESS_ERROR(bRet);
+		break;
+	}
 	default:
 		break;
 	}
-	return;
+	bRet = THTRUE;
+Exit0:
+	return bRet;
 }
 
-void CThDefTower::_setSpTowerPositionTweaksWarrior()
+thBool CThDefTower::_setSpTowerSpecialValuesWarrior()
 {
+	thBool bRet = THFALSE;
+	CHARACTER_SKILL_UNION_PTR ptmpSkillUnion = NULL;
+	int nSkCnt = 0;
+
 	switch (m_ptTower->emCurLevel)
 	{
 	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4:
+	{
 		m_ptTower->pSpCharacter->setPositionX(m_ptTower->pSpCharacter->getPositionX() - 3);
 		m_ptTower->pSpCharacter->setPositionY(m_ptTower->pSpCharacter->getPositionY() + 12);
+
+		bRet = CThCcCharacterSkillHanlder::getInstance()->initWarriorSkillLv4Union(&ptmpSkillUnion, &nSkCnt);
+		TH_PROCESS_ERROR(bRet);
+
+		m_arrpCurSkill[0] = THMALLOC(TH_SKILL, sizeof(TH_SKILL));
+		TH_PROCESS_ERROR(m_arrpCurSkill[0]);
+		memcpy_s(m_arrpCurSkill[0], sizeof(TH_SKILL), ptmpSkillUnion->ptAliceMargatroidLv4Skill->ptSkDollRepair, sizeof(TH_SKILL));
+
+		m_arrpCurSkill[1] = THMALLOC(TH_SKILL, sizeof(TH_SKILL));
+		TH_PROCESS_ERROR(m_arrpCurSkill[1]);
+		memcpy_s(m_arrpCurSkill[1], sizeof(TH_SKILL), ptmpSkillUnion->ptAliceMargatroidLv4Skill->ptSkDollStrengthem, sizeof(TH_SKILL));
 		break;
+	}
 	default:
 		break;
 	}
-	return;
+
+	bRet = THTRUE;
+Exit0:
+	CThCcCharacterSkillHanlder::getInstance()->uninitWarriorSkillLv4Union(ptmpSkillUnion);
+	return bRet;
 }
 
 thBool CThDefTower::_setPlayerAniBasicWarriorTower()

@@ -192,6 +192,7 @@ struct _tTowerWarriors
 	short sSize;
 };
 
+
 typedef struct _tAniTag						CHARACTER_ANI_TAG, * CHARACTER_ANI_TAG_PTR;
 typedef struct _tCharacterDesc				CHARACTER_DESC, * CHARACTER_DESC_PTR;
 typedef struct _tCharacterAniMap			CHARACTER_ANI_MAP, * CHARACTER_ANI_MAP_PTR;
@@ -264,6 +265,7 @@ public:
 	thBool getCharacterAniDescFromIni(const char* cszpFilename, CHARACTER_ANI_DESC_PTR* ppRet);
 	thBool getDefTowerDescFromIni(const char* cszpFilename, DEFTOWER_DESC_PTR* ppRet);
 	thBool getSubsoilFromIni(const char* cszpFilename, SUBSOIL_DESC_PTR* ppRet);
+	thBool getSkillFromIni(const char* cszpFilename, int* pRetPrice);
 
 	void uninitCharacterDesc(CHARACTER_DESC_PTR p);
 	void uninitCharacterAniDesc(CHARACTER_ANI_DESC_PTR P);

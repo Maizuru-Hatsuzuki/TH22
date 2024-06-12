@@ -402,7 +402,6 @@ Exit0:
 thBool CthCcCharacterLoadHandler::getCharacterAniDescFromIni(const char* cszpFilename, CHARACTER_ANI_DESC_PTR* ppRet)
 {
 	thBool bRet = THFALSE;
-	thBool bFnRet = THFALSE;
 	const char* cszpSel = "CHARACTER_ANIMATION_DESC";
 	char sztmpNum[32] = { 0 };
 	CHARACTER_ANI_DESC_PTR pRet = THMALLOC(CHARACTER_ANI_DESC, sizeof(CHARACTER_ANI_DESC));
@@ -466,6 +465,18 @@ thBool CthCcCharacterLoadHandler::getSubsoilFromIni(const char* cszpFilename, SU
 	GetPrivateProfileStringA(cszpSel, "szActiveTex", THINI_DEFAULT_STR, pRet->szarrActiveTex, 64, cszpFilename);
 
 	*ppRet = pRet;
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+thBool CthCcCharacterLoadHandler::getSkillFromIni(const char* cszpFilename, int* pRetPrice)
+{
+	thBool bRet = THFALSE;
+	const char* cszpSel = "SKILL";
+
+	*pRetPrice = GetPrivateProfileIntA(cszpSel, "nSkillPrice", 0, cszpFilename);
+
 	bRet = THTRUE;
 Exit0:
 	return bRet;

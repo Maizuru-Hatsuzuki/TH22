@@ -133,28 +133,36 @@ thBool CThCcCharacterSkillHanlder::initWarriorSkillLv4Union(CHARACTER_SKILL_UNIO
 	TH_PROCESS_ERROR(puRet->ptAliceMargatroidLv4Skill);
 
 	/* 轮回的西藏人型. */
+	TH_GETWINRESPATH(szarrTmpSkillIni, "data\\CharacterConfig\\Skill\\ChacSkDollRepair.ini");
 	puRet->ptAliceMargatroidLv4Skill->ptSkDollRepair = THMALLOC(TH_SKILL, sizeof(TH_SKILL));
 	TH_PROCESS_ERROR(puRet->ptAliceMargatroidLv4Skill->ptSkDollRepair);
 
-	TH_GETWINRESPATH(szarrTmpSkillIni, "data\\CharacterConfig\\Skill\\ChacSkDollRepair.ini");
 	strcpy_s(puRet->ptAliceMargatroidLv4Skill->ptSkDollRepair->szarrSkill, THMAX_CHAR_DESC, "DollRepair");
 	bRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(szarrTmpSkillIni, &ptChacDesc);
 	TH_PROCESS_ERROR(bRet);
 	bRet = CThBaseCharacter::initCharacterWithPlist(ptChacDesc, &puRet->ptAliceMargatroidLv4Skill->ptSkDollRepair->pChacFrSkill);
 	TH_PROCESS_ERROR(bRet);
+
+	bRet = CthCcCharacterLoadHandler::getInstance()->getSkillFromIni(szarrTmpSkillIni, &puRet->ptAliceMargatroidLv4Skill->ptSkDollRepair->nSkillPrice);
+	TH_PROCESS_ERROR(bRet);
+
 	memset(puRet->ptAliceMargatroidLv4Skill->ptSkDollRepair->arrpSkillLevelPoint, 0, sizeof(CHARACTER_FRAMEINFO_PTR) * THMAX_SKILL_LEVEL);
 	TH_UNINIT_CHACDESC(ptChacDesc);
 
 	/* 魔彩光的上海人型. */
+	TH_GETWINRESPATH(szarrTmpSkillIni, "data\\CharacterConfig\\Skill\\ChacSkDollStrengthem.ini");
 	puRet->ptAliceMargatroidLv4Skill->ptSkDollStrengthem = THMALLOC(TH_SKILL, sizeof(TH_SKILL));
 	TH_PROCESS_ERROR(puRet->ptAliceMargatroidLv4Skill->ptSkDollStrengthem);
 
-	TH_GETWINRESPATH(szarrTmpSkillIni, "data\\CharacterConfig\\Skill\\ChacSkDollStrengthem.ini");
 	strcpy_s(puRet->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->szarrSkill, THMAX_CHAR_DESC, "DollStrengthem");
 	bRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(szarrTmpSkillIni, &ptChacDesc);
 	TH_PROCESS_ERROR(bRet);
 	bRet = CThBaseCharacter::initCharacterWithPlist(ptChacDesc, &puRet->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->pChacFrSkill);
 	TH_PROCESS_ERROR(bRet);
+
+	bRet = CthCcCharacterLoadHandler::getInstance()->getSkillFromIni(szarrTmpSkillIni, &puRet->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->nSkillPrice);
+	TH_PROCESS_ERROR(bRet);
+
 	memset(puRet->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->arrpSkillLevelPoint, 0, sizeof(CHARACTER_FRAMEINFO_PTR) * THMAX_SKILL_LEVEL);
 	TH_UNINIT_CHACDESC(ptChacDesc);
 

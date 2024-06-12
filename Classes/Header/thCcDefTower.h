@@ -18,6 +18,14 @@
 #define TH_ANITAG_MOVING	2
 
 
+struct _tQmPrice
+{
+	CHARACTER_FRAMEINFO_PTR ptBg;
+	Label* pLbText;
+};
+typedef struct _tQmPrice THQM_PRICE, * THQM_PRICE_PTR;
+
+
 class CThDefTowerWarrior :
 	public CThBaseCharacter
 {
@@ -124,11 +132,12 @@ public:
 	virtual void getCharacterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet);
 	enum THEM_DEFTOWER_TYPE getDefTowerType();
 	enum THEM_DELAY_UNINIT_FLAG getDefTowerDelayUninitType() const;
-	void getAniTagByDesc(const char* cszpDesc, int* pnRet);
-	void getAniFrameInfoByTag(const char* cszpTag, CHARACTER_ANI_FRAMEINFO_PTR* ppRet);
-	void getWarriorExistsByAngle(const float cfAngle, thBool* pbRet);
+	void getAniTagByDesc(const char* cszpDesc, int* pnRet) const;
+	void getAniFrameInfoByTag(const char* cszpTag, CHARACTER_ANI_FRAMEINFO_PTR* ppRet) const;
+	void getWarriorExistsByAngle(const float cfAngle, thBool* pbRet) const;
 	void getRandWarriorTypeDesc(CHARACTER_DESC_PTR* ppRet);
-	void getIsHoverDefTower(thBool* pbRet);
+	void getIsHoverDefTower(thBool* pbRet) const;
+	void getCurSkillArray(TH_SKILL_PTR* ppRet, const int cnSize);
 	const float getQmScale() const;
 
 	void setUninitFlag();
@@ -171,8 +180,8 @@ private:
 	void _initAllWarriorsMovePosWithXY(const float cfX, const float cfY);
 	thBool _getSpArrayVacantPos(short* psRet);
 	thBool _getWarArrayVacantPos(short* psRet);
-	void _setSpTowerPositionTweaks();
-	void _setSpTowerPositionTweaksWarrior();
+	thBool _setSpTowerSpecialValues();
+	thBool _setSpTowerSpecialValuesWarrior();
 	thBool _setPlayerAniBasicWarriorTower();
 	thBool _setPlayAniOpenTheDoor();
 	thBool _setPlayAniCloseTheDoor();
@@ -211,6 +220,8 @@ private:
 	CHARACTER_DESC_PTR				m_ptBulletDesc;
 	/* 点击菜单 */
 	DEFTOWER_QUICKMENU				m_tChacFrameQuickMenuBg;
+	/* 当前防御塔技能. */
+	TH_SKILL_PTR					m_arrpCurSkill[THMAX_TOWER_SKILL_COUNT];
 };
 typedef CThDefTower* CThDefTower_ptr;
 
@@ -230,9 +241,10 @@ public:
 	thBool destoryQmWarriorLevel4(DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget);
 	thBool getMouseCursorIsPlayAni(const int cnAniTag);
 	thBool getIsClickInMoveRangeHalo(Vec2 vecPosInView);
-	thBool getChacSkillPos(const int nSkillCnt, int arrarrnRet[][2]);
-	thBool getChacSkillLevelPointPos(const short csCnt, float* arrfRet, TH_SKILL_PTR pSk);
+	thBool getChacSkillPos(const int nSkillCnt, float arrarrfRet[][2]);
+	thBool getChacSkillLevelPointPos(const short csPos, float* arrfRet, TH_SKILL_PTR pSk);
 	thBool setChacSkillLevelPoint(enum THEM_CHARACTER_LEVEL emLv, TH_SKILL_PTR pSk);
+	thBool setChacSkillPrice(TH_SKILL_PTR pSk);
 	enum THEM_DELAY_UNINIT_FLAG getDefTowerDelayUninitType() const;
 	void setMouseCursorAni(enum THEM_QM_MOUSECURSOR emMouseType);
 	void setStopUninit();
@@ -269,6 +281,8 @@ private:
 	EventListenerMouse* m_pMouse;
 	enum THEM_DEFTOWER_TYPE m_emTagTowerType;
 	enum THEM_DELAY_UNINIT_FLAG m_emStepUninit;
+	TH_SKILL_PTR m_arrpCurSk[THMAX_TOWER_SKILL_COUNT];
+	THQM_PRICE_PTR m_arrpQmPrice[THMAX_TOWER_SKILL_COUNT];
 
 	DrawNode* m_pMoveRangeHaloJudge;
 };

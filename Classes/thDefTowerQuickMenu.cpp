@@ -33,6 +33,7 @@ CThDefTowerQuickMenu::CThDefTowerQuickMenu()
 	m_ptCurrentMouse						= NULL;
 	m_emTagTowerType						= THEM_DEFTOWER_TYPE::DEFTOWERTYPE_UNKNOW;
 	m_emStepUninit							= THEM_DELAY_UNINIT_FLAG::FLAG_NOTNEED_UNINIT;
+	memset(m_arrpCurSk, 0, sizeof(TH_SKILL_PTR) * THMAX_TOWER_SKILL_COUNT);
 }
 
 CThDefTowerQuickMenu::~CThDefTowerQuickMenu()
@@ -49,6 +50,7 @@ thBool CThDefTowerQuickMenu::init()
 	TH_PROCESS_SUCCESS(m_pMouse);
 	m_pMouse = EventListenerMouse::create();
 
+	memset(m_arrpQmPrice, 0, sizeof(THQM_PRICE_PTR) * THMAX_TOWER_SKILL_COUNT);
 	if (NULL == m_ptSellHoverBorder)
 	{
 		bRet = CThBaseCharacter::initCharacterWithPlistSimple("Quickmenu sell border", cszpSpTex, 34, &m_ptSellHoverBorder);
@@ -65,7 +67,10 @@ thBool CThDefTowerQuickMenu::init()
 	}
 	if (NULL == m_ptSkillHoverBorder)
 	{
-
+		bRet = CThBaseCharacter::initCharacterWithPlistSimple("Quickmenu skill border", cszpSpTex, 90, &m_ptSkillHoverBorder);
+		TH_PROCESS_ERROR(bRet);
+		m_ptSkillHoverBorder->pSpCharacter->setVisible(THFALSE);
+		this->addChild(m_ptSkillHoverBorder->pSpCharacter);
 	}
 	if (NULL == m_ptMoveRangeHalo)
 	{
@@ -187,6 +192,15 @@ void CThDefTowerQuickMenu::uninit()
 	/* m_ptCurrentMouse 不是堆上的内存, 直接置空. */
 	m_ptCurrentMouse = NULL;
 
+	for (short s = 0; s < THMAX_TOWER_SKILL_COUNT; s++)
+	{
+		TH_RUN_SUCCESS(NULL != m_arrpQmPrice[s], THFREE(m_arrpQmPrice[s]->ptBg));
+		THFREE(m_arrpQmPrice[s]);
+	
+	}
+
+	CThCcCharacterSkillHanlder::getInstance()->uninitWarriorSkillLv4Union(m_ptQm->puChacSkill);
+
 	unscheduleUpdate();
 	CTHCcBaseHandler::getInstance()->setShowWinMouseCursor(THTRUE);
 	Director::getInstance()->getEventDispatcher()->removeEventListener(m_pMouse);
@@ -249,7 +263,7 @@ thBool CThDefTowerQuickMenu::getIsClickInMoveRangeHalo(Vec2 vecPosInView)
 }
 
 /* 获取技能图标位置, 最大 5 个. */
-thBool CThDefTowerQuickMenu::getChacSkillPos(const int nSkillCnt, int arrarrnRet[][2])
+thBool CThDefTowerQuickMenu::getChacSkillPos(const int nSkillCnt, float arrarrfRet[][2])
 {
 	thBool bRet = THFALSE;
 	CHARACTER_FRAMEINFO_PTR ptTower = NULL;
@@ -263,8 +277,8 @@ thBool CThDefTowerQuickMenu::getChacSkillPos(const int nSkillCnt, int arrarrnRet
 	case 1:
 	{
 		fBgRadius = m_ptQm->pBg->pSpCharacter->getBoundingBox().size.height / 2;
-		arrarrnRet[0][0] = m_ptQm->pBg->pSpCharacter->getPositionX() + cos(90 * (M_PI / 180));
-		arrarrnRet[0][1] = m_ptQm->pBg->pSpCharacter->getPositionY() + fBgRadius + sin(90 * (M_PI / 180));
+		TH_GETX(arrarrfRet[0]) = m_ptQm->pBg->pSpCharacter->getPositionX() + cos(90 * (M_PI / 180));
+		TH_GETY(arrarrfRet[0]) = m_ptQm->pBg->pSpCharacter->getPositionY() + fBgRadius + sin(90 * (M_PI / 180));
 		break;
 	}
 	case 2:
@@ -276,23 +290,23 @@ thBool CThDefTowerQuickMenu::getChacSkillPos(const int nSkillCnt, int arrarrnRet
 			fBgWidth * fBgWidth +
 			fBgHight * fBgHight
 		) * 0.34f;
-		arrarrnRet[0][0] = m_ptQm->pBg->pSpCharacter->getPositionX() - fBgRadius - cos(60 * (M_PI / 180));
-		arrarrnRet[0][1] = m_ptQm->pBg->pSpCharacter->getPositionY() + fBgRadius + sin(60 * (M_PI / 180));
-		arrarrnRet[1][0] = m_ptQm->pBg->pSpCharacter->getPositionX() + fBgRadius + cos(60 * (M_PI / 180));
-		arrarrnRet[1][1] = arrarrnRet[0][1];
+		TH_GETX(arrarrfRet[0]) = m_ptQm->pBg->pSpCharacter->getPositionX() - fBgRadius - cos(60 * (M_PI / 180));
+		TH_GETY(arrarrfRet[0]) = m_ptQm->pBg->pSpCharacter->getPositionY() + fBgRadius + sin(60 * (M_PI / 180));
+		TH_GETX(arrarrfRet[1]) = m_ptQm->pBg->pSpCharacter->getPositionX() + fBgRadius + cos(60 * (M_PI / 180));
+		TH_GETY(arrarrfRet[1]) = TH_GETY(arrarrfRet[0]);
 		break;
 	}
 	case 3:
 	{
-
+		break;
 	}
 	case 4:
 	{
-
+		break;
 	}
 	case 5:
 	{
-
+		break;
 	}
 	default:
 		break;
@@ -302,17 +316,40 @@ Exit0:
 	return bRet;
 }
 
-thBool CThDefTowerQuickMenu::getChacSkillLevelPointPos(const short csCnt, float* arrfRet, TH_SKILL_PTR pSk)
+thBool CThDefTowerQuickMenu::getChacSkillLevelPointPos(const short csPos, float* arrfRet, TH_SKILL_PTR pSk)
 {
 	thBool bRet = THFALSE;
-	float fRadius = pSk->pChacFrSkill->pSpCharacter->getBoundingBox().size.height / 2;
+	float fRadius = pSk->pChacFrSkill->pSpCharacter->getBoundingBox().size.height / 2 - 5;
 	float fTagX = 0.f;
 	float fTagY = 0.f;
+	float fAngle = 0.f;
 
-	for (short s = 0; s < csCnt; s++)
+	switch (csPos)
 	{
-		TH_GETX(arrfRet) = pSk->pChacFrSkill->pSpCharacter->getPositionX() + cos(90 * (M_PI / 180));
-		TH_GETY(arrfRet) = pSk->pChacFrSkill->pSpCharacter->getPositionY() + fRadius + sin(90 * (M_PI / 180));
+	case 1:
+	{
+		fAngle = 90.f;
+		TH_GETX(arrfRet) = pSk->pChacFrSkill->pSpCharacter->getPositionX() + cos(fAngle * (M_PI / 180));
+		TH_GETY(arrfRet) = pSk->pChacFrSkill->pSpCharacter->getPositionY() + fRadius + sin(fAngle * (M_PI / 180));
+		break;
+	}
+	case 2:
+	{
+		fAngle = 45.f;
+		fRadius = fRadius * 2 / 3;
+		TH_GETX(arrfRet) = pSk->pChacFrSkill->pSpCharacter->getPositionX() + fRadius + cos(fAngle * (M_PI / 180));
+		TH_GETY(arrfRet) = pSk->pChacFrSkill->pSpCharacter->getPositionY() + fRadius + sin(fAngle * (M_PI / 180));
+		break;
+	}
+	case 3:
+	{
+		fAngle = 0.f;
+		TH_GETX(arrfRet) = pSk->pChacFrSkill->pSpCharacter->getPositionX() + fRadius + cos(fAngle * (M_PI / 180));
+		TH_GETY(arrfRet) = pSk->pChacFrSkill->pSpCharacter->getPositionY() + sin(fAngle * (M_PI / 180));
+		break;
+	}
+	default:
+		break;
 	}
 
 	bRet = THTRUE;
@@ -323,10 +360,8 @@ Exit0:
 thBool CThDefTowerQuickMenu::setChacSkillLevelPoint(enum THEM_CHARACTER_LEVEL emLv, TH_SKILL_PTR pSk)
 {
 	thBool bRet = THFALSE;
-	
 	float fSkHeight = 0.f;
 	float fSkWidth = 0.f;
-
 	float arrfPosRet[2] = { 0 };
 	char szarrSkillPointIni[MAX_PATH] = { 0 };
 	CHARACTER_DESC_PTR pSkPointDesc = NULL;
@@ -340,37 +375,61 @@ thBool CThDefTowerQuickMenu::setChacSkillLevelPoint(enum THEM_CHARACTER_LEVEL em
 	{
 		bRet = initCharacterWithPlist(pSkPointDesc, &pSk->arrpSkillLevelPoint[s]);
 		TH_PROCESS_ERROR(bRet);
+
+		bRet = getChacSkillLevelPointPos(s + 1, arrfPosRet, pSk);
+		TH_PROCESS_ERROR(bRet);
+		pSk->arrpSkillLevelPoint[s]->pSpCharacter->setPositionX(TH_GETX(arrfPosRet));
+		pSk->arrpSkillLevelPoint[s]->pSpCharacter->setPositionY(TH_GETY(arrfPosRet));
+
 		/* 函数外进行 addChild, Z 值靠前. */
 	}
 	fSkHeight = pSk->arrpSkillLevelPoint[0]->pSpCharacter->getBoundingBox().size.height;
 	fSkHeight = pSk->arrpSkillLevelPoint[0]->pSpCharacter->getBoundingBox().size.width;
 
-	switch (emLv)
-	{
-	case CHARACTER_LEVEL_1:
-	{
-		bRet = getChacSkillLevelPointPos(int(emLv), arrfPosRet, pSk);
-		TH_PROCESS_ERROR(bRet);
-		pSk->arrpSkillLevelPoint[0]->pSpCharacter->setPositionX(TH_GETX(arrfPosRet));
-		pSk->arrpSkillLevelPoint[0]->pSpCharacter->setPositionY(TH_GETY(arrfPosRet));
-		break;
-	}
-	case CHARACTER_LEVEL_2:
-	{
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
 
-		break;
+thBool CThDefTowerQuickMenu::setChacSkillPrice(TH_SKILL_PTR pSk)
+{
+	thBool bRet = THFALSE;
+	short sTag = 0;
+	float fBgY = pSk->pChacFrSkill->pSpCharacter->getPositionY() - pSk->pChacFrSkill->pSpCharacter->getBoundingBox().size.height / 2 + 12;
+	char szarrPrice[6] = { 0 };
+	Color3B tFontColor;
+
+	for (short s = 0; s < THMAX_TOWER_SKILL_COUNT; s++)
+	{
+		if (NULL == m_arrpQmPrice[s])
+		{
+			sTag = s;
+			break;
+		}
 	}
-	case CHARACTER_LEVEL_3:
-		break;
-	case CHARACTER_LEVEL_4:
-		break;
-	case CHARACTER_LEVEL_5:
-		break;
-	case CHARACTER_MAXLEVEL:
-		break;
-	default:
-		break;
-	}
+
+	sprintf_s(szarrPrice, "%d", pSk->nSkillPrice);
+	m_arrpQmPrice[sTag] = THMALLOC(THQM_PRICE, sizeof(THQM_PRICE));
+	TH_PROCESS_ERROR(m_arrpQmPrice[sTag]);
+	m_arrpQmPrice[sTag]->pLbText = Label::createWithTTF(szarrPrice, "fonts\\Marker Felt.ttf", 18);
+	TH_PROCESS_ERROR(m_arrpQmPrice[sTag]->pLbText);
+
+	tFontColor.r = 254;
+	tFontColor.g = 253;
+	tFontColor.b = 0;
+
+	/* 文字背景. */
+	bRet = CThBaseCharacter::initCharacterWithPlistSimple("price bg", "Quickmenu Material_", 79, &m_arrpQmPrice[sTag]->ptBg);
+	TH_PROCESS_ERROR(bRet);
+	m_arrpQmPrice[sTag]->ptBg->pSpCharacter->setPosition(pSk->pChacFrSkill->pSpCharacter->getBoundingBox().getMidX(), fBgY);
+	m_arrpQmPrice[sTag]->ptBg->pSpCharacter->setAnchorPoint(Vec2(0.5, 1));
+	m_arrpQmPrice[sTag]->ptBg->pSpCharacter->setScale(0.8f);
+
+	/* 文字, 靠上中. */
+	m_arrpQmPrice[sTag]->pLbText->setAnchorPoint(Vec2(0.5, 1));
+	m_arrpQmPrice[sTag]->pLbText->setPosition(pSk->pChacFrSkill->pSpCharacter->getBoundingBox().getMidX(), fBgY - 7);
+	m_arrpQmPrice[sTag]->pLbText->setColor(tFontColor);
+
 	bRet = THTRUE;
 Exit0:
 	return bRet;
@@ -521,42 +580,61 @@ thBool CThDefTowerQuickMenu::createQmWarriorLevel4(const float cfX, const float 
 	m_pTaget = pTaget;
 	m_emTagTowerType = m_pTaget->getDefTowerType();
 	m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_NOTNEED_UNINIT;
-	int arrarrnSkillPos[2][2] = { 0, 0 };
+	float arrarrfSkillPos[THMAX_TOWER_SKILL_COUNT][2] = { 0 };
 
 	bRet = init();
 	TH_PROCESS_ERROR(bRet);
 	bRet = createBasicQm(cfX, cfY, cfTagScale, ptDefTowerQm);
 	TH_PROCESS_ERROR(bRet);
 
+	/* 技能图标. */
 	bRet = CThCcCharacterSkillHanlder::getInstance()->setTargetSkillUnion(ptDefTowerQm->emTowerType, ptDefTowerQm->emCharacterLevel, THTRUE, &m_ptQm->puChacSkill, &m_ptQm->nChacSkillCnt);
 	TH_PROCESS_ERROR(bRet);
-	bRet = getChacSkillPos(m_ptQm->nChacSkillCnt, arrarrnSkillPos);
+	bRet = getChacSkillPos(m_ptQm->nChacSkillCnt, arrarrfSkillPos);
 	TH_PROCESS_ERROR(bRet);
 
-	GETSK_DOLLREPAIR(m_ptQm)->pSpCharacter->setPositionX(arrarrnSkillPos[0][0]);
-	GETSK_DOLLREPAIR(m_ptQm)->pSpCharacter->setPositionY(arrarrnSkillPos[0][1]);
-	setChacSkillLevelPoint(GETSK_DOLLREPAIR(m_ptQm)->emMaxLevel, m_ptQm->puChacSkill->ptAliceMargatroidLv4Skill->ptSkDollRepair);
+	GETSK_FRAMEINFO_DOLLREPAIR(m_ptQm)->pSpCharacter->setPositionX(TH_GETX(arrarrfSkillPos[0]));
+	GETSK_FRAMEINFO_DOLLREPAIR(m_ptQm)->pSpCharacter->setPositionY(TH_GETY(arrarrfSkillPos[0]));
+	bRet = setChacSkillLevelPoint(GETSK_FRAMEINFO_DOLLREPAIR(m_ptQm)->emMaxLevel, GETSK_DOLLREPAIR(m_ptQm));
+	TH_PROCESS_ERROR(bRet);
+	bRet = setChacSkillPrice(GETSK_DOLLREPAIR(m_ptQm));
+	TH_PROCESS_ERROR(bRet);
+	m_arrpCurSk[0] = GETSK_DOLLREPAIR(m_ptQm);
 
-	GETSK_DOLLSTRENGTHEM(m_ptQm)->pSpCharacter->setPositionX(arrarrnSkillPos[1][0]);
-	GETSK_DOLLSTRENGTHEM(m_ptQm)->pSpCharacter->setPositionY(arrarrnSkillPos[1][1]);
+	GETSK_FRAMEINFO_DOLLSTRENGTHEM(m_ptQm)->pSpCharacter->setPositionX(TH_GETX(arrarrfSkillPos[1]));
+	GETSK_FRAMEINFO_DOLLSTRENGTHEM(m_ptQm)->pSpCharacter->setPositionY(TH_GETY(arrarrfSkillPos[1]));
+	bRet = setChacSkillLevelPoint(GETSK_FRAMEINFO_DOLLSTRENGTHEM(m_ptQm)->emMaxLevel, GETSK_DOLLSTRENGTHEM(m_ptQm));
+	TH_PROCESS_ERROR(bRet);
+	bRet = setChacSkillPrice(GETSK_DOLLSTRENGTHEM(m_ptQm));
+	TH_PROCESS_ERROR(bRet);
+	m_arrpCurSk[1] = GETSK_DOLLSTRENGTHEM(m_ptQm);
 
-	this->addChild(GETSK_DOLLREPAIR(m_ptQm)->pSpCharacter);
-	this->addChild(GETSK_DOLLSTRENGTHEM(m_ptQm)->pSpCharacter);
+	this->addChild(GETSK_FRAMEINFO_DOLLREPAIR(m_ptQm)->pSpCharacter);
+	this->addChild(GETSK_FRAMEINFO_DOLLSTRENGTHEM(m_ptQm)->pSpCharacter);
 
-	for (short s = 0; s < (int)GETSK_DOLLREPAIR(m_ptQm)->emMaxLevel; s++)
+	/* 技能点. */
+	for (short s = 0; s < (int)GETSK_FRAMEINFO_DOLLREPAIR(m_ptQm)->emMaxLevel; s++)
 	{
-		this->addChild(m_ptQm->puChacSkill->ptAliceMargatroidLv4Skill->ptSkDollRepair->arrpSkillLevelPoint[s]->pSpCharacter);
+		this->addChild(GETSK_DOLLREPAIR(m_ptQm)->arrpSkillLevelPoint[s]->pSpCharacter);
 	}
+	for (short s = 0; s < (int)GETSK_FRAMEINFO_DOLLSTRENGTHEM(m_ptQm)->emMaxLevel; s++)
+	{
+		this->addChild(GETSK_DOLLSTRENGTHEM(m_ptQm)->arrpSkillLevelPoint[s]->pSpCharacter);
+	}
+
+	/* 技能售价. */
+	for (short s = 0; s < THMAX_TOWER_SKILL_COUNT; s++)
+	{
+		TH_RUN_SUCCESS(NULL != m_arrpQmPrice[s], this->addChild(m_arrpQmPrice[s]->ptBg->pSpCharacter));
+		TH_RUN_SUCCESS(NULL != m_arrpQmPrice[s], this->addChild(m_arrpQmPrice[s]->pLbText));
+	}
+
 	/* 设置一下范围圈的坐标. 防御塔锚点是 0.5, 0, 也同步修改一下. */
 	m_ptMoveRangeHalo->pSpCharacter->setPosition(pTaget->getPosition());
 	m_ptMoveSelectedMouse->pSpCharacter->setScale(cfTagScale);
 
 	bRet = THTRUE;
 Exit0:
-	if (NULL != m_ptQm->puChacSkill)
-	{
-		CThCcCharacterSkillHanlder::getInstance()->uninitWarriorSkillLv4Union(m_ptQm->puChacSkill);
-	}
 	return bRet;
 }
 
@@ -581,22 +659,30 @@ void CThDefTowerQuickMenu::onMouseUp(EventMouse* pMouse)
 
 	TH_PROCESS_SUCCESS(NULL == m_ptQm);
 
-	nSpMoveTag = m_ptQm->pCommandMovement->pSpCharacter->getTag();
-	/* 检查出售按钮. */
-	bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pSellTower->pSpCharacter, vecMousePos, THFALSE);
-	if (bRet)
+	if (EventMouse::MouseButton::BUTTON_LEFT == pMouse->getMouseButton())
 	{
-		m_pTaget->setUninitFlag();
-	}
-	/* 检查移动按钮. */
-	bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pCommandMovement->pSpCharacter, vecMousePos, THFALSE);
-	if (bRet && THSP_FLAG_ENABLE == nSpMoveTag)
-	{
-		m_ptMoveRangeHalo->pSpCharacter->setVisible(THTRUE);
-		setMouseCursorAni(THEM_QM_MOUSECURSOR::CUR_SELECTING_POSITION);
-	}
+		nSpMoveTag = m_ptQm->pCommandMovement->pSpCharacter->getTag();
+		/* 检查出售按钮. */
+		bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pSellTower->pSpCharacter, vecMousePos, THFALSE);
+		if (bRet)
+		{
+			m_pTaget->setUninitFlag();
+		}
+		/* 检查移动按钮. */
+		bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pCommandMovement->pSpCharacter, vecMousePos, THFALSE);
+		if (bRet && THSP_FLAG_ENABLE == nSpMoveTag)
+		{
+			m_ptMoveRangeHalo->pSpCharacter->setVisible(THTRUE);
+			setMouseCursorAni(THEM_QM_MOUSECURSOR::CUR_SELECTING_POSITION);
+		}
 
-	pMouse->stopPropagation();
+		pMouse->stopPropagation();
+	}
+	else if (EventMouse::MouseButton::BUTTON_RIGHT == pMouse->getMouseButton())
+	{
+
+	}
+	
 	
 Exit1:
 	bRet = THTRUE;
@@ -613,46 +699,54 @@ void CThDefTowerQuickMenu::onMouseDown(EventMouse* pMouse)
 	
 	TH_PROCESS_SUCCESS(NULL == m_ptQm);
 
-	/* 如果正在播放错误动画则 PASS. */
-	if (THFALSE == getMouseCursorIsPlayAni(TH_ANITAG_MOVEERROR))
+	if (EventMouse::MouseButton::BUTTON_LEFT == pMouse->getMouseButton())
 	{
-		/* 如果是按钮, 阻止事件传播. */
-		bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pSellTower->pSpCharacter, vecMousePos, THFALSE) ||
-			CThBaseCharacter::getIsHoverSprite(m_ptQm->pCommandMovement->pSpCharacter, vecMousePos, THFALSE);
-
-		if (bRet)
+		/* 如果正在播放错误动画则 PASS. */
+		if (THFALSE == getMouseCursorIsPlayAni(TH_ANITAG_MOVEERROR))
 		{
-			pMouse->stopPropagation();
-		}
+			/* 如果是按钮, 阻止事件传播. */
+			bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pSellTower->pSpCharacter, vecMousePos, THFALSE) ||
+				CThBaseCharacter::getIsHoverSprite(m_ptQm->pCommandMovement->pSpCharacter, vecMousePos, THFALSE);
 
-		/* 指挥移动 */
-		if (THTRUE == m_ptMoveSelectingMouse->pSpCharacter->isVisible())
-		{
-			m_pTaget->getCharacterFrameInfo(&ptTower);
-			bRet = getIsClickInMoveRangeHalo(vecMousePos) &&
-				!CThBaseCharacter::getIsHoverSprite(ptTower->pSpCharacter, vecMousePos, THFALSE);
-			
 			if (bRet)
 			{
-				/* 可通行. */
-				setMouseCursorAni(THEM_QM_MOUSECURSOR::CUR_SELECTED_POSITION);
-				bRet = m_pTaget->setWarriorsOverallMovement(vecMousePos.x, vecMousePos.y);
-				TH_PROCESS_ERROR(bRet);
-			}
-			else
-			{
-				/* 立入禁止. */
-				setMouseCursorAni(THEM_QM_MOUSECURSOR::CUR_SELECTERR_POSITION);
 				pMouse->stopPropagation();
 			}
+
+			/* 指挥移动 */
+			if (THTRUE == m_ptMoveSelectingMouse->pSpCharacter->isVisible())
+			{
+				m_pTaget->getCharacterFrameInfo(&ptTower);
+				bRet = getIsClickInMoveRangeHalo(vecMousePos) &&
+					!CThBaseCharacter::getIsHoverSprite(ptTower->pSpCharacter, vecMousePos, THFALSE);
+
+				if (bRet)
+				{
+					/* 可通行. */
+					setMouseCursorAni(THEM_QM_MOUSECURSOR::CUR_SELECTED_POSITION);
+					bRet = m_pTaget->setWarriorsOverallMovement(vecMousePos.x, vecMousePos.y);
+					TH_PROCESS_ERROR(bRet);
+				}
+				else
+				{
+					/* 立入禁止. */
+					setMouseCursorAni(THEM_QM_MOUSECURSOR::CUR_SELECTERR_POSITION);
+					pMouse->stopPropagation();
+				}
+			}
+		}
+		/* 移动错误时可以持续点击. */
+		if (NULL != m_ptMoveSelectedErrorMouse->pSpCharacter->getActionByTag(TH_ANITAG_MOVEERROR))
+		{
+			setMouseCursorAni(THEM_QM_MOUSECURSOR::CUR_SELECTERR_POSITION);
+			pMouse->stopPropagation();
 		}
 	}
-	/* 移动错误时可以持续点击. */
-	if (NULL != m_ptMoveSelectedErrorMouse->pSpCharacter->getActionByTag(TH_ANITAG_MOVEERROR))
+	else if (EventMouse::MouseButton::BUTTON_RIGHT == pMouse->getMouseButton())
 	{
-		setMouseCursorAni(THEM_QM_MOUSECURSOR::CUR_SELECTERR_POSITION);
-		pMouse->stopPropagation();
+
 	}
+
 
 Exit1:
 	bRet = THTRUE;
@@ -684,7 +778,7 @@ void CThDefTowerQuickMenu::onMouseMove(EventMouse* pMouse)
 	if (bRet)
 	{
 		m_ptSellHoverBorder->pSpCharacter->setPosition(m_ptQm->pSellTower->pSpCharacter->getPosition());
-		m_ptSellHoverBorder->pSpCharacter->setScale(m_ptQm->pSellTower->pSpCharacter->getScale());
+		m_ptSellHoverBorder->pSpCharacter->setScale(m_ptQm->pSellTower->pSpCharacter->getScale() + 0.05f);
 	}
 	else
 	{
@@ -696,10 +790,26 @@ void CThDefTowerQuickMenu::onMouseMove(EventMouse* pMouse)
 	if (bRet)
 	{
 		m_ptMoveHoverBorder->pSpCharacter->setPosition(m_ptQm->pCommandMovement->pSpCharacter->getPosition());
-		m_ptMoveHoverBorder->pSpCharacter->setScale(m_ptQm->pCommandMovement->pSpCharacter->getScale());
+		m_ptMoveHoverBorder->pSpCharacter->setScale(m_ptQm->pCommandMovement->pSpCharacter->getScale() + 0.05f);
 	}
 	else
 	{
+	}
+
+	/* 检查技能按钮. */
+	for (short s = 0; s < THMAX_TOWER_SKILL_COUNT; s++)
+	{
+		if (NULL != m_arrpCurSk[s])
+		{
+			bRet = CThBaseCharacter::getIsHoverSprite(m_arrpCurSk[s]->pChacFrSkill->pSpCharacter, vecMousePos, THFALSE);
+			m_ptSkillHoverBorder->pSpCharacter->setVisible(bRet);
+			if (bRet)
+			{
+				m_ptSkillHoverBorder->pSpCharacter->setPosition(m_arrpCurSk[s]->pChacFrSkill->pSpCharacter->getPosition());
+				m_ptSkillHoverBorder->pSpCharacter->setScale(m_arrpCurSk[s]->pChacFrSkill->pSpCharacter->getScale() + 0.05f);
+				break;
+			}
+		}
 	}
 
 Exit1:

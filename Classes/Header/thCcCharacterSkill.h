@@ -11,17 +11,20 @@
 
 #include "thCcCharacter.h"
 
+#define GETSK_DOLLREPAIR(p)					p->puChacSkill->ptAliceMargatroidLv4Skill->ptSkDollRepair
+#define GETSK_FRAMEINFO_DOLLREPAIR(p)		p->puChacSkill->ptAliceMargatroidLv4Skill->ptSkDollRepair->pChacFrSkill
+#define GETSK_DOLLSTRENGTHEM(p)				p->puChacSkill->ptAliceMargatroidLv4Skill->ptSkDollStrengthem
+#define GETSK_FRAMEINFO_DOLLSTRENGTHEM(p)	p->puChacSkill->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->pChacFrSkill
 
-#define GETSK_DOLLREPAIR(p)		p->puChacSkill->ptAliceMargatroidLv4Skill->ptSkDollRepair->pChacFrSkill
-#define GETSK_DOLLSTRENGTHEM(p) p->puChacSkill->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->pChacFrSkill
 
 struct _tSkill
 {
 	char szarrSkill[THMAX_CHAR_DESC];
 	CHARACTER_FRAMEINFO_PTR pChacFrSkill;
 	CHARACTER_FRAMEINFO_PTR arrpSkillLevelPoint[THMAX_SKILL_LEVEL];
-	SpriteFrame* pSpFrLevelUpPoint;
+	int nSkillPrice;
 };
+
 typedef _tSkill TH_SKILL, * TH_SKILL_PTR;
 
 /* Basic universal. */
