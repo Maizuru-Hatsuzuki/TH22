@@ -34,6 +34,8 @@ CThDefTowerQuickMenu::CThDefTowerQuickMenu()
 	m_emTagTowerType						= THEM_DEFTOWER_TYPE::DEFTOWERTYPE_UNKNOW;
 	m_emStepUninit							= THEM_DELAY_UNINIT_FLAG::FLAG_NOTNEED_UNINIT;
 	memset(m_arrpCurSk, 0, sizeof(TH_SKILL_PTR) * THMAX_TOWER_SKILL_COUNT);
+	memset(m_arrpQmPrice, 0, sizeof(THQM_PRICE_PTR) * THMAX_TOWER_SKILL_COUNT);
+	memset(m_arrpQmSkText, 0, sizeof(THQM_SKTEXT_PTR) * THMAX_TOWER_SKILL_QM_COUNT);
 }
 
 CThDefTowerQuickMenu::~CThDefTowerQuickMenu()
@@ -196,7 +198,11 @@ void CThDefTowerQuickMenu::uninit()
 	{
 		TH_RUN_SUCCESS(NULL != m_arrpQmPrice[s], THFREE(m_arrpQmPrice[s]->ptBg));
 		THFREE(m_arrpQmPrice[s]);
-	
+	}
+	for (short s = 0; s < THMAX_TOWER_SKILL_QM_COUNT; s++)
+	{
+		TH_RUN_SUCCESS(NULL != m_arrpQmSkText[s], THFREE(m_arrpQmSkText[s]->ptBg));
+		THFREE(m_arrpQmSkText[s]);
 	}
 
 	CThCcCharacterSkillHanlder::getInstance()->uninitWarriorSkillLv4Union(m_ptQm->puChacSkill);
@@ -409,14 +415,8 @@ thBool CThDefTowerQuickMenu::setChacSkillPrice(TH_SKILL_PTR pSk)
 	char szarrPrice[6] = { 0 };
 	Color3B tFontColor;
 
-	for (short s = 0; s < THMAX_TOWER_SKILL_COUNT; s++)
-	{
-		if (NULL == m_arrpQmPrice[s])
-		{
-			sTag = s;
-			break;
-		}
-	}
+	bRet = _getSkPriceArrVancantPos(&sTag);
+	TH_PROCESS_ERROR(!bRet);
 
 	sprintf_s(szarrPrice, "%d", pSk->nSkillPrice);
 	m_arrpQmPrice[sTag] = THMALLOC(THQM_PRICE, sizeof(THQM_PRICE));
@@ -443,6 +443,96 @@ thBool CThDefTowerQuickMenu::setChacSkillPrice(TH_SKILL_PTR pSk)
 	bRet = THTRUE;
 Exit0:
 	return bRet;
+}
+
+thBool CThDefTowerQuickMenu::setChacSkillTextDesc(TH_SKILL_PTR pSk)
+{
+	thBool bRet = THFALSE;
+	short sTag = 0;
+	float cfPoxX = m_ptQm->pBg->pSpCharacter->getPositionX();
+	float cfPosY = m_ptQm->pBg->pSpCharacter->getBoundingBox().getMaxY() + 120;
+	char szarrSkTitleDesc[THMAX_CHAR_DESC] = { 0 };
+	char szarrMainTextDesc[THMAX_CHAR_DESC] = { 0 };
+	char szarrSubTextDesc[THMAX_CHAR_DESC] = { 0 };
+	Color3B tFontTitleColor;
+	THQM_SKTEXT_PTR pTmpSkText = NULL;
+
+	bRet = _getSkPriceArrVancantPos(&sTag);
+	TH_PROCESS_ERROR(!bRet);
+
+	tFontTitleColor.r = 196;
+	tFontTitleColor.g = 233;
+	tFontTitleColor.b = 54;
+	CThCcCharacterSkillHanlder::getInstance()->getSkillTextDescXml(pSk->szarrSkill, szarrSkTitleDesc);
+	pTmpSkText = THMALLOC(THQM_SKTEXT, sizeof(THQM_SKTEXT));
+	TH_PROCESS_ERROR(pTmpSkText);
+	strcpy_s(pTmpSkText->szarrTagSk, THMAX_CHAR_DESC, pSk->szarrSkill);
+
+	/* 文字背景. */
+	bRet = CThBaseCharacter::initCharacterWithPlistSimple("skill text bg", "Quickmenu Material_", 97, &pTmpSkText->ptBg);
+	TH_PROCESS_ERROR(bRet);
+	pTmpSkText->ptBg->pSpCharacter->setPosition(cfPoxX, cfPosY);
+	pTmpSkText->ptBg->pSpCharacter->setVisible(THFALSE);
+	pTmpSkText->ptBg->pSpCharacter->setScaleX(0.8f);
+
+	/* 文字标题. */
+	pTmpSkText->pLbTitleText = Label::createWithTTF(szarrSkTitleDesc, "fonts\\FZKai.ttf", 30);
+	TH_PROCESS_ERROR(pTmpSkText->pLbTitleText);
+	pTmpSkText->pLbTitleText->setColor(tFontTitleColor);
+	pTmpSkText->pLbTitleText->setPosition(cfPoxX, cfPosY - 3);
+	//pTmpSkText->pLbTitleText->setVisible(THFALSE);
+
+	/* 文字主介绍. */
+
+	/* 文字副介绍. */
+
+	m_arrpQmSkText[sTag] = pTmpSkText;
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+void CThDefTowerQuickMenu::getSkTextBySkillName(const char* cszpSk, THQM_SKTEXT_PTR* ppRet)
+{
+	for (short s = 0; s < THMAX_TOWER_SKILL_QM_COUNT; s++)
+	{
+		if (NULL != m_arrpQmSkText[s] && 0 == strcmp(m_arrpQmSkText[s]->szarrTagSk, cszpSk))
+		{
+			*ppRet = m_arrpQmSkText[s];
+			break;
+		}
+	}
+	return;
+}
+
+thBool CThDefTowerQuickMenu::_getSkTextArrVancantPos(short* psRet) const
+{
+	thBool bFull = THTRUE;
+	for (short i = 0; i < THMAX_SP_COUNT; i++)
+	{
+		if (NULL == m_arrpQmSkText[i])
+		{
+			bFull = THFALSE;
+			*psRet = i;
+			break;
+		}
+	}
+	return bFull;
+}
+
+thBool CThDefTowerQuickMenu::_getSkPriceArrVancantPos(short* psRet) const
+{
+	thBool bFull = THTRUE;
+	for (short i = 0; i < THMAX_SP_COUNT; i++)
+	{
+		if (NULL == m_arrpQmPrice[i])
+		{
+			bFull = THFALSE;
+			*psRet = i;
+			break;
+		}
+	}
+	return bFull;
 }
 
 enum THEM_DELAY_UNINIT_FLAG CThDefTowerQuickMenu::getDefTowerDelayUninitType() const
@@ -609,6 +699,8 @@ thBool CThDefTowerQuickMenu::createQmWarriorLevel4(const float cfX, const float 
 	TH_PROCESS_ERROR(bRet);
 	bRet = setChacSkillPrice(GETSK_DOLLREPAIR(m_ptQm));
 	TH_PROCESS_ERROR(bRet);
+	bRet = setChacSkillTextDesc(GETSK_DOLLREPAIR(m_ptQm));
+	TH_PROCESS_ERROR(bRet);
 	m_arrpCurSk[0] = GETSK_DOLLREPAIR(m_ptQm);
 
 	GETSK_FRAMEINFO_DOLLSTRENGTHEM(m_ptQm)->pSpCharacter->setPositionX(TH_GETX(arrarrfSkillPos[1]));
@@ -616,6 +708,8 @@ thBool CThDefTowerQuickMenu::createQmWarriorLevel4(const float cfX, const float 
 	bRet = setChacSkillLevelPoint(GETSK_FRAMEINFO_DOLLSTRENGTHEM(m_ptQm)->emMaxLevel, GETSK_DOLLSTRENGTHEM(m_ptQm));
 	TH_PROCESS_ERROR(bRet);
 	bRet = setChacSkillPrice(GETSK_DOLLSTRENGTHEM(m_ptQm));
+	TH_PROCESS_ERROR(bRet);
+	bRet = setChacSkillTextDesc(GETSK_DOLLSTRENGTHEM(m_ptQm));
 	TH_PROCESS_ERROR(bRet);
 	m_arrpCurSk[1] = GETSK_DOLLSTRENGTHEM(m_ptQm);
 
@@ -637,6 +731,15 @@ thBool CThDefTowerQuickMenu::createQmWarriorLevel4(const float cfX, const float 
 	{
 		TH_RUN_SUCCESS(NULL != m_arrpQmPrice[s], this->addChild(m_arrpQmPrice[s]->ptBg->pSpCharacter));
 		TH_RUN_SUCCESS(NULL != m_arrpQmPrice[s], this->addChild(m_arrpQmPrice[s]->pLbText));
+	}
+
+	/* 技能说明. */
+	for (short s = 0; s < THMAX_TOWER_SKILL_QM_COUNT; s++)
+	{
+		TH_RUN_SUCCESS(NULL != m_arrpQmSkText[s], this->addChild(m_arrpQmSkText[s]->ptBg->pSpCharacter));
+		TH_RUN_SUCCESS(NULL != m_arrpQmSkText[s], this->addChild(m_arrpQmSkText[s]->pLbTitleText));
+		//TH_RUN_SUCCESS(NULL != m_arrpQmSkText[s], this->addChild(m_arrpQmSkText[s]->pLbMainDesc));
+		//TH_RUN_SUCCESS(NULL != m_arrpQmSkText[s], this->addChild(m_arrpQmSkText[s]->pLbSubDesc));
 	}
 
 	/* 设置一下范围圈的坐标. 防御塔锚点是 0.5, 0, 也同步修改一下. */
@@ -690,7 +793,6 @@ void CThDefTowerQuickMenu::onMouseUp(EventMouse* pMouse)
 	}
 	else if (EventMouse::MouseButton::BUTTON_RIGHT == pMouse->getMouseButton())
 	{
-
 	}
 	
 	
@@ -770,6 +872,7 @@ void CThDefTowerQuickMenu::onMouseMove(EventMouse* pMouse)
 	thBool bRet = THFALSE;
 	Vec2 vecMousePos = pMouse->getLocationInView();
 	Vec2 vecMoveMouseLocationInNode;
+	THQM_SKTEXT_PTR pTmpSkText = NULL;
 	
 	TH_PROCESS_SUCCESS(NULL == m_ptQm);
 
@@ -813,10 +916,18 @@ void CThDefTowerQuickMenu::onMouseMove(EventMouse* pMouse)
 		{
 			bRet = CThBaseCharacter::getIsHoverSprite(m_arrpCurSk[s]->pChacFrSkill->pSpCharacter, vecMousePos, THFALSE);
 			m_ptSkillHoverBorder->pSpCharacter->setVisible(bRet);
+
+			/* 检查技能说明. */
+			getSkTextBySkillName(m_arrpCurSk[s]->szarrSkill, &pTmpSkText);
+			TH_PROCESS_ERROR(pTmpSkText);
+			pTmpSkText->ptBg->pSpCharacter->setVisible(bRet);
+			//pTmpSkText->pLbTitleText->setVisible(bRet);
+
 			if (bRet)
 			{
 				m_ptSkillHoverBorder->pSpCharacter->setPosition(m_arrpCurSk[s]->pChacFrSkill->pSpCharacter->getPosition());
 				m_ptSkillHoverBorder->pSpCharacter->setScale(m_arrpCurSk[s]->pChacFrSkill->pSpCharacter->getScale() + 0.05f);
+
 				break;
 			}
 		}

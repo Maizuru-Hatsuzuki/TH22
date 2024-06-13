@@ -1162,12 +1162,15 @@ thBool CThDefTower::_setCreateQmWarrior(const thBool cbIsCreate)
 		switch (m_ptTower->emCurLevel)
 		{
 		case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4:
+		{
 			bRet = CThDefTowerQuickMenu::getInstance()->destoryQmWarriorLevel4(&m_tChacFrameQuickMenuBg, this);
 			TH_PROCESS_ERROR(bRet);
 			break;
-
+		}
 		default:
+		{
 			break;
+		}
 		}
 	}
 

@@ -185,4 +185,34 @@ void CThCcCharacterSkillHanlder::uninitWarriorSkillLv4Union(CHARACTER_SKILL_UNIO
 	return;
 }
 
+thBool CThCcCharacterSkillHanlder::getSkillTextDescIni(const char* cszpSk, char* szpTitleRet) const
+{
+	thBool bRet = THFALSE;
+	char szarrTextIni[MAX_PATH] = { 0 };
+	TH_GETWINRESPATH(szarrTextIni, "data\\String\\skillText.ini");
+	
+	GetPrivateProfileStringA(cszpSk, "Title", "NA", szpTitleRet, THMAX_CHAR_DESC, szarrTextIni);
 
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+thBool CThCcCharacterSkillHanlder::getSkillTextDescXml(const char* cszpSk, char* szpTitleRet) const
+{
+	thBool bRet = THFALSE;
+	const char* cszpXml = "data\\String\\string_skillDesc.xml";
+	char szarrTmpRet[THMAX_CHAR_DESC] = { 0 };
+	WCHAR wszarrTmp[THMAX_CHAR_DESC] = { 0 };
+	ValueMap pTextMap = FileUtils::getInstance()->getValueMapFromFile(cszpXml);
+
+	sprintf_s(szarrTmpRet, THMAX_CHAR_DESC, "%sTitle", cszpSk);
+	std::string strRet = pTextMap[szarrTmpRet].asString();
+	const char* cszpTitle = strRet.c_str();
+
+	strcpy_s(szpTitleRet, THMAX_CHAR_DESC, cszpTitle);
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}

@@ -69,8 +69,10 @@ class CThCcCharacterSkillHanlder
 public:
 	static CThCcCharacterSkillHanlder* getInstance();
 
-	thBool setTargetSkillUnion(enum THEM_DEFTOWER_TYPE emChacType, enum THEM_CHARACTER_LEVEL emLevel, const thBool cbIsInit, CHARACTER_SKILL_UNION_PTR* ppRet, int* pnSkillCnt);
 	thBool getGeneralSkill(CHARACTER_SKILL_UNION_PTR* ppRet);
+	thBool getSkillTextDescIni(const char* cszpSk, char* szpTitleRet) const;
+	thBool getSkillTextDescXml(const char* cszpSk, char* szpTitleRet) const;
+	thBool setTargetSkillUnion(enum THEM_DEFTOWER_TYPE emChacType, enum THEM_CHARACTER_LEVEL emLevel, const thBool cbIsInit, CHARACTER_SKILL_UNION_PTR* ppRet, int* pnSkillCnt);
 	thBool setWarriorSkillUnion(enum THEM_CHARACTER_LEVEL emLevel, const thBool cbIsInit, CHARACTER_SKILL_UNION_PTR* ppRet, int* pnSkillCnt);
 
 	thBool initWarriorSkillLv4Union(CHARACTER_SKILL_UNION_PTR* ppRet, int* pnSkillCnt);

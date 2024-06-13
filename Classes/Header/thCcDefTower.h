@@ -24,7 +24,18 @@ struct _tQmPrice
 	CHARACTER_FRAMEINFO_PTR ptBg;
 	Label* pLbText;
 };
+
+struct _tQmSkTextDesc
+{
+	CHARACTER_FRAMEINFO_PTR ptBg;
+	Label* pLbTitleText;
+	Label* pLbMainDesc;
+	Label* pLbSubDesc;
+	char szarrTagSk[THMAX_CHAR_DESC];
+};
+
 typedef struct _tQmPrice THQM_PRICE, * THQM_PRICE_PTR;
+typedef struct _tQmSkTextDesc THQM_SKTEXT, * THQM_SKTEXT_PTR;
 
 
 class CThDefTowerWarrior :
@@ -244,8 +255,10 @@ public:
 	thBool getIsClickInMoveRangeHalo(Vec2 vecPosInView);
 	thBool getChacSkillPos(const int nSkillCnt, float arrarrfRet[][2]);
 	thBool getChacSkillLevelPointPos(const short csPos, float* arrfRet, TH_SKILL_PTR pSk);
+	void getSkTextBySkillName(const char* cszpSk, THQM_SKTEXT_PTR* ppRet);
 	thBool setChacSkillLevelPoint(enum THEM_CHARACTER_LEVEL emLv, TH_SKILL_PTR pSk);
 	thBool setChacSkillPrice(TH_SKILL_PTR pSk);
+	thBool setChacSkillTextDesc(TH_SKILL_PTR pSk);
 	enum THEM_DELAY_UNINIT_FLAG getDefTowerDelayUninitType() const;
 	void setMouseCursorAni(enum THEM_QM_MOUSECURSOR emMouseType);
 	void setStopUninit();
@@ -256,6 +269,10 @@ public:
 	void update(float dt);
 
 	virtual thBool delayUninitMonitoring();
+
+private:
+	thBool _getSkTextArrVancantPos(short* psRet) const;
+	thBool _getSkPriceArrVancantPos(short* psRet) const;
 
 private:
 	CThDefTowerQuickMenu();
@@ -282,8 +299,10 @@ private:
 	EventListenerMouse* m_pMouse;
 	enum THEM_DEFTOWER_TYPE m_emTagTowerType;
 	enum THEM_DELAY_UNINIT_FLAG m_emStepUninit;
-	TH_SKILL_PTR m_arrpCurSk[THMAX_TOWER_SKILL_COUNT];
-	THQM_PRICE_PTR m_arrpQmPrice[THMAX_TOWER_SKILL_COUNT];
+	TH_SKILL_PTR			m_arrpCurSk[THMAX_TOWER_SKILL_COUNT];
+	THQM_PRICE_PTR			m_arrpQmPrice[THMAX_TOWER_SKILL_COUNT];
+	/* 多一个售出按钮的介绍位置. */
+	THQM_SKTEXT_PTR			m_arrpQmSkText[THMAX_TOWER_SKILL_QM_COUNT];
 
 	DrawNode* m_pMoveRangeHaloJudge;
 };

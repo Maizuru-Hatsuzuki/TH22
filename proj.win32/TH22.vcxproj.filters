@@ -76,6 +76,9 @@
     <Filter Include="Config\Character\Skill">
       <UniqueIdentifier>{96f1258b-f446-4d8f-b457-9a2b4e6521d8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="String">
+      <UniqueIdentifier>{07f158fb-2ef9-4050-b833-6b2d9dfdabd1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
