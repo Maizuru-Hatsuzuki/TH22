@@ -150,10 +150,12 @@ public:
 	void getRandWarriorTypeDesc(CHARACTER_DESC_PTR* ppRet);
 	void getIsHoverDefTower(thBool* pbRet) const;
 	void getCurSkillArray(TH_SKILL_PTR* ppRet, const int cnSize);
+	void getCurSkillByName(const char* cszpSk, TH_SKILL_PTR* ppRet);
 	const float getQmScale() const;
 
 	void setUninitFlag();
 	void setWarriorExistsByAngle(const float cfAngle, const short csTag);
+	void setSkLevelUpByName(const char* cszpSk);
 	thBool setWarriorsOverallMovement(const float cfX, const float cfY);
 	thBool setPlayerAniBasic();
 	thBool setPlayAniTowerSummon(const short* arrnCondAniTag, const short cnSize, const thBool bIsSummoning);
@@ -292,19 +294,18 @@ private:
 	CHARACTER_FRAMEINFO_PTR m_ptMoveSelectingMouse;
 	CHARACTER_FRAMEINFO_PTR m_ptMoveSelectedMouse;
 	CHARACTER_FRAMEINFO_PTR m_ptMoveSelectedErrorMouse;
-
 	CHARACTER_ANI_FRAMEINFO_PTR m_ptAniMovePosSelectingMouse;
 	CHARACTER_ANI_FRAMEINFO_PTR m_ptAniMovePosSelectedMouse;
 	CHARACTER_ANI_FRAMEINFO_PTR m_ptAniMovePosSelectedErrorMouse;
-	EventListenerMouse* m_pMouse;
-	enum THEM_DEFTOWER_TYPE m_emTagTowerType;
+	EventListenerMouse*			m_pMouse;
+	enum THEM_DEFTOWER_TYPE		m_emTagTowerType;
 	enum THEM_DELAY_UNINIT_FLAG m_emStepUninit;
-	TH_SKILL_PTR			m_arrpCurSk[THMAX_TOWER_SKILL_COUNT];
-	THQM_PRICE_PTR			m_arrpQmPrice[THMAX_TOWER_SKILL_COUNT];
+	TH_SKILL_PTR				m_arrpCurSk[THMAX_TOWER_SKILL_COUNT];
+	THQM_PRICE_PTR				m_arrpQmPrice[THMAX_TOWER_SKILL_COUNT];
 	/* 多一个售出按钮的介绍位置. */
-	THQM_SKTEXT_PTR			m_arrpQmSkText[THMAX_TOWER_SKILL_QM_COUNT];
-
-	DrawNode* m_pMoveRangeHaloJudge;
+	THQM_SKTEXT_PTR				m_arrpQmSkText[THMAX_TOWER_SKILL_QM_COUNT];
+	SpriteFrame*				m_pSpFrameActiveSkillPoint;
+	DrawNode*					m_pMoveRangeHaloJudge;
 };
 
 

@@ -90,16 +90,57 @@ typedef bool thBool;
 #define TH_UNINIT_CHACDESC(p) { if (p) { CthCcCharacterLoadHandler::getInstance()->uninitCharacterDesc(p); (p) = NULL; }}
 #define TH_GETBOTTOMY(p) ( p->getPositionY() - p->getBoundingBox().size.height * p->getAnchorPoint().y )
 #define TH_GETTOPY(p) ( p->getPositionY() + p->getBoundingBox().size.height * p->getAnchorPoint().y )
-#define TH_CREATE_CN_LABELTEXT(p, str, size, tColor, fPosX, fPosY, bVis, emAli, nWidth)		\
-do																					\
-{																					\
-p = Label::createWithTTF(str, "fonts\\FZKai.ttf", size);							\
-TH_PROCESS_ERROR(p);																\
-p->setColor(tColor);																\
-p->setPosition(fPosX, fPosY);														\
-p->setVisible(bVis);																\
-p->setWidth(nWidth);																\
-p->setAlignment(emAli);																\
+#define TH_CREATE_CN_LABELTEXT(p, str, size, tColor, fPosX, fPosY, bVis, emAli, nWidth)	\
+do																						\
+{																						\
+	p = Label::createWithTTF(str, "fonts\\FZKai.ttf", size);							\
+	TH_PROCESS_ERROR(p);																\
+	p->setColor(tColor);																\
+	p->setPosition(fPosX, fPosY);														\
+	p->setVisible(bVis);																\
+	p->setWidth(nWidth);																\
+	p->setAlignment(emAli);																\
+} while (0);
+
+#define TH_CHAC_LEVELUP(emCurLv)														\
+do																						\
+{																						\
+	switch (emCurLv)																	\
+	{																					\
+	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_0:										\
+	{																					\
+		emCurLv = THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1;								\
+		break;																			\
+	}																					\
+	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1:										\
+	{																					\
+		emCurLv = THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_2;								\
+		break;																			\
+	}																					\
+	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_2:										\
+	{																					\
+		emCurLv = THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_3;								\
+		break;																			\
+	}																					\
+	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_3:										\
+	{																					\
+		emCurLv = THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4;								\
+		break;																			\
+	}																					\
+	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4:										\
+	{																					\
+		emCurLv = THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_5;								\
+		break;																			\
+	}																					\
+	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_5:										\
+	{																					\
+		break;																			\
+	}																					\
+	default:																			\
+	{																					\
+		break;																			\
+	}																					\
+	}																					\
 } while (0);
 
 

@@ -142,6 +142,9 @@ thBool CThCcCharacterSkillHanlder::initWarriorSkillLv4Union(CHARACTER_SKILL_UNIO
 	TH_PROCESS_ERROR(bRet);
 	bRet = CThBaseCharacter::initCharacterWithPlist(ptChacDesc, &puRet->ptAliceMargatroidLv4Skill->ptSkDollRepair->pChacFrSkill);
 	TH_PROCESS_ERROR(bRet);
+	puRet->ptAliceMargatroidLv4Skill->ptSkDollRepair->pSpFrameDisableSkill = puRet->ptAliceMargatroidLv4Skill->ptSkDollRepair->pChacFrSkill->pSpCharacter->getSpriteFrame();
+	puRet->ptAliceMargatroidLv4Skill->ptSkDollRepair->pSpFrameActiveSkill = SpriteFrameCache::getInstance()->getSpriteFrameByName("Quickmenu Material_25.png");
+	TH_PROCESS_ERROR(puRet->ptAliceMargatroidLv4Skill->ptSkDollRepair->pSpFrameActiveSkill);
 
 	bRet = CthCcCharacterLoadHandler::getInstance()->getSkillFromIni(szarrTmpSkillIni, &puRet->ptAliceMargatroidLv4Skill->ptSkDollRepair->nSkillPrice);
 	TH_PROCESS_ERROR(bRet);
@@ -159,6 +162,10 @@ thBool CThCcCharacterSkillHanlder::initWarriorSkillLv4Union(CHARACTER_SKILL_UNIO
 	TH_PROCESS_ERROR(bRet);
 	bRet = CThBaseCharacter::initCharacterWithPlist(ptChacDesc, &puRet->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->pChacFrSkill);
 	TH_PROCESS_ERROR(bRet);
+	
+	puRet->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->pSpFrameDisableSkill = puRet->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->pChacFrSkill->pSpCharacter->getSpriteFrame();
+	puRet->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->pSpFrameActiveSkill = SpriteFrameCache::getInstance()->getSpriteFrameByName("Quickmenu Material_5.png");
+	TH_PROCESS_ERROR(puRet->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->pSpFrameActiveSkill);
 
 	bRet = CthCcCharacterLoadHandler::getInstance()->getSkillFromIni(szarrTmpSkillIni, &puRet->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->nSkillPrice);
 	TH_PROCESS_ERROR(bRet);
@@ -203,7 +210,6 @@ thBool CThCcCharacterSkillHanlder::getSkillTextDescXml(const char* cszpSk, char*
 	thBool bRet = THFALSE;
 	const char* cszpXml = "data\\String\\string_skillDesc.xml";
 	char szarrTmpRet[THMAX_CHAR_DESC] = { 0 };
-	WCHAR wszarrTmp[THMAX_CHAR_DESC] = { 0 };
 	ValueMap pTextMap = FileUtils::getInstance()->getValueMapFromFile(cszpXml);
 	std::string strRet = "";
 

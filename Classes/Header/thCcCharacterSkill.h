@@ -22,6 +22,8 @@ struct _tSkill
 	char szarrSkill[THMAX_CHAR_DESC];
 	CHARACTER_FRAMEINFO_PTR pChacFrSkill;
 	CHARACTER_FRAMEINFO_PTR arrpSkillLevelPoint[THMAX_SKILL_LEVEL];
+	SpriteFrame* pSpFrameActiveSkill;
+	SpriteFrame* pSpFrameDisableSkill;
 	int nSkillPrice;
 };
 

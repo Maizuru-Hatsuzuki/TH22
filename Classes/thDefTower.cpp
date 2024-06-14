@@ -581,6 +581,32 @@ void CThDefTower::getCurSkillArray(TH_SKILL_PTR* ppRet, const int cnSize)
 	return;
 }
 
+void CThDefTower::getCurSkillByName(const char* cszpSk, TH_SKILL_PTR* ppRet)
+{
+	for (short s = 0; s < THMAX_TOWER_SKILL_COUNT; s++)
+	{
+		if (NULL != m_arrpCurSkill[s] && 0 == strcmp(cszpSk, m_arrpCurSkill[s]->szarrSkill))
+		{
+			*ppRet = m_arrpCurSkill[s];
+			break;
+		}
+	}
+	return;
+}
+
+void CThDefTower::setSkLevelUpByName(const char* cszpSk)
+{
+	for (short s = 0; s < THMAX_TOWER_SKILL_COUNT; s++)
+	{
+		if (NULL != m_arrpCurSkill[s] && 0 == strcmp(cszpSk, m_arrpCurSkill[s]->szarrSkill))
+		{
+			TH_CHAC_LEVELUP(m_arrpCurSkill[s]->pChacFrSkill->emCurLevel);
+			break;
+		}
+	}
+	return;
+}
+
 const float CThDefTower::getQmScale() const
 {
 	return m_fQmScale;
@@ -1002,13 +1028,22 @@ thBool CThDefTower::_setSpTowerSpecialValuesWarrior()
 		bRet = CThCcCharacterSkillHanlder::getInstance()->initWarriorSkillLv4Union(&ptmpSkillUnion, &nSkCnt);
 		TH_PROCESS_ERROR(bRet);
 
+		/* 直接用里面的精灵Frame结构体的等级作为现在等级. */
 		m_arrpCurSkill[0] = THMALLOC(TH_SKILL, sizeof(TH_SKILL));
 		TH_PROCESS_ERROR(m_arrpCurSkill[0]);
 		memcpy_s(m_arrpCurSkill[0], sizeof(TH_SKILL), ptmpSkillUnion->ptAliceMargatroidLv4Skill->ptSkDollRepair, sizeof(TH_SKILL));
 
+		m_arrpCurSkill[0]->pChacFrSkill = THMALLOC(CHARACTER_FRAMEINFO, sizeof(CHARACTER_FRAMEINFO));
+		TH_PROCESS_ERROR(m_arrpCurSkill[0]->pChacFrSkill);
+		memcpy_s(m_arrpCurSkill[0]->pChacFrSkill, sizeof(CHARACTER_FRAMEINFO), ptmpSkillUnion->ptAliceMargatroidLv4Skill->ptSkDollRepair->pChacFrSkill, sizeof(CHARACTER_FRAMEINFO));
+
 		m_arrpCurSkill[1] = THMALLOC(TH_SKILL, sizeof(TH_SKILL));
 		TH_PROCESS_ERROR(m_arrpCurSkill[1]);
 		memcpy_s(m_arrpCurSkill[1], sizeof(TH_SKILL), ptmpSkillUnion->ptAliceMargatroidLv4Skill->ptSkDollStrengthem, sizeof(TH_SKILL));
+
+		m_arrpCurSkill[1]->pChacFrSkill = THMALLOC(CHARACTER_FRAMEINFO, sizeof(CHARACTER_FRAMEINFO));
+		TH_PROCESS_ERROR(m_arrpCurSkill[1]->pChacFrSkill);
+		memcpy_s(m_arrpCurSkill[1]->pChacFrSkill, sizeof(CHARACTER_FRAMEINFO), ptmpSkillUnion->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->pChacFrSkill, sizeof(CHARACTER_FRAMEINFO));
 		break;
 	}
 	default:

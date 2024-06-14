@@ -31,6 +31,7 @@ CThDefTowerQuickMenu::CThDefTowerQuickMenu()
 	m_ptAniMovePosSelectedMouse				= NULL;
 	m_ptAniMovePosSelectedErrorMouse		= NULL;
 	m_ptCurrentMouse						= NULL;
+	m_pSpFrameActiveSkillPoint				= NULL;
 	m_emTagTowerType						= THEM_DEFTOWER_TYPE::DEFTOWERTYPE_UNKNOW;
 	m_emStepUninit							= THEM_DELAY_UNINIT_FLAG::FLAG_NOTNEED_UNINIT;
 	memset(m_arrpCurSk, 0, sizeof(TH_SKILL_PTR) * THMAX_TOWER_SKILL_COUNT);
@@ -51,6 +52,8 @@ thBool CThDefTowerQuickMenu::init()
 	/* 如果 m_pMouse 有值, 就代表已经初始化过了. */
 	TH_PROCESS_SUCCESS(m_pMouse);
 	m_pMouse = EventListenerMouse::create();
+	m_pSpFrameActiveSkillPoint = SpriteFrameCache::getInstance()->getSpriteFrameByName("Quickmenu Material_74.png");
+	TH_PROCESS_ERROR(m_pSpFrameActiveSkillPoint);
 
 	memset(m_arrpQmPrice, 0, sizeof(THQM_PRICE_PTR) * THMAX_TOWER_SKILL_COUNT);
 	if (NULL == m_ptSellHoverBorder)
@@ -376,16 +379,18 @@ Exit0:
 thBool CThDefTowerQuickMenu::setChacSkillLevelPoint(enum THEM_CHARACTER_LEVEL emLv, TH_SKILL_PTR pSk)
 {
 	thBool bRet = THFALSE;
-	float fSkHeight = 0.f;
-	float fSkWidth = 0.f;
 	float arrfPosRet[2] = { 0 };
 	char szarrSkillPointIni[MAX_PATH] = { 0 };
 	CHARACTER_DESC_PTR pSkPointDesc = NULL;
+	TH_SKILL_PTR pPlayerSk = NULL;
 
 	TH_PROCESS_ERROR(THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4 >= emLv);
 	TH_GETWINRESPATH(szarrSkillPointIni, "data\\CharacterConfig\\Skill\\ChacSkLevelPoint.ini");
 	bRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(szarrSkillPointIni, &pSkPointDesc);
 	TH_PROCESS_ERROR(bRet);
+
+	m_pTaget->getCurSkillByName(pSk->szarrSkill, &pPlayerSk);
+	TH_PROCESS_ERROR(pPlayerSk);
 
 	for (short s = 0; s < (int)emLv; s++)
 	{
@@ -399,8 +404,11 @@ thBool CThDefTowerQuickMenu::setChacSkillLevelPoint(enum THEM_CHARACTER_LEVEL em
 
 		/* 函数外进行 addChild, Z 值靠前. */
 	}
-	fSkHeight = pSk->arrpSkillLevelPoint[0]->pSpCharacter->getBoundingBox().size.height;
-	fSkHeight = pSk->arrpSkillLevelPoint[0]->pSpCharacter->getBoundingBox().size.width;
+
+	for (short s = 0; s < (short)pPlayerSk->pChacFrSkill->emCurLevel; s++)
+	{
+		pSk->arrpSkillLevelPoint[s]->pSpCharacter->setSpriteFrame(m_pSpFrameActiveSkillPoint);
+	}
 
 	bRet = THTRUE;
 Exit0:
@@ -456,9 +464,7 @@ thBool CThDefTowerQuickMenu::setChacSkillTextDesc(TH_SKILL_PTR pSk)
 	char szarrSkTitleDesc[THMAX_CHAR_DESC] = { 0 };
 	char szarrMainTextDesc[THMAX_CHAR_DESC] = { 0 };
 	char szarrSubTextDesc[THMAX_CHAR_DESC] = { 0 };
-	Color3B tFontTitleColor;
-	Color3B tFontMainColor;
-	Color3B tFontSubColor;
+	Color3B tColor;
 	THQM_SKTEXT_PTR pTmpSkText = NULL;
 
 	bRet = _getSkPriceArrVancantPos(&sTag);
@@ -479,34 +485,34 @@ thBool CThDefTowerQuickMenu::setChacSkillTextDesc(TH_SKILL_PTR pSk)
 	fTextLabelWidth = pTmpSkText->ptBg->pSpCharacter->getBoundingBox().size.width - 10;
 
 	/* 文字标题. */
-	tFontTitleColor.r = 196;
-	tFontTitleColor.g = 233;
-	tFontTitleColor.b = 54;
+	tColor.r = 196;
+	tColor.g = 233;
+	tColor.b = 54;
 	fTextY = TH_GETTOPY(pTmpSkText->ptBg->pSpCharacter) - 10;
 	TH_CREATE_CN_LABELTEXT(
-		pTmpSkText->pLbTitleText, szarrSkTitleDesc, 25, tFontTitleColor, fPoxX, 
+		pTmpSkText->pLbTitleText, szarrSkTitleDesc, 25, tColor, fPoxX,
 		fTextY, THFALSE, TextHAlignment::LEFT, fTextLabelWidth
 	);
 	pTmpSkText->pLbTitleText->setAnchorPoint(Vec2(0.5, 1));
 
 	/* 文字主介绍. */
-	tFontMainColor.r = 240;
-	tFontMainColor.g = 230;
-	tFontMainColor.b = 185;
+	tColor.r = 240;
+	tColor.g = 230;
+	tColor.b = 185;
 	fTextY = TH_GETBOTTOMY(pTmpSkText->pLbTitleText) - 5;
 	TH_CREATE_CN_LABELTEXT(
-		pTmpSkText->pLbMainDesc, szarrMainTextDesc, 19, tFontMainColor, fPoxX, 
+		pTmpSkText->pLbMainDesc, szarrMainTextDesc, 19, tColor, fPoxX,
 		fTextY, THFALSE, TextHAlignment::LEFT, fTextLabelWidth
 	);
 	pTmpSkText->pLbMainDesc->setAnchorPoint(Vec2(0.5, 1));
 
 	/* 文字副介绍. */
-	tFontSubColor.r = 189;
-	tFontMainColor.g = 183;
-	tFontMainColor.b = 107;
+	tColor.r = 189;
+	tColor.g = 183;
+	tColor.b = 107;
 	fTextY = TH_GETBOTTOMY(pTmpSkText->ptBg->pSpCharacter);
 	TH_CREATE_CN_LABELTEXT(
-		pTmpSkText->pLbSubDesc, szarrSubTextDesc, 17, tFontSubColor, fPoxX, 
+		pTmpSkText->pLbSubDesc, szarrSubTextDesc, 17, tColor, fPoxX,
 		fTextY, THFALSE, TextHAlignment::LEFT, fTextLabelWidth
 	);
 	pTmpSkText->pLbSubDesc->setAnchorPoint(Vec2(0.5, 0));
@@ -794,6 +800,10 @@ void CThDefTowerQuickMenu::onMouseUp(EventMouse* pMouse)
 	Vec2 vecMousePos = pMouse->getLocationInView();
 	int nFnRet = 0;
 	int nSpMoveTag = 0;
+	TH_SKILL_PTR pPlayerSk = NULL;
+
+	/* debug use. */
+	int nPlayerMoney = 100;
 
 	TH_PROCESS_SUCCESS(NULL == m_ptQm);
 
@@ -812,6 +822,24 @@ void CThDefTowerQuickMenu::onMouseUp(EventMouse* pMouse)
 		{
 			m_ptMoveRangeHalo->pSpCharacter->setVisible(THTRUE);
 			setMouseCursorAni(THEM_QM_MOUSECURSOR::CUR_SELECTING_POSITION);
+		}
+
+		/* 检查技能按钮. */
+		for (short s = 0; s < THMAX_TOWER_SKILL_COUNT; s++)
+		{
+			if (NULL != m_arrpCurSk[s] && NULL != m_pTaget)
+			{
+				m_pTaget->getCurSkillByName(m_arrpCurSk[s]->szarrSkill, &pPlayerSk);
+				TH_PROCESS_ERROR(pPlayerSk);
+
+				bRet = CThBaseCharacter::getIsHoverSprite(m_arrpCurSk[s]->pChacFrSkill->pSpCharacter, vecMousePos, THFALSE);
+				if (bRet && m_arrpCurSk[s]->nSkillPrice <= nPlayerMoney && pPlayerSk->pChacFrSkill->emMaxLevel >= pPlayerSk->pChacFrSkill->emCurLevel)
+				{
+					m_arrpCurSk[s]->arrpSkillLevelPoint[int(pPlayerSk->pChacFrSkill->emCurLevel)]->pSpCharacter->setSpriteFrame(m_pSpFrameActiveSkillPoint);
+					m_pTaget->setSkLevelUpByName(m_arrpCurSk[s]->szarrSkill);
+					break;
+				}
+			}
 		}
 
 		pMouse->stopPropagation();
@@ -877,6 +905,20 @@ void CThDefTowerQuickMenu::onMouseDown(EventMouse* pMouse)
 		{
 			setMouseCursorAni(THEM_QM_MOUSECURSOR::CUR_SELECTERR_POSITION);
 			pMouse->stopPropagation();
+		}
+
+		/* 检查技能按钮并阻止释放. */
+		for (short s = 0; s < THMAX_TOWER_SKILL_COUNT; s++)
+		{
+			if (NULL != m_arrpCurSk[s])
+			{
+				bRet = CThBaseCharacter::getIsHoverSprite(m_arrpCurSk[s]->pChacFrSkill->pSpCharacter, vecMousePos, THFALSE);
+				if (bRet)
+				{
+					pMouse->stopPropagation();
+					break;
+				}
+			}
 		}
 	}
 	else if (EventMouse::MouseButton::BUTTON_RIGHT == pMouse->getMouseButton())
@@ -1021,7 +1063,30 @@ Exit0:
 void CThDefTowerQuickMenu::update(float dt)
 {
 	thBool bRet = THFALSE;
+	TH_SKILL_PTR pPlayerSk = NULL;
+
+	/* debug use. */
+	int nPlayerMoney = 100;
 	
+	/* 更新技能图标.*/
+	for (short s = 0; s < THMAX_TOWER_SKILL_COUNT; s++)
+	{
+		if (NULL != m_arrpCurSk[s] && NULL != m_pTaget)
+		{
+			m_pTaget->getCurSkillByName(m_arrpCurSk[s]->szarrSkill, &pPlayerSk);
+			TH_PROCESS_ERROR(pPlayerSk);
+
+			if (nPlayerMoney >= m_arrpCurSk[s]->nSkillPrice)
+			{
+				m_arrpCurSk[s]->pChacFrSkill->pSpCharacter->setSpriteFrame(m_arrpCurSk[s]->pSpFrameActiveSkill);
+			}
+			else
+			{
+				m_arrpCurSk[s]->pChacFrSkill->pSpCharacter->setSpriteFrame(m_arrpCurSk[s]->pSpFrameDisableSkill);
+			}
+		}
+	}
+
 	bRet = delayUninitMonitoring();
 	TH_PROCESS_ERROR(bRet);
 
