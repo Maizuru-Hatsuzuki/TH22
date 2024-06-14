@@ -198,19 +198,29 @@ Exit0:
 	return bRet;
 }
 
-thBool CThCcCharacterSkillHanlder::getSkillTextDescXml(const char* cszpSk, char* szpTitleRet) const
+thBool CThCcCharacterSkillHanlder::getSkillTextDescXml(const char* cszpSk, char* szpTitleRet, char* szpMainDesc, char* szpSubDesc) const
 {
 	thBool bRet = THFALSE;
 	const char* cszpXml = "data\\String\\string_skillDesc.xml";
 	char szarrTmpRet[THMAX_CHAR_DESC] = { 0 };
 	WCHAR wszarrTmp[THMAX_CHAR_DESC] = { 0 };
 	ValueMap pTextMap = FileUtils::getInstance()->getValueMapFromFile(cszpXml);
+	std::string strRet = "";
 
 	sprintf_s(szarrTmpRet, THMAX_CHAR_DESC, "%sTitle", cszpSk);
-	std::string strRet = pTextMap[szarrTmpRet].asString();
+	strRet = pTextMap[szarrTmpRet].asString();
 	const char* cszpTitle = strRet.c_str();
-
 	strcpy_s(szpTitleRet, THMAX_CHAR_DESC, cszpTitle);
+
+	sprintf_s(szarrTmpRet, THMAX_CHAR_DESC, "%sMainDesc", cszpSk);
+	strRet = pTextMap[szarrTmpRet].asString();
+	const char* cszpMainDesc = strRet.c_str();
+	strcpy_s(szpMainDesc, THMAX_CHAR_DESC, cszpMainDesc);
+
+	sprintf_s(szarrTmpRet, THMAX_CHAR_DESC, "%sSubDesc", cszpSk);
+	strRet = pTextMap[szarrTmpRet].asString();
+	const char* cszpSubDesc = strRet.c_str();
+	strcpy_s(szpSubDesc, THMAX_CHAR_DESC, cszpSubDesc);
 
 	bRet = THTRUE;
 Exit0:

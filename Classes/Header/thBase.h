@@ -88,6 +88,20 @@ typedef bool thBool;
 #define THNEW_CLASS(p) new p()
 #define THDELETE(p) { if (p) { delete (p); (p) = NULL; }}
 #define TH_UNINIT_CHACDESC(p) { if (p) { CthCcCharacterLoadHandler::getInstance()->uninitCharacterDesc(p); (p) = NULL; }}
+#define TH_GETBOTTOMY(p) ( p->getPositionY() - p->getBoundingBox().size.height * p->getAnchorPoint().y )
+#define TH_GETTOPY(p) ( p->getPositionY() + p->getBoundingBox().size.height * p->getAnchorPoint().y )
+#define TH_CREATE_CN_LABELTEXT(p, str, size, tColor, fPosX, fPosY, bVis, emAli, nWidth)		\
+do																					\
+{																					\
+p = Label::createWithTTF(str, "fonts\\FZKai.ttf", size);							\
+TH_PROCESS_ERROR(p);																\
+p->setColor(tColor);																\
+p->setPosition(fPosX, fPosY);														\
+p->setVisible(bVis);																\
+p->setWidth(nWidth);																\
+p->setAlignment(emAli);																\
+} while (0);
+
 
 class CTHCcBaseHandler
 {

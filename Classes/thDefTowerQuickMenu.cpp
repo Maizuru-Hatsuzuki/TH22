@@ -449,21 +449,22 @@ thBool CThDefTowerQuickMenu::setChacSkillTextDesc(TH_SKILL_PTR pSk)
 {
 	thBool bRet = THFALSE;
 	short sTag = 0;
-	float cfPoxX = m_ptQm->pBg->pSpCharacter->getPositionX();
-	float cfPosY = m_ptQm->pBg->pSpCharacter->getBoundingBox().getMaxY() + 120;
+	float fPoxX = m_ptQm->pBg->pSpCharacter->getPositionX();
+	float fPosY = TH_GETTOPY(m_ptQm->pBg->pSpCharacter);
+	float fTextLabelWidth = 0.f;
+	float fTextY = 0.f;
 	char szarrSkTitleDesc[THMAX_CHAR_DESC] = { 0 };
 	char szarrMainTextDesc[THMAX_CHAR_DESC] = { 0 };
 	char szarrSubTextDesc[THMAX_CHAR_DESC] = { 0 };
 	Color3B tFontTitleColor;
+	Color3B tFontMainColor;
+	Color3B tFontSubColor;
 	THQM_SKTEXT_PTR pTmpSkText = NULL;
 
 	bRet = _getSkPriceArrVancantPos(&sTag);
 	TH_PROCESS_ERROR(!bRet);
 
-	tFontTitleColor.r = 196;
-	tFontTitleColor.g = 233;
-	tFontTitleColor.b = 54;
-	CThCcCharacterSkillHanlder::getInstance()->getSkillTextDescXml(pSk->szarrSkill, szarrSkTitleDesc);
+	CThCcCharacterSkillHanlder::getInstance()->getSkillTextDescXml(pSk->szarrSkill, szarrSkTitleDesc, szarrMainTextDesc, szarrSubTextDesc);
 	pTmpSkText = THMALLOC(THQM_SKTEXT, sizeof(THQM_SKTEXT));
 	TH_PROCESS_ERROR(pTmpSkText);
 	strcpy_s(pTmpSkText->szarrTagSk, THMAX_CHAR_DESC, pSk->szarrSkill);
@@ -471,20 +472,44 @@ thBool CThDefTowerQuickMenu::setChacSkillTextDesc(TH_SKILL_PTR pSk)
 	/* 文字背景. */
 	bRet = CThBaseCharacter::initCharacterWithPlistSimple("skill text bg", "Quickmenu Material_", 97, &pTmpSkText->ptBg);
 	TH_PROCESS_ERROR(bRet);
-	pTmpSkText->ptBg->pSpCharacter->setPosition(cfPoxX, cfPosY);
+	fPosY = fPosY + pTmpSkText->ptBg->pSpCharacter->getBoundingBox().size.height * pTmpSkText->ptBg->pSpCharacter->getAnchorPoint().y + 50;
+	pTmpSkText->ptBg->pSpCharacter->setPosition(fPoxX, fPosY);
 	pTmpSkText->ptBg->pSpCharacter->setVisible(THFALSE);
 	pTmpSkText->ptBg->pSpCharacter->setScaleX(0.8f);
+	fTextLabelWidth = pTmpSkText->ptBg->pSpCharacter->getBoundingBox().size.width - 10;
 
 	/* 文字标题. */
-	pTmpSkText->pLbTitleText = Label::createWithTTF(szarrSkTitleDesc, "fonts\\FZKai.ttf", 30);
-	TH_PROCESS_ERROR(pTmpSkText->pLbTitleText);
-	pTmpSkText->pLbTitleText->setColor(tFontTitleColor);
-	pTmpSkText->pLbTitleText->setPosition(cfPoxX, cfPosY - 3);
-	//pTmpSkText->pLbTitleText->setVisible(THFALSE);
+	tFontTitleColor.r = 196;
+	tFontTitleColor.g = 233;
+	tFontTitleColor.b = 54;
+	fTextY = TH_GETTOPY(pTmpSkText->ptBg->pSpCharacter) - 10;
+	TH_CREATE_CN_LABELTEXT(
+		pTmpSkText->pLbTitleText, szarrSkTitleDesc, 25, tFontTitleColor, fPoxX, 
+		fTextY, THFALSE, TextHAlignment::LEFT, fTextLabelWidth
+	);
+	pTmpSkText->pLbTitleText->setAnchorPoint(Vec2(0.5, 1));
 
 	/* 文字主介绍. */
+	tFontMainColor.r = 240;
+	tFontMainColor.g = 230;
+	tFontMainColor.b = 185;
+	fTextY = TH_GETBOTTOMY(pTmpSkText->pLbTitleText) - 5;
+	TH_CREATE_CN_LABELTEXT(
+		pTmpSkText->pLbMainDesc, szarrMainTextDesc, 19, tFontMainColor, fPoxX, 
+		fTextY, THFALSE, TextHAlignment::LEFT, fTextLabelWidth
+	);
+	pTmpSkText->pLbMainDesc->setAnchorPoint(Vec2(0.5, 1));
 
 	/* 文字副介绍. */
+	tFontSubColor.r = 189;
+	tFontMainColor.g = 183;
+	tFontMainColor.b = 107;
+	fTextY = TH_GETBOTTOMY(pTmpSkText->ptBg->pSpCharacter);
+	TH_CREATE_CN_LABELTEXT(
+		pTmpSkText->pLbSubDesc, szarrSubTextDesc, 17, tFontSubColor, fPoxX, 
+		fTextY, THFALSE, TextHAlignment::LEFT, fTextLabelWidth
+	);
+	pTmpSkText->pLbSubDesc->setAnchorPoint(Vec2(0.5, 0));
 
 	m_arrpQmSkText[sTag] = pTmpSkText;
 	bRet = THTRUE;
@@ -738,8 +763,8 @@ thBool CThDefTowerQuickMenu::createQmWarriorLevel4(const float cfX, const float 
 	{
 		TH_RUN_SUCCESS(NULL != m_arrpQmSkText[s], this->addChild(m_arrpQmSkText[s]->ptBg->pSpCharacter));
 		TH_RUN_SUCCESS(NULL != m_arrpQmSkText[s], this->addChild(m_arrpQmSkText[s]->pLbTitleText));
-		//TH_RUN_SUCCESS(NULL != m_arrpQmSkText[s], this->addChild(m_arrpQmSkText[s]->pLbMainDesc));
-		//TH_RUN_SUCCESS(NULL != m_arrpQmSkText[s], this->addChild(m_arrpQmSkText[s]->pLbSubDesc));
+		TH_RUN_SUCCESS(NULL != m_arrpQmSkText[s], this->addChild(m_arrpQmSkText[s]->pLbMainDesc));
+		TH_RUN_SUCCESS(NULL != m_arrpQmSkText[s], this->addChild(m_arrpQmSkText[s]->pLbSubDesc));
 	}
 
 	/* 设置一下范围圈的坐标. 防御塔锚点是 0.5, 0, 也同步修改一下. */
@@ -921,7 +946,9 @@ void CThDefTowerQuickMenu::onMouseMove(EventMouse* pMouse)
 			getSkTextBySkillName(m_arrpCurSk[s]->szarrSkill, &pTmpSkText);
 			TH_PROCESS_ERROR(pTmpSkText);
 			pTmpSkText->ptBg->pSpCharacter->setVisible(bRet);
-			//pTmpSkText->pLbTitleText->setVisible(bRet);
+			pTmpSkText->pLbTitleText->setVisible(bRet);
+			pTmpSkText->pLbMainDesc->setVisible(bRet);
+			pTmpSkText->pLbSubDesc->setVisible(bRet);
 
 			if (bRet)
 			{
