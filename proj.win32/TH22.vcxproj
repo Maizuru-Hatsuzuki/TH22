@@ -210,6 +210,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)\Resources\" /D /E /I /F /Y
     <None Include="..\Resources\data\AnimateConfig\Basic\AniMoveSelectedErrorMouse.ini" />
     <None Include="..\Resources\data\AnimateConfig\Basic\AniMoveSelectedMouse.ini" />
     <None Include="..\Resources\data\AnimateConfig\Basic\AniMoveSelectingMouse.ini" />
+    <None Include="..\Resources\data\AnimateConfig\Basic\AniTowerSkillLevelUp.ini" />
     <None Include="..\Resources\data\AnimateConfig\Warriors\AniCloseTheDoor.ini" />
     <None Include="..\Resources\data\AnimateConfig\Warriors\AniFlag.ini" />
     <None Include="..\Resources\data\AnimateConfig\Warriors\AniOpenTheDoor.ini" />

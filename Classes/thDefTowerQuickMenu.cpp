@@ -27,9 +27,12 @@ CThDefTowerQuickMenu::CThDefTowerQuickMenu()
 	m_ptMoveSelectingMouse					= NULL;
 	m_ptMoveSelectedMouse					= NULL;
 	m_ptMoveSelectedErrorMouse				= NULL;
+	m_ptSkillHoverBorder					= NULL;
+	m_ptTowerSkillLevelUp					= NULL;
 	m_ptAniMovePosSelectingMouse			= NULL;
 	m_ptAniMovePosSelectedMouse				= NULL;
 	m_ptAniMovePosSelectedErrorMouse		= NULL;
+	m_ptAniTowerSkillLevelUp				= NULL;
 	m_ptCurrentMouse						= NULL;
 	m_pSpFrameActiveSkillPoint				= NULL;
 	m_emTagTowerType						= THEM_DEFTOWER_TYPE::DEFTOWERTYPE_UNKNOW;
@@ -148,8 +151,16 @@ thBool CThDefTowerQuickMenu::initBasicAni()
 		m_ptMoveSelectedErrorMouse->pSpCharacter->setVisible(THFALSE);
 		this->addChild(m_ptMoveSelectedErrorMouse->pSpCharacter);
 	}
+	if (NULL == m_ptTowerSkillLevelUp)
+	{
+		bRet = CThBaseCharacter::initCharacterWithPlistSimple("sp_towerSkillLevelUp", "towerLvUp", 1, &m_ptTowerSkillLevelUp);
+		TH_PROCESS_ERROR(bRet);
+		m_ptTowerSkillLevelUp->pSpCharacter->setVisible(THFALSE);
+		this->addChild(m_ptTowerSkillLevelUp->pSpCharacter);
+	}
 	
 	/* 创建动画. */
+	/* 没有立马 runAction 的要计数器 +1, 不然会被GC回收. */
 	if (NULL == m_ptAniMovePosSelectingMouse)
 	{
 		TH_GETWINRESPATH(szarrPathAni, "data\\AnimateConfig\\Basic\\AniMoveSelectingMouse.ini");
@@ -172,6 +183,14 @@ thBool CThDefTowerQuickMenu::initBasicAni()
 		TH_PROCESS_ERROR(bRet && m_ptAniMovePosSelectedErrorMouse);
 		m_ptAniMovePosSelectedErrorMouse->pAnimate->retain();
 	}
+	if (NULL == m_ptAniTowerSkillLevelUp)
+	{
+		TH_GETWINRESPATH(szarrPathAni, "data\\AnimateConfig\\Basic\\AniTowerSkillLevelUp.ini");
+		bRet = CthCcFrameByFrameAnimation::getInstance()->createAnimationWithPListIni(szarrPathAni, &m_ptAniTowerSkillLevelUp);
+		TH_PROCESS_ERROR(bRet && m_ptAniTowerSkillLevelUp);
+		m_ptAniTowerSkillLevelUp->pAnimate->retain();
+		m_ptAniTowerSkillLevelUp->pAnimate->setTag(TH_ANITAG_TOWERSK_LVUP);
+	}
 
 	bRet = THTRUE;
 Exit0:
@@ -180,6 +199,10 @@ Exit0:
 
 void CThDefTowerQuickMenu::uninit()
 {
+	m_ptAniMovePosSelectedMouse->pAnimate->release();
+	m_ptAniMovePosSelectedErrorMouse->pAnimate->release();
+	m_ptAniTowerSkillLevelUp->pAnimate->release();
+	
 	THFREE(m_ptSellHoverBorder);
 	THFREE(m_ptMoveHoverBorder);
 	THFREE(m_ptSkillHoverBorder);
@@ -190,6 +213,7 @@ void CThDefTowerQuickMenu::uninit()
 	THFREE(m_ptAniMovePosSelectingMouse);
 	THFREE(m_ptAniMovePosSelectedMouse);
 	THFREE(m_ptAniMovePosSelectedErrorMouse);
+	THFREE(m_ptAniTowerSkillLevelUp);
 	THFREE(m_ptQm->pBg);
 	THFREE(m_ptQm->pCommandMovement);
 	THFREE(m_ptQm->pSellTower);
@@ -232,7 +256,7 @@ Exit0:
 	return m_pSelf;
 }
 
-thBool CThDefTowerQuickMenu::getMouseCursorIsPlayAni(const int cnAniTag)
+thBool CThDefTowerQuickMenu::getQmIsPlayAni(const int cnAniTag)
 {
 	thBool bRet = THFALSE;
 
@@ -246,6 +270,11 @@ thBool CThDefTowerQuickMenu::getMouseCursorIsPlayAni(const int cnAniTag)
 	case TH_ANITAG_MOVING:
 	{
 		TH_RUN_SUCCESS(NULL != m_ptMoveSelectingMouse, bRet = m_ptMoveSelectedMouse->pSpCharacter->getActionByTag(TH_ANITAG_MOVING));
+		break;
+	}
+	case TH_ANITAG_TOWERSK_LVUP:
+	{
+		TH_RUN_SUCCESS(NULL != m_ptTowerSkillLevelUp, bRet = m_ptTowerSkillLevelUp->pSpCharacter->getActionByTag(TH_ANITAG_TOWERSK_LVUP));
 		break;
 	}
 	case TH_ANITAG_SCALEQM:
@@ -801,6 +830,7 @@ void CThDefTowerQuickMenu::onMouseUp(EventMouse* pMouse)
 	int nFnRet = 0;
 	int nSpMoveTag = 0;
 	int nCurLv = 0;
+	int nSkZ = 0;
 	TH_SKILL_PTR pPlayerSk = NULL;
 
 	/* debug use. */
@@ -840,9 +870,20 @@ void CThDefTowerQuickMenu::onMouseUp(EventMouse* pMouse)
 					)
 				{
 					nCurLv = int(pPlayerSk->pChacFrSkill->emCurLevel);
-					TH_PROCESS_ERROR(0 < nCurLv && THMAX_SKILL_LEVEL > nCurLv);
+					TH_PROCESS_ERROR(0 <= nCurLv && THMAX_SKILL_LEVEL > nCurLv);
 					m_arrpCurSk[s]->arrpSkillLevelPoint[nCurLv]->pSpCharacter->setSpriteFrame(m_pSpFrameActiveSkillPoint);
 					m_pTaget->setSkLevelUpByName(m_arrpCurSk[s]->szarrSkill);
+					
+					m_ptTowerSkillLevelUp->pSpCharacter->setPosition(m_arrpCurSk[s]->pChacFrSkill->pSpCharacter->getPosition());
+					m_ptTowerSkillLevelUp->pSpCharacter->setVisible(THTRUE);
+					
+					bRet = getQmIsPlayAni(TH_ANITAG_TOWERSK_LVUP);
+					if (THFALSE == bRet)
+					{
+						nSkZ = m_arrpCurSk[s]->pChacFrSkill->pSpCharacter->getLocalZOrder();
+						m_ptTowerSkillLevelUp->pSpCharacter->setLocalZOrder(nSkZ + 1);
+						m_ptTowerSkillLevelUp->pSpCharacter->runAction(m_ptAniTowerSkillLevelUp->pAnimate);
+					}
 					break;
 				}
 			}
@@ -873,7 +914,7 @@ void CThDefTowerQuickMenu::onMouseDown(EventMouse* pMouse)
 	if (EventMouse::MouseButton::BUTTON_LEFT == pMouse->getMouseButton())
 	{
 		/* 如果正在播放错误动画则 PASS. */
-		if (THFALSE == getMouseCursorIsPlayAni(TH_ANITAG_MOVEERROR))
+		if (THFALSE == getQmIsPlayAni(TH_ANITAG_MOVEERROR))
 		{
 			/* 如果是按钮, 阻止事件传播. */
 			bRet = CThBaseCharacter::getIsHoverSprite(m_ptQm->pSellTower->pSpCharacter, vecMousePos, THFALSE) ||
@@ -1025,7 +1066,7 @@ thBool CThDefTowerQuickMenu::delayUninitMonitoring()
 	case FLAG_NOTNEED_UNINIT:
 		break;
 	case FLAG_NEED_UNINIT:
-		bRet = getMouseCursorIsPlayAni(TH_ANITAG_SCALEQM);
+		bRet = getQmIsPlayAni(TH_ANITAG_SCALEQM);
 		if (THFALSE == bRet)
 		{
 			for (ssize_t i = 0; i < vecAllChild.size(); i++)
@@ -1041,7 +1082,7 @@ thBool CThDefTowerQuickMenu::delayUninitMonitoring()
 
 	case FLAG_UNITING:
 		/* 检查动画是否播放完成. */
-		bRet = getMouseCursorIsPlayAni(TH_ANITAG_ALLANI);
+		bRet = getQmIsPlayAni(TH_ANITAG_ALLANI);
 		if (THFALSE == bRet)
 		{
 			m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_UNINIT;
@@ -1091,6 +1132,11 @@ void CThDefTowerQuickMenu::update(float dt)
 				m_arrpCurSk[s]->pChacFrSkill->pSpCharacter->setSpriteFrame(m_arrpCurSk[s]->pSpFrameDisableSkill);
 			}
 		}
+	}
+
+	if (THFALSE == getQmIsPlayAni(TH_ANITAG_TOWERSK_LVUP))
+	{
+		m_ptTowerSkillLevelUp->pSpCharacter->setVisible(THFALSE);
 	}
 
 	bRet = delayUninitMonitoring();

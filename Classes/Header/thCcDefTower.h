@@ -17,6 +17,7 @@
 #define TH_ANITAG_MOVEERROR 1
 #define TH_ANITAG_MOVING	2
 #define TH_ANITAG_SCALEQM	3
+#define TH_ANITAG_TOWERSK_LVUP 4
 
 
 struct _tQmPrice
@@ -253,7 +254,7 @@ public:
 
 	thBool createQmWarriorLevel4(const float cfX, const float cfY, const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget);
 	thBool destoryQmWarriorLevel4(DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget);
-	thBool getMouseCursorIsPlayAni(const int cnAniTag);
+	thBool getQmIsPlayAni(const int cnAniTag);
 	thBool getIsClickInMoveRangeHalo(Vec2 vecPosInView);
 	thBool getChacSkillPos(const int nSkillCnt, float arrarrfRet[][2]);
 	thBool getChacSkillLevelPointPos(const short csPos, float* arrfRet, TH_SKILL_PTR pSk);
@@ -294,9 +295,11 @@ private:
 	CHARACTER_FRAMEINFO_PTR m_ptMoveSelectingMouse;
 	CHARACTER_FRAMEINFO_PTR m_ptMoveSelectedMouse;
 	CHARACTER_FRAMEINFO_PTR m_ptMoveSelectedErrorMouse;
+	CHARACTER_FRAMEINFO_PTR m_ptTowerSkillLevelUp;
 	CHARACTER_ANI_FRAMEINFO_PTR m_ptAniMovePosSelectingMouse;
 	CHARACTER_ANI_FRAMEINFO_PTR m_ptAniMovePosSelectedMouse;
 	CHARACTER_ANI_FRAMEINFO_PTR m_ptAniMovePosSelectedErrorMouse;
+	CHARACTER_ANI_FRAMEINFO_PTR m_ptAniTowerSkillLevelUp;
 	EventListenerMouse*			m_pMouse;
 	enum THEM_DEFTOWER_TYPE		m_emTagTowerType;
 	enum THEM_DELAY_UNINIT_FLAG m_emStepUninit;

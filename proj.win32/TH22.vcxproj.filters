@@ -246,5 +246,8 @@
     <None Include="..\Resources\data\CharacterConfig\Skill\ChacSkLevelPoint.ini">
       <Filter>Config\Character\Skill</Filter>
     </None>
+    <None Include="..\Resources\data\AnimateConfig\Basic\AniTowerSkillLevelUp.ini">
+      <Filter>Config\Animate\Basic</Filter>
+    </None>
   </ItemGroup>
 </Project>
