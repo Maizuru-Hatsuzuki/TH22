@@ -7,397 +7,85 @@
             <key>Quickmenu Material_0.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{567,113},{60,50}}</string>
+                <string>{{659,2},{84,77}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{60,50}}</string>
+                <string>{{0,0},{84,77}}</string>
                 <key>sourceSize</key>
-                <string>{60,50}</string>
+                <string>{84,77}</string>
             </dict>
             <key>Quickmenu Material_1.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{251,639},{84,77}}</string>
+                <string>{{611,314},{82,77}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{84,77}}</string>
+                <string>{{0,0},{82,77}}</string>
                 <key>sourceSize</key>
-                <string>{84,77}</string>
+                <string>{82,77}</string>
             </dict>
             <key>Quickmenu Material_10.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{228,953},{65,66}}</string>
+                <string>{{527,314},{82,77}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{65,66}}</string>
-                <key>sourceSize</key>
-                <string>{65,66}</string>
-            </dict>
-            <key>Quickmenu Material_100.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{377,194},{82,77}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
                 <string>{{0,0},{82,77}}</string>
                 <key>sourceSize</key>
                 <string>{82,77}</string>
-            </dict>
-            <key>Quickmenu Material_101.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{440,866},{83,77}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{83,77}}</string>
-                <key>sourceSize</key>
-                <string>{83,77}</string>
-            </dict>
-            <key>Quickmenu Material_102.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{421,362},{82,77}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{82,77}}</string>
-                <key>sourceSize</key>
-                <string>{82,77}</string>
-            </dict>
-            <key>Quickmenu Material_103.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{364,781},{83,77}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{83,77}}</string>
-                <key>sourceSize</key>
-                <string>{83,77}</string>
             </dict>
             <key>Quickmenu Material_11.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{756,50},{14,13}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{14,13}}</string>
-                <key>sourceSize</key>
-                <string>{14,13}</string>
-            </dict>
-            <key>Quickmenu Material_12.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{345,278},{82,77}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{82,77}}</string>
-                <key>sourceSize</key>
-                <string>{82,77}</string>
-            </dict>
-            <key>Quickmenu Material_13.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{298,194},{82,77}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{82,77}}</string>
-                <key>sourceSize</key>
-                <string>{82,77}</string>
-            </dict>
-            <key>Quickmenu Material_14.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{625,50},{46,53}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{46,53}}</string>
-                <key>sourceSize</key>
-                <string>{46,53}</string>
-            </dict>
-            <key>Quickmenu Material_15.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{554,530},{64,61}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{64,61}}</string>
-                <key>sourceSize</key>
-                <string>{64,61}</string>
-            </dict>
-            <key>Quickmenu Material_16.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{552,170},{14,14}}</string>
+                <string>{{910,232},{82,78}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{14,14}}</string>
-                <key>sourceSize</key>
-                <string>{14,14}</string>
-            </dict>
-            <key>Quickmenu Material_17.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{306,725},{48,53}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{48,53}}</string>
-                <key>sourceSize</key>
-                <string>{48,53}</string>
-            </dict>
-            <key>Quickmenu Material_18.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{210,781},{84,77}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{84,77}}</string>
-                <key>sourceSize</key>
-                <string>{84,77}</string>
-            </dict>
-            <key>Quickmenu Material_19.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{771,2},{82,77}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{82,77}}</string>
-                <key>sourceSize</key>
-                <string>{82,77}</string>
-            </dict>
-            <key>Quickmenu Material_2.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{687,945},{82,77}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{82,77}}</string>
-                <key>sourceSize</key>
-                <string>{82,77}</string>
-            </dict>
-            <key>Quickmenu Material_20.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{625,98},{13,13}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{13,13}}</string>
-                <key>sourceSize</key>
-                <string>{13,13}</string>
-            </dict>
-            <key>Quickmenu Material_21.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{566,446},{64,60}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{64,60}}</string>
-                <key>sourceSize</key>
-                <string>{64,60}</string>
-            </dict>
-            <key>Quickmenu Material_22.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{756,34},{14,13}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{14,13}}</string>
-                <key>sourceSize</key>
-                <string>{14,13}</string>
-            </dict>
-            <key>Quickmenu Material_23.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{536,170},{14,14}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{14,14}}</string>
-                <key>sourceSize</key>
-                <string>{14,14}</string>
-            </dict>
-            <key>Quickmenu Material_24.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{520,170},{14,14}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{14,14}}</string>
-                <key>sourceSize</key>
-                <string>{14,14}</string>
-            </dict>
-            <key>Quickmenu Material_25.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{677,861},{82,77}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{82,77}}</string>
-                <key>sourceSize</key>
-                <string>{82,77}</string>
-            </dict>
-            <key>Quickmenu Material_26.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{443,778},{82,78}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{82,78}}</string>
                 <key>sourceSize</key>
                 <string>{82,78}</string>
             </dict>
-            <key>Quickmenu Material_27.png</key>
+            <key>Quickmenu Material_12.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{138,991},{30,34}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{30,34}}</string>
-                <key>sourceSize</key>
-                <string>{30,34}</string>
-            </dict>
-            <key>Quickmenu Material_28.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{361,952},{65,80}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{65,80}}</string>
-                <key>sourceSize</key>
-                <string>{65,80}</string>
-            </dict>
-            <key>Quickmenu Material_29.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{355,170},{15,15}}</string>
+                <string>{{2,268},{84,78}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{15,15}}</string>
-                <key>sourceSize</key>
-                <string>{15,15}</string>
-            </dict>
-            <key>Quickmenu Material_3.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{2,2},{168,778}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{168,778}}</string>
-                <key>sourceSize</key>
-                <string>{168,778}</string>
-            </dict>
-            <key>Quickmenu Material_30.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{172,553},{84,78}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{84,78}}</string>
                 <key>sourceSize</key>
                 <string>{84,78}</string>
             </dict>
-            <key>Quickmenu Material_31.png</key>
+            <key>Quickmenu Material_13.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{409,627},{82,78}}</string>
+                <string>{{826,232},{82,78}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{82,78}}</string>
                 <key>sourceSize</key>
                 <string>{82,78}</string>
             </dict>
-            <key>Quickmenu Material_32.png</key>
+            <key>Quickmenu Material_14.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{356,722},{57,51}}</string>
+                <string>{{472,602},{57,51}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -407,88 +95,36 @@
                 <key>sourceSize</key>
                 <string>{57,51}</string>
             </dict>
-            <key>Quickmenu Material_33.png</key>
+            <key>Quickmenu Material_15.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{568,2},{43,53}}</string>
+                <string>{{525,606},{64,56}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{43,53}}</string>
-                <key>sourceSize</key>
-                <string>{43,53}</string>
-            </dict>
-            <key>Quickmenu Material_34.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{567,47},{64,56}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{64,56}}</string>
                 <key>sourceSize</key>
                 <string>{64,56}</string>
             </dict>
-            <key>Quickmenu Material_35.png</key>
+            <key>Quickmenu Material_16.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{500,362},{82,73}}</string>
+                <string>{{863,467},{82,73}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{82,73}}</string>
                 <key>sourceSize</key>
                 <string>{82,73}</string>
             </dict>
-            <key>Quickmenu Material_36.png</key>
+            <key>Quickmenu Material_17.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{388,170},{15,14}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{15,14}}</string>
-                <key>sourceSize</key>
-                <string>{15,14}</string>
-            </dict>
-            <key>Quickmenu Material_37.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{756,18},{14,13}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{14,13}}</string>
-                <key>sourceSize</key>
-                <string>{14,13}</string>
-            </dict>
-            <key>Quickmenu Material_38.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{602,777},{82,77}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{82,77}}</string>
-                <key>sourceSize</key>
-                <string>{82,77}</string>
-            </dict>
-            <key>Quickmenu Material_39.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{541,698},{82,77}}</string>
+                <string>{{2,428},{82,77}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -498,10 +134,23 @@
                 <key>sourceSize</key>
                 <string>{82,77}</string>
             </dict>
-            <key>Quickmenu Material_4.png</key>
+            <key>Quickmenu Material_18.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{421,2},{65,64}}</string>
+                <string>{{86,381},{82,77}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{82,77}}</string>
+                <key>sourceSize</key>
+                <string>{82,77}</string>
+            </dict>
+            <key>Quickmenu Material_19.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{170,607},{65,64}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -511,335 +160,218 @@
                 <key>sourceSize</key>
                 <string>{65,64}</string>
             </dict>
-            <key>Quickmenu Material_40.png</key>
+            <key>Quickmenu Material_2.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{239,725},{65,54}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{65,54}}</string>
-                <key>sourceSize</key>
-                <string>{65,54}</string>
-            </dict>
-            <key>Quickmenu Material_41.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{475,711},{65,64}}</string>
+                <string>{{192,373},{82,77}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <true/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{82,77}}</string>
+                <key>sourceSize</key>
+                <string>{82,77}</string>
+            </dict>
+            <key>Quickmenu Material_20.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{254,600},{65,64}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{65,64}}</string>
                 <key>sourceSize</key>
                 <string>{65,64}</string>
             </dict>
-            <key>Quickmenu Material_42.png</key>
+            <key>Quickmenu Material_21.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,991},{31,34}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{31,34}}</string>
-                <key>sourceSize</key>
-                <string>{31,34}</string>
-            </dict>
-            <key>Quickmenu Material_43.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{625,2},{46,53}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{46,53}}</string>
-                <key>sourceSize</key>
-                <string>{46,53}</string>
-            </dict>
-            <key>Quickmenu Material_44.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{172,725},{65,54}}</string>
+                <string>{{779,467},{82,73}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{65,54}}</string>
-                <key>sourceSize</key>
-                <string>{65,54}</string>
-            </dict>
-            <key>Quickmenu Material_45.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{574,270},{62,61}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{62,61}}</string>
-                <key>sourceSize</key>
-                <string>{62,61}</string>
-            </dict>
-            <key>Quickmenu Material_46.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{421,132},{65,60}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{65,60}}</string>
-                <key>sourceSize</key>
-                <string>{65,60}</string>
-            </dict>
-            <key>Quickmenu Material_47.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{421,68},{65,62}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{65,62}}</string>
-                <key>sourceSize</key>
-                <string>{65,62}</string>
-            </dict>
-            <key>Quickmenu Material_48.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{409,711},{65,64}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{65,64}}</string>
-                <key>sourceSize</key>
-                <string>{65,64}</string>
-            </dict>
-            <key>Quickmenu Material_49.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{491,446},{82,73}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{82,73}}</string>
                 <key>sourceSize</key>
                 <string>{82,73}</string>
             </dict>
-            <key>Quickmenu Material_5.png</key>
+            <key>Quickmenu Material_22.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{489,614},{82,77}}</string>
+                <string>{{573,2},{84,77}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{82,77}}</string>
-                <key>sourceSize</key>
-                <string>{82,77}</string>
-            </dict>
-            <key>Quickmenu Material_50.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{172,639},{84,77}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{84,77}}</string>
                 <key>sourceSize</key>
                 <string>{84,77}</string>
             </dict>
-            <key>Quickmenu Material_51.png</key>
+            <key>Quickmenu Material_23.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{412,530},{82,77}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{82,77}}</string>
-                <key>sourceSize</key>
-                <string>{82,77}</string>
-            </dict>
-            <key>Quickmenu Material_52.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{531,186},{82,73}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{82,73}}</string>
-                <key>sourceSize</key>
-                <string>{82,73}</string>
-            </dict>
-            <key>Quickmenu Material_53.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{289,781},{84,73}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{84,73}}</string>
-                <key>sourceSize</key>
-                <string>{84,73}</string>
-            </dict>
-            <key>Quickmenu Material_54.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{491,530},{61,73}}</string>
+                <string>{{274,371},{82,77}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{61,73}}</string>
+                <string>{{0,0},{82,77}}</string>
                 <key>sourceSize</key>
-                <string>{61,73}</string>
+                <string>{82,77}</string>
             </dict>
-            <key>Quickmenu Material_55.png</key>
+            <key>Quickmenu Material_24.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{499,278},{82,73}}</string>
+                <string>{{2,582},{82,73}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{82,73}}</string>
                 <key>sourceSize</key>
                 <string>{82,73}</string>
             </dict>
-            <key>Quickmenu Material_56.png</key>
+            <key>Quickmenu Material_25.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{285,867},{84,73}}</string>
+                <string>{{659,81},{84,73}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{84,73}}</string>
                 <key>sourceSize</key>
                 <string>{84,73}</string>
             </dict>
-            <key>Quickmenu Material_57.png</key>
+            <key>Quickmenu Material_26.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{456,194},{82,73}}</string>
+                <string>{{86,535},{82,73}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{82,73}}</string>
                 <key>sourceSize</key>
                 <string>{82,73}</string>
             </dict>
-            <key>Quickmenu Material_58.png</key>
+            <key>Quickmenu Material_27.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{210,867},{84,73}}</string>
+                <string>{{573,81},{84,73}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{84,73}}</string>
                 <key>sourceSize</key>
                 <string>{84,73}</string>
             </dict>
-            <key>Quickmenu Material_59.png</key>
+            <key>Quickmenu Material_28.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{424,278},{82,73}}</string>
+                <string>{{170,532},{82,73}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{82,73}}</string>
                 <key>sourceSize</key>
                 <string>{82,73}</string>
             </dict>
-            <key>Quickmenu Material_6.png</key>
+            <key>Quickmenu Material_29.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{341,362},{82,78}}</string>
+                <string>{{487,81},{84,73}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{84,73}}</string>
+                <key>sourceSize</key>
+                <string>{84,73}</string>
+            </dict>
+            <key>Quickmenu Material_3.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{742,232},{82,78}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{82,78}}</string>
                 <key>sourceSize</key>
                 <string>{82,78}</string>
             </dict>
-            <key>Quickmenu Material_60.png</key>
+            <key>Quickmenu Material_30.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{412,446},{82,77}}</string>
+                <string>{{254,525},{82,73}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{82,77}}</string>
-                <key>sourceSize</key>
-                <string>{82,77}</string>
-            </dict>
-            <key>Quickmenu Material_61.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{491,86},{82,74}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{82,74}}</string>
-                <key>sourceSize</key>
-                <string>{82,74}</string>
-            </dict>
-            <key>Quickmenu Material_62.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{345,86},{82,73}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{82,73}}</string>
                 <key>sourceSize</key>
                 <string>{82,73}</string>
             </dict>
-            <key>Quickmenu Material_63.png</key>
+            <key>Quickmenu Material_31.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{443,951},{74,71}}</string>
+                <string>{{359,369},{82,77}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{82,77}}</string>
+                <key>sourceSize</key>
+                <string>{82,77}</string>
+            </dict>
+            <key>Quickmenu Material_32.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{358,448},{82,74}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{82,74}}</string>
+                <key>sourceSize</key>
+                <string>{82,74}</string>
+            </dict>
+            <key>Quickmenu Material_33.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{355,524},{82,73}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{82,73}}</string>
+                <key>sourceSize</key>
+                <string>{82,73}</string>
+            </dict>
+            <key>Quickmenu Material_34.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{947,541},{74,71}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -849,23 +381,10 @@
                 <key>sourceSize</key>
                 <string>{74,71}</string>
             </dict>
-            <key>Quickmenu Material_64.png</key>
+            <key>Quickmenu Material_35.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{491,2},{82,74}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{82,74}}</string>
-                <key>sourceSize</key>
-                <string>{82,74}</string>
-            </dict>
-            <key>Quickmenu Material_65.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{603,946},{82,74}}</string>
+                <string>{{443,393},{82,74}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -875,36 +394,49 @@
                 <key>sourceSize</key>
                 <string>{82,74}</string>
             </dict>
-            <key>Quickmenu Material_66.png</key>
+            <key>Quickmenu Material_36.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{345,2},{82,73}}</string>
+                <string>{{947,457},{82,74}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <true/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{82,73}}</string>
+                <string>{{0,0},{82,74}}</string>
                 <key>sourceSize</key>
-                <string>{82,73}</string>
+                <string>{82,74}</string>
             </dict>
-            <key>Quickmenu Material_67.png</key>
+            <key>Quickmenu Material_37.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{681,2},{82,73}}</string>
+                <string>{{442,469},{82,73}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{82,73}}</string>
                 <key>sourceSize</key>
                 <string>{82,73}</string>
             </dict>
-            <key>Quickmenu Material_68.png</key>
+            <key>Quickmenu Material_38.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{519,946},{82,74}}</string>
+                <string>{{611,468},{82,73}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{82,73}}</string>
+                <key>sourceSize</key>
+                <string>{82,73}</string>
+            </dict>
+            <key>Quickmenu Material_39.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{863,391},{82,74}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -914,36 +446,36 @@
                 <key>sourceSize</key>
                 <string>{82,74}</string>
             </dict>
-            <key>Quickmenu Material_69.png</key>
+            <key>Quickmenu Material_4.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{332,543},{82,78}}</string>
+                <string>{{110,219},{84,78}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{84,78}}</string>
+                <key>sourceSize</key>
+                <string>{84,78}</string>
+            </dict>
+            <key>Quickmenu Material_40.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{359,210},{82,78}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{82,78}}</string>
                 <key>sourceSize</key>
                 <string>{82,78}</string>
             </dict>
-            <key>Quickmenu Material_7.png</key>
+            <key>Quickmenu Material_41.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{295,953},{64,66}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{64,66}}</string>
-                <key>sourceSize</key>
-                <string>{64,66}</string>
-            </dict>
-            <key>Quickmenu Material_70.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{372,170},{14,15}}</string>
+                <string>{{94,199},{14,15}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -953,10 +485,10 @@
                 <key>sourceSize</key>
                 <string>{14,15}</string>
             </dict>
-            <key>Quickmenu Material_71.png</key>
+            <key>Quickmenu Material_42.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{318,170},{18,18}}</string>
+                <string>{{1003,22},{18,18}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -966,10 +498,10 @@
                 <key>sourceSize</key>
                 <string>{18,18}</string>
             </dict>
-            <key>Quickmenu Material_72.png</key>
+            <key>Quickmenu Material_43.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{298,170},{18,18}}</string>
+                <string>{{1003,2},{18,18}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -979,10 +511,10 @@
                 <key>sourceSize</key>
                 <string>{18,18}</string>
             </dict>
-            <key>Quickmenu Material_73.png</key>
+            <key>Quickmenu Material_44.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{504,170},{14,14}}</string>
+                <string>{{94,216},{14,14}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -992,10 +524,10 @@
                 <key>sourceSize</key>
                 <string>{14,14}</string>
             </dict>
-            <key>Quickmenu Material_74.png</key>
+            <key>Quickmenu Material_45.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{208,991},{18,18}}</string>
+                <string>{{88,291},{18,18}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -1005,10 +537,10 @@
                 <key>sourceSize</key>
                 <string>{18,18}</string>
             </dict>
-            <key>Quickmenu Material_75.png</key>
+            <key>Quickmenu Material_46.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{188,991},{18,18}}</string>
+                <string>{{88,271},{18,18}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -1018,36 +550,10 @@
                 <key>sourceSize</key>
                 <string>{18,18}</string>
             </dict>
-            <key>Quickmenu Material_76.png</key>
+            <key>Quickmenu Material_47.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{756,2},{13,14}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{13,14}}</string>
-                <key>sourceSize</key>
-                <string>{13,14}</string>
-            </dict>
-            <key>Quickmenu Material_77.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{756,66},{13,13}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{13,13}}</string>
-                <key>sourceSize</key>
-                <string>{13,13}</string>
-            </dict>
-            <key>Quickmenu Material_78.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{174,991},{12,19}}</string>
+                <string>{{94,232},{12,19}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
@@ -1057,304 +563,863 @@
                 <key>sourceSize</key>
                 <string>{12,19}</string>
             </dict>
-            <key>Quickmenu Material_79.png</key>
+            <key>Quickmenu Material_48.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{88,991},{48,30}}</string>
+                <string>{{443,260},{48,30}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <false/>
+                <true/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{48,30}}</string>
                 <key>sourceSize</key>
                 <string>{48,30}</string>
             </dict>
-            <key>Quickmenu Material_8.png</key>
+            <key>Quickmenu Material_49.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{172,467},{84,78}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{84,78}}</string>
-                <key>sourceSize</key>
-                <string>{84,78}</string>
-            </dict>
-            <key>Quickmenu Material_80.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{488,170},{14,14}}</string>
+                <string>{{94,253},{10,16}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{14,14}}</string>
-                <key>sourceSize</key>
-                <string>{14,14}</string>
-            </dict>
-            <key>Quickmenu Material_81.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{404,170},{14,14}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{14,14}}</string>
-                <key>sourceSize</key>
-                <string>{14,14}</string>
-            </dict>
-            <key>Quickmenu Material_82.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{174,1012},{10,16}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{10,16}}</string>
                 <key>sourceSize</key>
                 <string>{10,16}</string>
             </dict>
-            <key>Quickmenu Material_83.png</key>
+            <key>Quickmenu Material_5.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{210,953},{14,16}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{14,16}}</string>
-                <key>sourceSize</key>
-                <string>{14,16}</string>
-            </dict>
-            <key>Quickmenu Material_84.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{38,991},{48,30}}</string>
+                <string>{{2,348},{82,78}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{48,30}}</string>
-                <key>sourceSize</key>
-                <string>{48,30}</string>
-            </dict>
-            <key>Quickmenu Material_85.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{338,170},{15,17}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{15,17}}</string>
-                <key>sourceSize</key>
-                <string>{15,17}</string>
-            </dict>
-            <key>Quickmenu Material_86.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{210,969},{15,17}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <false/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{15,17}}</string>
-                <key>sourceSize</key>
-                <string>{15,17}</string>
-            </dict>
-            <key>Quickmenu Material_87.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{598,862},{82,77}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{82,77}}</string>
-                <key>sourceSize</key>
-                <string>{82,77}</string>
-            </dict>
-            <key>Quickmenu Material_88.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{523,778},{82,77}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{82,77}}</string>
-                <key>sourceSize</key>
-                <string>{82,77}</string>
-            </dict>
-            <key>Quickmenu Material_89.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{519,862},{82,77}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
-                <key>sourceColorRect</key>
-                <string>{{0,0},{82,77}}</string>
-                <key>sourceSize</key>
-                <string>{82,77}</string>
-            </dict>
-            <key>Quickmenu Material_9.png</key>
-            <dict>
-                <key>frame</key>
-                <string>{{332,459},{82,78}}</string>
-                <key>offset</key>
-                <string>{0,0}</string>
-                <key>rotated</key>
-                <true/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{82,78}}</string>
                 <key>sourceSize</key>
                 <string>{82,78}</string>
             </dict>
-            <key>Quickmenu Material_90.png</key>
+            <key>Quickmenu Material_50.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{172,375},{90,85}}</string>
+                <string>{{94,181},{14,16}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{14,16}}</string>
+                <key>sourceSize</key>
+                <string>{14,16}</string>
+            </dict>
+            <key>Quickmenu Material_51.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{443,210},{48,30}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <true/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{48,30}}</string>
+                <key>sourceSize</key>
+                <string>{48,30}</string>
+            </dict>
+            <key>Quickmenu Material_52.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{1003,59},{15,17}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{15,17}}</string>
+                <key>sourceSize</key>
+                <string>{15,17}</string>
+            </dict>
+            <key>Quickmenu Material_53.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{1003,42},{15,17}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{15,17}}</string>
+                <key>sourceSize</key>
+                <string>{15,17}</string>
+            </dict>
+            <key>Quickmenu Material_54.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{443,314},{82,77}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{82,77}}</string>
+                <key>sourceSize</key>
+                <string>{82,77}</string>
+            </dict>
+            <key>Quickmenu Material_55.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{895,312},{82,77}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{82,77}}</string>
+                <key>sourceSize</key>
+                <string>{82,77}</string>
+            </dict>
+            <key>Quickmenu Material_56.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{811,312},{82,77}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{82,77}}</string>
+                <key>sourceSize</key>
+                <string>{82,77}</string>
+            </dict>
+            <key>Quickmenu Material_57.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,181},{90,85}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{90,85}}</string>
                 <key>sourceSize</key>
                 <string>{90,85}</string>
             </dict>
-            <key>Quickmenu Material_91.png</key>
+            <key>Quickmenu Material_58.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{252,552},{83,78}}</string>
+                <string>{{915,152},{83,78}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{83,78}}</string>
                 <key>sourceSize</key>
                 <string>{83,78}</string>
             </dict>
-            <key>Quickmenu Material_92.png</key>
+            <key>Quickmenu Material_59.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{263,278},{82,80}}</string>
+                <string>{{108,299},{82,80}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{82,80}}</string>
                 <key>sourceSize</key>
                 <string>{82,80}</string>
             </dict>
-            <key>Quickmenu Material_93.png</key>
+            <key>Quickmenu Material_6.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{252,467},{83,78}}</string>
+                <string>{{727,312},{82,77}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{82,77}}</string>
+                <key>sourceSize</key>
+                <string>{82,77}</string>
+            </dict>
+            <key>Quickmenu Material_60.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{830,152},{83,78}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{83,78}}</string>
                 <key>sourceSize</key>
                 <string>{83,78}</string>
             </dict>
-            <key>Quickmenu Material_94.png</key>
+            <key>Quickmenu Material_61.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{360,867},{83,78}}</string>
+                <string>{{745,152},{83,78}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{83,78}}</string>
                 <key>sourceSize</key>
                 <string>{83,78}</string>
             </dict>
-            <key>Quickmenu Material_95.png</key>
+            <key>Quickmenu Material_62.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{259,375},{82,80}}</string>
+                <string>{{275,210},{82,80}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{82,80}}</string>
                 <key>sourceSize</key>
                 <string>{82,80}</string>
             </dict>
-            <key>Quickmenu Material_96.png</key>
+            <key>Quickmenu Material_63.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{2,782},{207,206}}</string>
+                <string>{{278,2},{207,206}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{207,206}}</string>
                 <key>sourceSize</key>
                 <string>{207,206}</string>
             </dict>
-            <key>Quickmenu Material_97.png</key>
+            <key>Quickmenu Material_64.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{172,2},{274,124}}</string>
+                <string>{{2,2},{274,124}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{274,124}}</string>
                 <key>sourceSize</key>
                 <string>{274,124}</string>
             </dict>
-            <key>Quickmenu Material_98.png</key>
+            <key>Quickmenu Material_65.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{172,278},{95,89}}</string>
+                <string>{{110,128},{95,89}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
-                <true/>
+                <false/>
                 <key>sourceColorRect</key>
                 <string>{{0,0},{95,89}}</string>
                 <key>sourceSize</key>
                 <string>{95,89}</string>
             </dict>
-            <key>Quickmenu Material_99.png</key>
+            <key>Quickmenu Material_66.png</key>
             <dict>
                 <key>frame</key>
-                <string>{{330,637},{83,77}}</string>
+                <string>{{657,156},{83,77}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{83,77}}</string>
+                <key>sourceSize</key>
+                <string>{83,77}</string>
+            </dict>
+            <key>Quickmenu Material_67.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{643,235},{82,77}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{82,77}}</string>
+                <key>sourceSize</key>
+                <string>{82,77}</string>
+            </dict>
+            <key>Quickmenu Material_68.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{572,156},{83,77}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{83,77}}</string>
+                <key>sourceSize</key>
+                <string>{83,77}</string>
+            </dict>
+            <key>Quickmenu Material_69.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{559,235},{82,77}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{82,77}}</string>
+                <key>sourceSize</key>
+                <string>{82,77}</string>
+            </dict>
+            <key>Quickmenu Material_7.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{275,292},{82,77}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{82,77}}</string>
+                <key>sourceSize</key>
+                <string>{82,77}</string>
+            </dict>
+            <key>Quickmenu Material_70.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{487,156},{83,77}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{83,77}}</string>
+                <key>sourceSize</key>
+                <string>{83,77}</string>
+            </dict>
+            <key>Quickmenu Material_71.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{527,468},{82,73}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{82,73}}</string>
+                <key>sourceSize</key>
+                <string>{82,73}</string>
+            </dict>
+            <key>Quickmenu Material_72.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{359,290},{82,77}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{82,77}}</string>
+                <key>sourceSize</key>
+                <string>{82,77}</string>
+            </dict>
+            <key>Quickmenu Material_73.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{695,467},{82,73}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{82,73}}</string>
+                <key>sourceSize</key>
+                <string>{82,73}</string>
+            </dict>
+            <key>Quickmenu Material_74.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{917,77},{84,73}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{84,73}}</string>
+                <key>sourceSize</key>
+                <string>{84,73}</string>
+            </dict>
+            <key>Quickmenu Material_75.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{831,77},{84,73}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{84,73}}</string>
+                <key>sourceSize</key>
+                <string>{84,73}</string>
+            </dict>
+            <key>Quickmenu Material_76.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{745,77},{84,73}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{84,73}}</string>
+                <key>sourceSize</key>
+                <string>{84,73}</string>
+            </dict>
+            <key>Quickmenu Material_77.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{475,235},{82,77}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{82,77}}</string>
+                <key>sourceSize</key>
+                <string>{82,77}</string>
+            </dict>
+            <key>Quickmenu Material_78.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{611,393},{82,73}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{82,73}}</string>
+                <key>sourceSize</key>
+                <string>{82,73}</string>
+            </dict>
+            <key>Quickmenu Material_79.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{779,391},{82,74}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{82,74}}</string>
+                <key>sourceSize</key>
+                <string>{82,74}</string>
+            </dict>
+            <key>Quickmenu Material_8.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{487,2},{84,77}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{84,77}}</string>
+                <key>sourceSize</key>
+                <string>{84,77}</string>
+            </dict>
+            <key>Quickmenu Material_80.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{527,393},{82,73}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{82,73}}</string>
+                <key>sourceSize</key>
+                <string>{82,73}</string>
+            </dict>
+            <key>Quickmenu Material_81.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,507},{82,73}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{82,73}}</string>
+                <key>sourceSize</key>
+                <string>{82,73}</string>
+            </dict>
+            <key>Quickmenu Material_82.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{917,2},{84,73}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{84,73}}</string>
+                <key>sourceSize</key>
+                <string>{84,73}</string>
+            </dict>
+            <key>Quickmenu Material_83.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{831,2},{84,73}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{84,73}}</string>
+                <key>sourceSize</key>
+                <string>{84,73}</string>
+            </dict>
+            <key>Quickmenu Material_84.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{86,460},{82,73}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{82,73}}</string>
+                <key>sourceSize</key>
+                <string>{82,73}</string>
+            </dict>
+            <key>Quickmenu Material_85.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{745,2},{84,73}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{84,73}}</string>
+                <key>sourceSize</key>
+                <string>{84,73}</string>
+            </dict>
+            <key>Quickmenu Material_86.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{170,457},{82,73}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{82,73}}</string>
+                <key>sourceSize</key>
+                <string>{82,73}</string>
+            </dict>
+            <key>Quickmenu Material_87.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{695,391},{82,74}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{82,74}}</string>
+                <key>sourceSize</key>
+                <string>{82,74}</string>
+            </dict>
+            <key>Quickmenu Material_88.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{271,450},{82,73}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{82,73}}</string>
+                <key>sourceSize</key>
+                <string>{82,73}</string>
+            </dict>
+            <key>Quickmenu Material_9.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{196,222},{82,77}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <true/>
                 <key>sourceColorRect</key>
-                <string>{{0,0},{83,77}}</string>
+                <string>{{0,0},{82,77}}</string>
                 <key>sourceSize</key>
-                <string>{83,77}</string>
+                <string>{82,77}</string>
+            </dict>
+            <key>towerLvUp1.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{405,658},{65,54}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{65,54}}</string>
+                <key>sourceSize</key>
+                <string>{65,54}</string>
+            </dict>
+            <key>towerLvUp10.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{192,306},{65,80}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{65,80}}</string>
+                <key>sourceSize</key>
+                <string>{65,80}</string>
+            </dict>
+            <key>towerLvUp11.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{526,543},{61,73}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{61,73}}</string>
+                <key>sourceSize</key>
+                <string>{61,73}</string>
+            </dict>
+            <key>towerLvUp12.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{601,543},{58,72}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{58,72}}</string>
+                <key>sourceSize</key>
+                <string>{58,72}</string>
+            </dict>
+            <key>towerLvUp13.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{439,544},{56,73}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{56,73}}</string>
+                <key>sourceSize</key>
+                <string>{56,73}</string>
+            </dict>
+            <key>towerLvUp14.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,128},{51,106}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{51,106}}</string>
+                <key>sourceSize</key>
+                <string>{51,106}</string>
+            </dict>
+            <key>towerLvUp15.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{153,673},{46,53}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{46,53}}</string>
+                <key>sourceSize</key>
+                <string>{46,53}</string>
+            </dict>
+            <key>towerLvUp16.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{237,666},{48,53}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{48,53}}</string>
+                <key>sourceSize</key>
+                <string>{48,53}</string>
+            </dict>
+            <key>towerLvUp17.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{472,661},{51,51}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{51,51}}</string>
+                <key>sourceSize</key>
+                <string>{51,51}</string>
+            </dict>
+            <key>towerLvUp18.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{207,128},{67,25}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{67,25}}</string>
+                <key>sourceSize</key>
+                <string>{67,25}</string>
+            </dict>
+            <key>towerLvUp19.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{321,665},{60,50}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{60,50}}</string>
+                <key>sourceSize</key>
+                <string>{60,50}</string>
+            </dict>
+            <key>towerLvUp2.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{405,602},{65,54}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{65,54}}</string>
+                <key>sourceSize</key>
+                <string>{65,54}</string>
+            </dict>
+            <key>towerLvUp20.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{525,664},{62,61}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{62,61}}</string>
+                <key>sourceSize</key>
+                <string>{62,61}</string>
+            </dict>
+            <key>towerLvUp3.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,657},{65,60}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{65,60}}</string>
+                <key>sourceSize</key>
+                <string>{65,60}</string>
+            </dict>
+            <key>towerLvUp4.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{86,610},{65,62}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{65,62}}</string>
+                <key>sourceSize</key>
+                <string>{65,62}</string>
+            </dict>
+            <key>towerLvUp5.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{601,603},{64,66}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{64,66}}</string>
+                <key>sourceSize</key>
+                <string>{64,66}</string>
+            </dict>
+            <key>towerLvUp6.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{207,155},{65,66}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{65,66}}</string>
+                <key>sourceSize</key>
+                <string>{65,66}</string>
+            </dict>
+            <key>towerLvUp7.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{338,599},{65,64}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{65,64}}</string>
+                <key>sourceSize</key>
+                <string>{65,64}</string>
+            </dict>
+            <key>towerLvUp8.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{695,542},{64,76}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{64,76}}</string>
+                <key>sourceSize</key>
+                <string>{64,76}</string>
+            </dict>
+            <key>towerLvUp9.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{947,391},{64,75}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <true/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{64,75}}</string>
+                <key>sourceSize</key>
+                <string>{64,75}</string>
             </dict>
         </dict>
         <key>metadata</key>
@@ -1366,7 +1431,7 @@
             <key>size</key>
             <string>{1024,1024}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:0734c2ec6602818ad0ce13ab0422c9cf$</string>
+            <string>$TexturePacker:SmartUpdate:84b3f367ec51a5ed67b33a7a8c4511a5$</string>
             <key>textureFileName</key>
             <string>quickMenu.png</string>
         </dict>

@@ -52,27 +52,27 @@ thBool CThDefTowerQuickMenu::init()
 	/* 如果 m_pMouse 有值, 就代表已经初始化过了. */
 	TH_PROCESS_SUCCESS(m_pMouse);
 	m_pMouse = EventListenerMouse::create();
-	m_pSpFrameActiveSkillPoint = SpriteFrameCache::getInstance()->getSpriteFrameByName("Quickmenu Material_74.png");
+	m_pSpFrameActiveSkillPoint = SpriteFrameCache::getInstance()->getSpriteFrameByName("Quickmenu Material_45.png");
 	TH_PROCESS_ERROR(m_pSpFrameActiveSkillPoint);
 
 	memset(m_arrpQmPrice, 0, sizeof(THQM_PRICE_PTR) * THMAX_TOWER_SKILL_COUNT);
 	if (NULL == m_ptSellHoverBorder)
 	{
-		bRet = CThBaseCharacter::initCharacterWithPlistSimple("Quickmenu sell border", cszpSpTex, 34, &m_ptSellHoverBorder);
+		bRet = CThBaseCharacter::initCharacterWithPlistSimple("Quickmenu sell border", cszpSpTex, 15, &m_ptSellHoverBorder);
 		TH_PROCESS_ERROR(bRet);
 		m_ptSellHoverBorder->pSpCharacter->setVisible(THFALSE);
 		this->addChild(m_ptSellHoverBorder->pSpCharacter);
 	}
 	if (NULL == m_ptMoveHoverBorder)
 	{
-		bRet = CThBaseCharacter::initCharacterWithPlistSimple("Quickmenu move border", cszpSpTex, 63, &m_ptMoveHoverBorder);
+		bRet = CThBaseCharacter::initCharacterWithPlistSimple("Quickmenu move border", cszpSpTex, 34, &m_ptMoveHoverBorder);
 		TH_PROCESS_ERROR(bRet);
 		m_ptMoveHoverBorder->pSpCharacter->setVisible(THFALSE);
 		this->addChild(m_ptMoveHoverBorder->pSpCharacter);
 	}
 	if (NULL == m_ptSkillHoverBorder)
 	{
-		bRet = CThBaseCharacter::initCharacterWithPlistSimple("Quickmenu skill border", cszpSpTex, 90, &m_ptSkillHoverBorder);
+		bRet = CThBaseCharacter::initCharacterWithPlistSimple("Quickmenu skill border", cszpSpTex, 57, &m_ptSkillHoverBorder);
 		TH_PROCESS_ERROR(bRet);
 		m_ptSkillHoverBorder->pSpCharacter->setVisible(THFALSE);
 		this->addChild(m_ptSkillHoverBorder->pSpCharacter);
@@ -437,7 +437,7 @@ thBool CThDefTowerQuickMenu::setChacSkillPrice(TH_SKILL_PTR pSk)
 	tFontColor.b = 0;
 
 	/* 文字背景. */
-	bRet = CThBaseCharacter::initCharacterWithPlistSimple("price bg", "Quickmenu Material_", 79, &m_arrpQmPrice[sTag]->ptBg);
+	bRet = CThBaseCharacter::initCharacterWithPlistSimple("price bg", "Quickmenu Material_", 48, &m_arrpQmPrice[sTag]->ptBg);
 	TH_PROCESS_ERROR(bRet);
 	m_arrpQmPrice[sTag]->ptBg->pSpCharacter->setPosition(pSk->pChacFrSkill->pSpCharacter->getBoundingBox().getMidX(), fBgY);
 	m_arrpQmPrice[sTag]->ptBg->pSpCharacter->setAnchorPoint(Vec2(0.5, 1));
@@ -476,7 +476,7 @@ thBool CThDefTowerQuickMenu::setChacSkillTextDesc(TH_SKILL_PTR pSk)
 	strcpy_s(pTmpSkText->szarrTagSk, THMAX_CHAR_DESC, pSk->szarrSkill);
 
 	/* 文字背景. */
-	bRet = CThBaseCharacter::initCharacterWithPlistSimple("skill text bg", "Quickmenu Material_", 97, &pTmpSkText->ptBg);
+	bRet = CThBaseCharacter::initCharacterWithPlistSimple("skill text bg", "Quickmenu Material_", 64, &pTmpSkText->ptBg);
 	TH_PROCESS_ERROR(bRet);
 	fPosY = fPosY + pTmpSkText->ptBg->pSpCharacter->getBoundingBox().size.height * pTmpSkText->ptBg->pSpCharacter->getAnchorPoint().y + 50;
 	pTmpSkText->ptBg->pSpCharacter->setPosition(fPoxX, fPosY);
@@ -639,7 +639,7 @@ thBool CThDefTowerQuickMenu::createBasicQm(const float cfX, const float cfY, con
 
 	TH_PROCESS_ERROR(NULL != ptDefTowerQm);
 	/* 快速菜单背景(圈). */
-	bRet = CThBaseCharacter::initCharacterWithPlistSimple("Quickmenu bg", cszpSpTex, 96, &ptChacFrameQuickMenuBg);
+	bRet = CThBaseCharacter::initCharacterWithPlistSimple("Quickmenu bg", cszpSpTex, 63, &ptChacFrameQuickMenuBg);
 	TH_PROCESS_ERROR(bRet && ptChacFrameQuickMenuBg);
 	ptDefTowerQm->pBg = ptChacFrameQuickMenuBg;
 
@@ -651,7 +651,7 @@ thBool CThDefTowerQuickMenu::createBasicQm(const float cfX, const float cfY, con
 	strcpy_s(tCommandMovement.szarrDefaultTexPlistPos, 64, THINI_DEFAULT_STR);
 	strcpy_s(tCommandMovement.szarrSpriteTex, 64, cszpSpTex);
 	strcpy_s(tCommandMovement.szarrSpriteName, 64, "Quickmenu move");
-	tCommandMovement.nDefaultTexPlistPos = 41;
+	tCommandMovement.nDefaultTexPlistPos = 19;
 	tCommandMovement.fPosX = fBgLayerdX * 8.5;
 	tCommandMovement.fPosY = -fBgLayerdY * 7.5;
 	tCommandMovement.fScale = 0.7f;
@@ -660,7 +660,7 @@ thBool CThDefTowerQuickMenu::createBasicQm(const float cfX, const float cfY, con
 	TH_PROCESS_ERROR(bRet);
 
 	/* 移动(禁用)按钮. */
-	tCommandMovement.nDefaultTexPlistPos = 48;
+	tCommandMovement.nDefaultTexPlistPos = 18;
 	bRet = CThBaseCharacter::initCharacterWithPlist(&tCommandMovement, &ptChacCommandMovementDisable);
 	TH_PROCESS_ERROR(bRet);
 
@@ -681,7 +681,7 @@ thBool CThDefTowerQuickMenu::createBasicQm(const float cfX, const float cfY, con
 	strcpy_s(tSellDefTower.szarrDefaultTexPlistPos, 64, THINI_DEFAULT_STR);
 	strcpy_s(tSellDefTower.szarrSpriteTex, 64, cszpSpTex);
 	strcpy_s(tSellDefTower.szarrSpriteName, 64, "Quickmenu sell");
-	tSellDefTower.nDefaultTexPlistPos = 32;
+	tSellDefTower.nDefaultTexPlistPos = 14;
 	tSellDefTower.fPosY = -fBgLayerdY * 11;
 	tSellDefTower.fScale = 0.75f;
 
@@ -800,6 +800,7 @@ void CThDefTowerQuickMenu::onMouseUp(EventMouse* pMouse)
 	Vec2 vecMousePos = pMouse->getLocationInView();
 	int nFnRet = 0;
 	int nSpMoveTag = 0;
+	int nCurLv = 0;
 	TH_SKILL_PTR pPlayerSk = NULL;
 
 	/* debug use. */
@@ -833,9 +834,14 @@ void CThDefTowerQuickMenu::onMouseUp(EventMouse* pMouse)
 				TH_PROCESS_ERROR(pPlayerSk);
 
 				bRet = CThBaseCharacter::getIsHoverSprite(m_arrpCurSk[s]->pChacFrSkill->pSpCharacter, vecMousePos, THFALSE);
-				if (bRet && m_arrpCurSk[s]->nSkillPrice <= nPlayerMoney && pPlayerSk->pChacFrSkill->emMaxLevel >= pPlayerSk->pChacFrSkill->emCurLevel)
+				if (
+					bRet && m_arrpCurSk[s]->nSkillPrice <= nPlayerMoney &&
+					pPlayerSk->pChacFrSkill->emMaxLevel > pPlayerSk->pChacFrSkill->emCurLevel && THEM_CHARACTER_LEVEL::CHARACTER_MAXLEVEL > pPlayerSk->pChacFrSkill->emCurLevel
+					)
 				{
-					m_arrpCurSk[s]->arrpSkillLevelPoint[int(pPlayerSk->pChacFrSkill->emCurLevel)]->pSpCharacter->setSpriteFrame(m_pSpFrameActiveSkillPoint);
+					nCurLv = int(pPlayerSk->pChacFrSkill->emCurLevel);
+					TH_PROCESS_ERROR(0 < nCurLv && THMAX_SKILL_LEVEL > nCurLv);
+					m_arrpCurSk[s]->arrpSkillLevelPoint[nCurLv]->pSpCharacter->setSpriteFrame(m_pSpFrameActiveSkillPoint);
 					m_pTaget->setSkLevelUpByName(m_arrpCurSk[s]->szarrSkill);
 					break;
 				}

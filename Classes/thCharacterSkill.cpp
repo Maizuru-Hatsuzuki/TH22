@@ -143,7 +143,7 @@ thBool CThCcCharacterSkillHanlder::initWarriorSkillLv4Union(CHARACTER_SKILL_UNIO
 	bRet = CThBaseCharacter::initCharacterWithPlist(ptChacDesc, &puRet->ptAliceMargatroidLv4Skill->ptSkDollRepair->pChacFrSkill);
 	TH_PROCESS_ERROR(bRet);
 	puRet->ptAliceMargatroidLv4Skill->ptSkDollRepair->pSpFrameDisableSkill = puRet->ptAliceMargatroidLv4Skill->ptSkDollRepair->pChacFrSkill->pSpCharacter->getSpriteFrame();
-	puRet->ptAliceMargatroidLv4Skill->ptSkDollRepair->pSpFrameActiveSkill = SpriteFrameCache::getInstance()->getSpriteFrameByName("Quickmenu Material_25.png");
+	puRet->ptAliceMargatroidLv4Skill->ptSkDollRepair->pSpFrameActiveSkill = SpriteFrameCache::getInstance()->getSpriteFrameByName("Quickmenu Material_10.png");
 	TH_PROCESS_ERROR(puRet->ptAliceMargatroidLv4Skill->ptSkDollRepair->pSpFrameActiveSkill);
 
 	bRet = CthCcCharacterLoadHandler::getInstance()->getSkillFromIni(szarrTmpSkillIni, &puRet->ptAliceMargatroidLv4Skill->ptSkDollRepair->nSkillPrice);
@@ -164,7 +164,7 @@ thBool CThCcCharacterSkillHanlder::initWarriorSkillLv4Union(CHARACTER_SKILL_UNIO
 	TH_PROCESS_ERROR(bRet);
 	
 	puRet->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->pSpFrameDisableSkill = puRet->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->pChacFrSkill->pSpCharacter->getSpriteFrame();
-	puRet->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->pSpFrameActiveSkill = SpriteFrameCache::getInstance()->getSpriteFrameByName("Quickmenu Material_5.png");
+	puRet->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->pSpFrameActiveSkill = SpriteFrameCache::getInstance()->getSpriteFrameByName("Quickmenu Material_2.png");
 	TH_PROCESS_ERROR(puRet->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->pSpFrameActiveSkill);
 
 	bRet = CthCcCharacterLoadHandler::getInstance()->getSkillFromIni(szarrTmpSkillIni, &puRet->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->nSkillPrice);

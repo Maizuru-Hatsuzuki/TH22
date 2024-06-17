@@ -4,7 +4,7 @@
         <key>DollRepairTitle</key>
         <string>轮回的西藏人形</string>
         <key>DollRepairMainDesc</key>
-        <string>人偶在濒死状态时，恢复100%生命，在2秒内持续衰减至0。</string>
+        <string>制作一个人偶，人偶在濒死状态时，恢复100%生命，在2秒内持续衰减至0。</string>
         <key>DollRepairSubDesc</key>
         <string>无论如何，这家伙还是挺有一套的。</string>
         
