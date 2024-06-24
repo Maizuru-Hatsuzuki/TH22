@@ -31,7 +31,7 @@ do											\
 {											\
 	if (Condition)							\
 	{										\
-		printf("[TH_PROCESS_SUCCESS] ERR '%s' at line %d in %s::%s.\n", #Condition, __LINE__, __FILE__, __FUNCTION__);	\
+		printf("[TH_PROCESS_SUCCESS] SUCCESS '%s' at line %d in %s::%s.\n", #Condition, __LINE__, __FILE__, __FUNCTION__);	\
 		goto Exit1;							\
 	}										\
 } while (0);

@@ -207,6 +207,7 @@ void CThDefTowerQuickMenu::uninit()
 	THFREE(m_ptMoveHoverBorder);
 	THFREE(m_ptSkillHoverBorder);
 	THFREE(m_ptMoveRangeHalo);
+	THFREE(m_ptTowerSkillLevelUp);
 	THFREE(m_ptMoveSelectingMouse);
 	THFREE(m_ptMoveSelectedMouse);
 	THFREE(m_ptMoveSelectedErrorMouse);
@@ -232,7 +233,7 @@ void CThDefTowerQuickMenu::uninit()
 		THFREE(m_arrpQmSkText[s]);
 	}
 
-	CThCcCharacterSkillHanlder::getInstance()->uninitWarriorSkillLv4Union(m_ptQm->puChacSkill);
+	CThCcCharacterSkillHanlder::getInstance()->uninitSkillUnion(m_ptQm->puChacSkill);
 
 	unscheduleUpdate();
 	CTHCcBaseHandler::getInstance()->setShowWinMouseCursor(THTRUE);
@@ -259,6 +260,9 @@ Exit0:
 thBool CThDefTowerQuickMenu::getQmIsPlayAni(const int cnAniTag)
 {
 	thBool bRet = THFALSE;
+	thBool bTmpRetA = THFALSE;
+	thBool bTmpRetB = THFALSE;
+	thBool bTmpRetC = THFALSE;
 
 	switch (cnAniTag)
 	{
@@ -284,13 +288,16 @@ thBool CThDefTowerQuickMenu::getQmIsPlayAni(const int cnAniTag)
 	}
 	default:
 	{
-		TH_RUN_SUCCESS(NULL != m_ptMoveSelectedErrorMouse, bRet = m_ptMoveSelectedErrorMouse->pSpCharacter->getActionByTag(TH_ANITAG_MOVEERROR));
-		TH_RUN_SUCCESS(NULL != m_ptMoveSelectedMouse, bRet = m_ptMoveSelectedMouse->pSpCharacter->getActionByTag(TH_ANITAG_MOVING));
-		bRet = this->getActionByTag(TH_ANITAG_SCALEQM);
+		TH_RUN_SUCCESS(NULL != m_ptMoveSelectedErrorMouse, bTmpRetA = m_ptMoveSelectedErrorMouse->pSpCharacter->getActionByTag(TH_ANITAG_MOVEERROR));
+		TH_RUN_SUCCESS(NULL != m_ptMoveSelectedMouse, bTmpRetB = m_ptMoveSelectedMouse->pSpCharacter->getActionByTag(TH_ANITAG_MOVING));
+		TH_RUN_SUCCESS(NULL != m_ptTowerSkillLevelUp, bTmpRetC = m_ptTowerSkillLevelUp->pSpCharacter->getActionByTag(TH_ANITAG_TOWERSK_LVUP));
+		bRet = this->getActionByTag(TH_ANITAG_SCALEQM) && bTmpRetA && bTmpRetB && bTmpRetC;
 		break;
 	}
 	}
 	
+Exit1:
+Exit0:
 	return bRet;
 }
 
@@ -689,7 +696,7 @@ thBool CThDefTowerQuickMenu::createBasicQm(const float cfX, const float cfY, con
 	TH_PROCESS_ERROR(bRet);
 
 	/* 移动(禁用)按钮. */
-	tCommandMovement.nDefaultTexPlistPos = 18;
+	tCommandMovement.nDefaultTexPlistPos = 20;
 	bRet = CThBaseCharacter::initCharacterWithPlist(&tCommandMovement, &ptChacCommandMovementDisable);
 	TH_PROCESS_ERROR(bRet);
 
@@ -728,24 +735,58 @@ Exit0:
 	return bRet;
 }
 
-void CThDefTowerQuickMenu::destoryBasicQm(DEFTOWER_QUICKMENU_PTR ptDefTowerQm)
+void CThDefTowerQuickMenu::destoryQm()
 {
-	
-	
+	/* 因为有鼠标精灵动画播放, 所以也要做延迟释放. */
+	m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_NEED_UNINIT;
+	return;
 }
 
-thBool CThDefTowerQuickMenu::createQmWarriorLevel4(const float cfX, const float cfY, const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget)
+thBool CThDefTowerQuickMenu::createQmWarrior(enum THEM_CHARACTER_LEVEL emLv, const float cfX, const float cfY, const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget)
 {
 	thBool bRet = THFALSE;
 	m_pTaget = pTaget;
 	m_emTagTowerType = m_pTaget->getDefTowerType();
 	m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_NOTNEED_UNINIT;
-	float arrarrfSkillPos[THMAX_TOWER_SKILL_COUNT][2] = { 0 };
 
 	bRet = init();
 	TH_PROCESS_ERROR(bRet);
 	bRet = createBasicQm(cfX, cfY, cfTagScale, ptDefTowerQm);
 	TH_PROCESS_ERROR(bRet);
+
+	switch (emLv)
+	{
+	case CHARACTER_LEVEL_0:
+		break;
+	case CHARACTER_LEVEL_1:
+		break;
+	case CHARACTER_LEVEL_2:
+		break;
+	case CHARACTER_LEVEL_3:
+		break;
+	case CHARACTER_LEVEL_4:
+	{
+		bRet = createQmWarriorLevel4(cfTagScale, ptDefTowerQm, pTaget);
+		TH_PROCESS_ERROR(bRet);
+		break;
+	}
+	case CHARACTER_LEVEL_5:
+		break;
+	case CHARACTER_MAXLEVEL:
+		break;
+	default:
+		break;
+	}
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+thBool CThDefTowerQuickMenu::createQmWarriorLevel4(const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget)
+{
+	thBool bRet = THFALSE;
+	float arrarrfSkillPos[THMAX_TOWER_SKILL_COUNT][2] = { 0 };
 
 	/* 技能图标. */
 	bRet = CThCcCharacterSkillHanlder::getInstance()->setTargetSkillUnion(ptDefTowerQm->emTowerType, ptDefTowerQm->emCharacterLevel, THTRUE, &m_ptQm->puChacSkill, &m_ptQm->nChacSkillCnt);
@@ -805,18 +846,6 @@ thBool CThDefTowerQuickMenu::createQmWarriorLevel4(const float cfX, const float 
 	/* 设置一下范围圈的坐标. 防御塔锚点是 0.5, 0, 也同步修改一下. */
 	m_ptMoveRangeHalo->pSpCharacter->setPosition(pTaget->getPosition());
 	m_ptMoveSelectedMouse->pSpCharacter->setScale(cfTagScale);
-
-	bRet = THTRUE;
-Exit0:
-	return bRet;
-}
-
-thBool CThDefTowerQuickMenu::destoryQmWarriorLevel4(DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget)
-{
-	thBool bRet = THFALSE;
-	
-	/* 因为有鼠标精灵动画播放, 所以也要做延迟释放. */
-	m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_NEED_UNINIT;
 
 	bRet = THTRUE;
 Exit0:

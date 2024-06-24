@@ -144,7 +144,7 @@ thBool CThDefTowerSubsoil::initDefTowerConstruction()
 	m_ptSubsoil->pSpCharacter->setScale(m_fSubsoilScale + 0.05f);
 	m_ptSubsoil->pSpCharacter->setSpriteFrame(m_pSpFrActiveDefaultSubsoil);
 	
-	bFnRet = CThDefTower::getTowerInfo(THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4, m_emDefTowerProfessionalType, NULL, NULL, NULL, NULL, NULL, NULL, szarrConstructionIni);
+	bFnRet = CThDefTower::getTowerInfo(THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, m_emDefTowerProfessionalType, NULL, NULL, NULL, NULL, NULL, NULL, szarrConstructionIni);
 	TH_PROCESS_ERROR(bFnRet);
 	TH_PROCESS_ERROR(0 != strcmp(szarrConstructionIni, "\0"));
 
@@ -341,7 +341,7 @@ void CThDefTowerSubsoil::update(float dt)
 	if (NULL != m_pLoading && 100.f == m_pLoading->getPercentage())
 	{
 		uninitDefTowerConstruction();
-		initDefTower(THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4);
+		initDefTower(THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1);
 	}
 
 	if (NULL != m_pDefTower)

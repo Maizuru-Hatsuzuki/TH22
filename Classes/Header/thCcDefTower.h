@@ -18,6 +18,7 @@
 #define TH_ANITAG_MOVING	2
 #define TH_ANITAG_SCALEQM	3
 #define TH_ANITAG_TOWERSK_LVUP 4
+#define TH_ANITAG_MAX TH_ANITAG_TOWERSK_LVUP
 
 
 struct _tQmPrice
@@ -250,10 +251,9 @@ public:
 	void uninit();
 	static CThDefTowerQuickMenu* getInstance();
 	thBool createBasicQm(const float cfX, const float cfY, const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm);
-	void destoryBasicQm(DEFTOWER_QUICKMENU_PTR ptDefTowerQm);
-
-	thBool createQmWarriorLevel4(const float cfX, const float cfY, const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget);
-	thBool destoryQmWarriorLevel4(DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget);
+	void destoryQm();
+	thBool createQmWarrior(enum THEM_CHARACTER_LEVEL emLv, const float cfX, const float cfY, const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget);
+	thBool createQmWarriorLevel4(const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget);
 	thBool getQmIsPlayAni(const int cnAniTag);
 	thBool getIsClickInMoveRangeHalo(Vec2 vecPosInView);
 	thBool getChacSkillPos(const int nSkillCnt, float arrarrfRet[][2]);

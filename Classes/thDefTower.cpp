@@ -754,32 +754,32 @@ thBool CThDefTower::getTowerInfoWarriors(
 
 	if (NULL != arrpAniRet && NULL != psAniSizeRet)
 	{
-		TH_GETWINRESPATH(sztmpPath, "data\\AnimateConfig\\Warriors\\AniWarriorsMove.ini");
+		TH_GETWINRESPATH(sztmpPath, "data\\AnimateConfig\\Warriors\\%s\\AniWarriorsMove.ini", szpLv);
 		arrpAniRet[0] = THMALLOC(char, MAX_PATH);
 		TH_PROCESS_ERROR(arrpAniRet[0]);
 		strcpy_s(arrpAniRet[0], MAX_PATH, sztmpPath);
 
-		TH_GETWINRESPATH(sztmpPath, "data\\AnimateConfig\\Warriors\\AniOpenTheDoor.ini");
+		TH_GETWINRESPATH(sztmpPath, "data\\AnimateConfig\\Warriors\\%s\\AniOpenTheDoor.ini", szpLv);
 		arrpAniRet[1] = THMALLOC(char, MAX_PATH);
 		TH_PROCESS_ERROR(arrpAniRet[1]);
 		strcpy_s(arrpAniRet[1], MAX_PATH, sztmpPath);
 
-		TH_GETWINRESPATH(sztmpPath, "data\\AnimateConfig\\Warriors\\AniCloseTheDoor.ini");
+		TH_GETWINRESPATH(sztmpPath, "data\\AnimateConfig\\Warriors\\%s\\AniCloseTheDoor.ini", szpLv);
 		arrpAniRet[2] = THMALLOC(char, MAX_PATH);
 		TH_PROCESS_ERROR(arrpAniRet[2]);
 		strcpy_s(arrpAniRet[2], MAX_PATH, sztmpPath);
 
-		TH_GETWINRESPATH(sztmpPath, "data\\AnimateConfig\\Warriors\\AniTagWarriorsDie.ini");
+		TH_GETWINRESPATH(sztmpPath, "data\\AnimateConfig\\Warriors\\%s\\AniTagWarriorsDie.ini", szpLv);
 		arrpAniRet[3] = THMALLOC(char, MAX_PATH);
 		TH_PROCESS_ERROR(arrpAniRet[3]);
 		strcpy_s(arrpAniRet[3], MAX_PATH, sztmpPath);
 
-		TH_GETWINRESPATH(sztmpPath, "data\\AnimateConfig\\Warriors\\AniTagWarriorsDie.ini");
+		TH_GETWINRESPATH(sztmpPath, "data\\AnimateConfig\\Warriors\\%s\\AniTagWarriorsDie.ini", szpLv);
 		arrpAniRet[3] = THMALLOC(char, MAX_PATH);
 		TH_PROCESS_ERROR(arrpAniRet[3]);
 		strcpy_s(arrpAniRet[3], MAX_PATH, sztmpPath);
 
-		TH_GETWINRESPATH(sztmpPath, "data\\AnimateConfig\\Warriors\\AniFlag.ini");
+		TH_GETWINRESPATH(sztmpPath, "data\\AnimateConfig\\Warriors\\%s\\AniFlag.ini", szpLv);
 		arrpAniRet[4] = THMALLOC(char, MAX_PATH);
 		TH_PROCESS_ERROR(arrpAniRet[4]);
 		strcpy_s(arrpAniRet[4], MAX_PATH, sztmpPath);
@@ -1022,9 +1022,6 @@ thBool CThDefTower::_setSpTowerSpecialValuesWarrior()
 	{
 	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4:
 	{
-		m_ptTower->pSpCharacter->setPositionX(m_ptTower->pSpCharacter->getPositionX() - 3);
-		m_ptTower->pSpCharacter->setPositionY(m_ptTower->pSpCharacter->getPositionY() + 12);
-
 		bRet = CThCcCharacterSkillHanlder::getInstance()->initWarriorSkillLv4Union(&ptmpSkillUnion, &nSkCnt);
 		TH_PROCESS_ERROR(bRet);
 
@@ -1052,7 +1049,17 @@ thBool CThDefTower::_setSpTowerSpecialValuesWarrior()
 
 	bRet = THTRUE;
 Exit0:
-	CThCcCharacterSkillHanlder::getInstance()->uninitWarriorSkillLv4Union(ptmpSkillUnion);
+	switch (m_ptTower->emCurLevel)
+	{
+	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4:
+	{
+		CThCcCharacterSkillHanlder::getInstance()->uninitWarriorSkillLv4Union(ptmpSkillUnion);
+		break;
+	}
+	default:
+		break;
+	}
+
 	return bRet;
 }
 
@@ -1066,7 +1073,25 @@ thBool CThDefTower::_setPlayerAniBasicWarriorTower()
 
 	switch (m_ptTower->emCurLevel)
 	{
+	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1:
+	{
+		m_ptTower->pSpCharacter->setPositionX(m_ptTower->pSpCharacter->getPositionX() - 8);
+		m_ptTower->pSpCharacter->setPositionY(m_ptTower->pSpCharacter->getPositionY() + 8);
+		break;
+	}
+	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_2:
+	{
+		break;
+	}
+	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_3:
+	{
+		break;
+	}
 	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4:
+	{
+		m_ptTower->pSpCharacter->setPositionX(m_ptTower->pSpCharacter->getPositionX() - 3);
+		m_ptTower->pSpCharacter->setPositionY(m_ptTower->pSpCharacter->getPositionY() + 12);
+
 		/* 塔尖旗. */
 		bRet = _getSpArrayVacantPos(&sVancantPos);
 		TH_PROCESS_ERROR(!bRet);
@@ -1088,14 +1113,14 @@ thBool CThDefTower::_setPlayerAniBasicWarriorTower()
 		m_arrpSpGroup[sVancantPos]->pSpCharacter->runAction(ptTmpAni->pAnimate);
 
 		break;
-
+	}
 	default:
 		break;
 	}
 
 	bRet = THTRUE;
 Exit0:
-	CthCcCharacterLoadHandler::getInstance()->uninitCharacterDesc(ptTmpChacDesc);
+	TH_UNINIT_CHACDESC(ptTmpChacDesc);
 	return bRet;
 }
 
@@ -1165,48 +1190,26 @@ thBool CThDefTower::_setCreateQmWarrior(const thBool cbIsCreate)
 	if (THTRUE == cbIsCreate)
 	{
 		pAcQuickMenuBgScale = ScaleTo::create(0.1f, m_fQmScale, m_fQmScale);
-
-		switch (m_ptTower->emCurLevel)
-		{
-		case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4:
-			/* 防御塔释放的时候会全部隐藏, 这里多加层显示. */
-			CThDefTowerQuickMenu::getInstance()->setVisible(THTRUE);
-
-			bRet = CThDefTowerQuickMenu::getInstance()->createQmWarriorLevel4(
-				m_ptTower->pSpCharacter->getPositionX(),
-				m_ptTower->pSpCharacter->getPositionY() + m_ptTower->pSpCharacter->getBoundingBox().size.height / 2,
-				m_ptTower->pSpCharacter->getScale(),
-				&m_tChacFrameQuickMenuBg,
-				this
-			);
-			TH_PROCESS_ERROR(bRet);
-			this->addChild(CThDefTowerQuickMenu::getInstance());
-			CThDefTowerQuickMenu::getInstance()->runAction(pAcQuickMenuBgScale);
-			break;
-
-		default:
-			break;
-		}
+		/* 防御塔释放的时候会全部隐藏, 这里多加层显示. */
+		CThDefTowerQuickMenu::getInstance()->setVisible(THTRUE);
+		bRet = CThDefTowerQuickMenu::getInstance()->createQmWarrior(
+			m_ptTower->emCurLevel,
+			m_ptTower->pSpCharacter->getPositionX(),
+			m_ptTower->pSpCharacter->getPositionY() + m_ptTower->pSpCharacter->getBoundingBox().size.height / 2,
+			m_ptTower->pSpCharacter->getScale(),
+			&m_tChacFrameQuickMenuBg,
+			this
+		);
+		TH_PROCESS_ERROR(bRet);
+		this->addChild(CThDefTowerQuickMenu::getInstance());
+		CThDefTowerQuickMenu::getInstance()->runAction(pAcQuickMenuBgScale);
 	}
 	else
 	{
 		pAcQuickMenuBgScale = ScaleTo::create(0.1f, 0.f, 0.f);
 		pAcQuickMenuBgScale->setTag(TH_ANITAG_SCALEQM);
 		CThDefTowerQuickMenu::getInstance()->runAction(pAcQuickMenuBgScale);
-
-		switch (m_ptTower->emCurLevel)
-		{
-		case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4:
-		{
-			bRet = CThDefTowerQuickMenu::getInstance()->destoryQmWarriorLevel4(&m_tChacFrameQuickMenuBg, this);
-			TH_PROCESS_ERROR(bRet);
-			break;
-		}
-		default:
-		{
-			break;
-		}
-		}
+		CThDefTowerQuickMenu::getInstance()->destoryQm();
 	}
 
 	bRet = THTRUE;

@@ -76,6 +76,27 @@
     <Filter Include="Config\Character\Skill">
       <UniqueIdentifier>{96f1258b-f446-4d8f-b457-9a2b4e6521d8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Config\Character\Barracks\LV1">
+      <UniqueIdentifier>{13ffab1c-526f-4f53-b749-332910eb8831}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Config\Character\Barracks\LV2">
+      <UniqueIdentifier>{59f9b5ed-03f7-428e-baf5-fb205ca6a5d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Config\Character\Barracks\LV3">
+      <UniqueIdentifier>{e4ab1c10-233c-448e-b1a0-55676f8677c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Config\Animate\Warriors\LV4">
+      <UniqueIdentifier>{64f30258-f8d1-4e7c-bc26-446e3a259fad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Config\Animate\Warriors\LV1">
+      <UniqueIdentifier>{fb053234-da14-4223-8b7a-13ec14ff447d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Config\Animate\Warriors\LV2">
+      <UniqueIdentifier>{bd946b55-bf80-445c-846e-1678be6711ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Config\Animate\Warriors\LV3">
+      <UniqueIdentifier>{4fed35dc-a913-4056-8693-8fecfe11ddcf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -216,21 +237,6 @@
     <None Include="..\Resources\data\CharacterConfig\Barracks\LV4\ChacBarracksFlag.ini">
       <Filter>Config\Character\Barracks\LV4</Filter>
     </None>
-    <None Include="..\Resources\data\AnimateConfig\Warriors\AniCloseTheDoor.ini">
-      <Filter>Config\Animate\Warriors</Filter>
-    </None>
-    <None Include="..\Resources\data\AnimateConfig\Warriors\AniOpenTheDoor.ini">
-      <Filter>Config\Animate\Warriors</Filter>
-    </None>
-    <None Include="..\Resources\data\AnimateConfig\Warriors\AniTagWarriorsDie.ini">
-      <Filter>Config\Animate\Warriors</Filter>
-    </None>
-    <None Include="..\Resources\data\AnimateConfig\Warriors\AniWarriorsMove.ini">
-      <Filter>Config\Animate\Warriors</Filter>
-    </None>
-    <None Include="..\Resources\data\AnimateConfig\Warriors\AniFlag.ini">
-      <Filter>Config\Animate\Warriors</Filter>
-    </None>
     <None Include="..\Resources\data\AnimateConfig\Basic\AniMoveSelectedErrorMouse.ini">
       <Filter>Config\Animate\Basic</Filter>
     </None>
@@ -248,6 +254,84 @@
     </None>
     <None Include="..\Resources\data\AnimateConfig\Basic\AniTowerSkillLevelUp.ini">
       <Filter>Config\Animate\Basic</Filter>
+    </None>
+    <None Include="..\Resources\data\CharacterConfig\Skill\ChacSkTowerLevelUp.ini">
+      <Filter>Config\Character\Skill</Filter>
+    </None>
+    <None Include="..\Resources\data\CharacterConfig\Barracks\LV1\ChacBarracks.ini">
+      <Filter>Config\Character\Barracks\LV1</Filter>
+    </None>
+    <None Include="..\Resources\data\CharacterConfig\Barracks\LV1\ChacWarrior.ini">
+      <Filter>Config\Character\Barracks\LV1</Filter>
+    </None>
+    <None Include="..\Resources\data\AnimateConfig\Warriors\LV4\AniCloseTheDoor.ini">
+      <Filter>Config\Animate\Warriors\LV4</Filter>
+    </None>
+    <None Include="..\Resources\data\AnimateConfig\Warriors\LV4\AniFlag.ini">
+      <Filter>Config\Animate\Warriors\LV4</Filter>
+    </None>
+    <None Include="..\Resources\data\AnimateConfig\Warriors\LV4\AniOpenTheDoor.ini">
+      <Filter>Config\Animate\Warriors\LV4</Filter>
+    </None>
+    <None Include="..\Resources\data\AnimateConfig\Warriors\LV4\AniTagWarriorsDie.ini">
+      <Filter>Config\Animate\Warriors\LV4</Filter>
+    </None>
+    <None Include="..\Resources\data\AnimateConfig\Warriors\LV4\AniWarriorsMove.ini">
+      <Filter>Config\Animate\Warriors\LV4</Filter>
+    </None>
+    <None Include="..\Resources\data\CharacterConfig\Barracks\LV2\ChacBarracks.ini">
+      <Filter>Config\Character\Barracks\LV2</Filter>
+    </None>
+    <None Include="..\Resources\data\CharacterConfig\Barracks\LV2\ChacWarrior.ini">
+      <Filter>Config\Character\Barracks\LV2</Filter>
+    </None>
+    <None Include="..\Resources\data\CharacterConfig\Barracks\LV3\ChacBarracks.ini">
+      <Filter>Config\Character\Barracks\LV3</Filter>
+    </None>
+    <None Include="..\Resources\data\CharacterConfig\Barracks\LV3\ChacWarrior.ini">
+      <Filter>Config\Character\Barracks\LV3</Filter>
+    </None>
+    <None Include="..\Resources\data\AnimateConfig\Warriors\LV1\AniCloseTheDoor.ini">
+      <Filter>Config\Animate\Warriors\LV1</Filter>
+    </None>
+    <None Include="..\Resources\data\AnimateConfig\Warriors\LV1\AniOpenTheDoor.ini">
+      <Filter>Config\Animate\Warriors\LV1</Filter>
+    </None>
+    <None Include="..\Resources\data\AnimateConfig\Warriors\LV1\AniTagWarriorsDie.ini">
+      <Filter>Config\Animate\Warriors\LV1</Filter>
+    </None>
+    <None Include="..\Resources\data\AnimateConfig\Warriors\LV1\AniWarriorsMove.ini">
+      <Filter>Config\Animate\Warriors\LV1</Filter>
+    </None>
+    <None Include="..\Resources\data\AnimateConfig\Warriors\LV2\AniCloseTheDoor.ini">
+      <Filter>Config\Animate\Warriors\LV2</Filter>
+    </None>
+    <None Include="..\Resources\data\AnimateConfig\Warriors\LV2\AniFlag.ini">
+      <Filter>Config\Animate\Warriors\LV2</Filter>
+    </None>
+    <None Include="..\Resources\data\AnimateConfig\Warriors\LV2\AniOpenTheDoor.ini">
+      <Filter>Config\Animate\Warriors\LV2</Filter>
+    </None>
+    <None Include="..\Resources\data\AnimateConfig\Warriors\LV2\AniTagWarriorsDie.ini">
+      <Filter>Config\Animate\Warriors\LV2</Filter>
+    </None>
+    <None Include="..\Resources\data\AnimateConfig\Warriors\LV2\AniWarriorsMove.ini">
+      <Filter>Config\Animate\Warriors\LV2</Filter>
+    </None>
+    <None Include="..\Resources\data\AnimateConfig\Warriors\LV3\AniCloseTheDoor.ini">
+      <Filter>Config\Animate\Warriors\LV3</Filter>
+    </None>
+    <None Include="..\Resources\data\AnimateConfig\Warriors\LV3\AniFlag.ini">
+      <Filter>Config\Animate\Warriors\LV3</Filter>
+    </None>
+    <None Include="..\Resources\data\AnimateConfig\Warriors\LV3\AniOpenTheDoor.ini">
+      <Filter>Config\Animate\Warriors\LV3</Filter>
+    </None>
+    <None Include="..\Resources\data\AnimateConfig\Warriors\LV3\AniTagWarriorsDie.ini">
+      <Filter>Config\Animate\Warriors\LV3</Filter>
+    </None>
+    <None Include="..\Resources\data\AnimateConfig\Warriors\LV3\AniWarriorsMove.ini">
+      <Filter>Config\Animate\Warriors\LV3</Filter>
     </None>
   </ItemGroup>
 </Project>
