@@ -145,6 +145,7 @@ public:
 	virtual void getCharacterFrameInfo(CHARACTER_FRAMEINFO_PTR* ppRet);
 	virtual void getCharacterFrameInfoInGroup(const char* cszpTag, CHARACTER_FRAMEINFO_PTR* ppRet);
 	enum THEM_DEFTOWER_TYPE getDefTowerType();
+	enum THEM_CHARACTER_LEVEL getDefTowerCurLv();
 	enum THEM_DELAY_UNINIT_FLAG getDefTowerDelayUninitType() const;
 	void getAniTagByDesc(const char* cszpDesc, int* pnRet) const;
 	void getAniFrameInfoByTag(const char* cszpTag, CHARACTER_ANI_FRAMEINFO_PTR* ppRet) const;
@@ -250,8 +251,9 @@ public:
 	thBool initBasicAni();
 	void uninit();
 	static CThDefTowerQuickMenu* getInstance();
-	thBool createBasicQm(const float cfX, const float cfY, const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm);
+	thBool createBasicQm(const float cfX, const float cfY, const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm, thBool bIsCreateGenSk);
 	void destoryQm();
+	thBool createQmGenera(enum THEM_CHARACTER_LEVEL emLv);
 	thBool createQmWarrior(enum THEM_CHARACTER_LEVEL emLv, const float cfX, const float cfY, const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget);
 	thBool createQmWarriorLevel4(const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget);
 	thBool getQmIsPlayAni(const int cnAniTag);

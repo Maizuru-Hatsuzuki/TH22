@@ -14,5 +14,12 @@
         <string>强化人偶的肢体，提高防御力。</string>
         <key>DollStrengthemSubDesc</key>
         <string>她原本应该有能力使用那些非常强有力的魔法。</string>
+
+        <key>DfLvUpTitle</key>
+        <string>升级</string>
+        <key>DfLvUpMainDesc</key>
+        <string>强化防御塔，更激烈的战斗。</string>
+        <key>DfLvUpSubDesc</key>
+        <string>开始行动了。</string>
     </dict>
 </plist>

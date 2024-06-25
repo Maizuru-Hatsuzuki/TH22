@@ -43,7 +43,12 @@ void CThCcCharacterSkillHanlder::uninitSkillUnion(CHARACTER_SKILL_UNION_PTR pTag
 		goto Exit0;
 	}
 
-	if (NULL != pTag->ptAliceMargatroidLv4Skill)
+	/* union用的同一块内存. */
+	if (0 == strcmp("DfLvUp", pTag->ptGeneralSkill->ptDefTowerLevelUp->szarrSkill))
+	{
+		uninitGeneralSkill(pTag);
+	}
+	else if (0 == strcmp("DollRepair", pTag->ptAliceMargatroidLv4Skill->ptSkDollRepair->szarrSkill))
 	{
 		uninitWarriorSkillLv4Union(pTag);
 	}
@@ -76,34 +81,6 @@ Exit0:
 	return bRet;
 }
 
-thBool CThCcCharacterSkillHanlder::initGeneralSkill(CHARACTER_SKILL_UNION_PTR* ppRet)
-{
-	thBool bRet = THFALSE;
-	char szarrPath[MAX_PATH] = { 0 };
-	CHARACTER_DESC_PTR ptChacDesc = NULL;
-	CHARACTER_SKILL_UNION_PTR puRet = THMALLOC(CHARACTER_SKILL_UNION, sizeof(CHARACTER_SKILL_UNION));
-	TH_PROCESS_ERROR(puRet);
-
-	TH_GETWINRESPATH(szarrPath, "data\\CharacterConfig\\Skill\\ChacSkTowerLevelUp.ini");
-
-	bRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(szarrPath, &ptChacDesc);
-	TH_PROCESS_ERROR(bRet);
-	bRet = CThBaseCharacter::initCharacterWithPlist(ptChacDesc, &puRet->ptGeneralSkill->ptDefTowerLevelUp->pChacFrSkill);
-	TH_PROCESS_ERROR(bRet);
-
-	puRet->ptGeneralSkill->ptDefTowerLevelUp->pSpFrameDisableSkill = puRet->ptGeneralSkill->ptDefTowerLevelUp->pChacFrSkill->pSpCharacter->getSpriteFrame();
-	puRet->ptGeneralSkill->ptDefTowerLevelUp->pSpFrameActiveSkill = SpriteFrameCache::getInstance()->getSpriteFrameByName("Quickmenu Material_29.png");
-	TH_PROCESS_ERROR(puRet->ptGeneralSkill->ptDefTowerLevelUp->pSpFrameActiveSkill);
-
-	puRet->ptGeneralSkill->ptDefTowerLevelUp->nSkillPrice = 0;
-
-	*ppRet = puRet;
-	bRet = THTRUE;
-Exit0:
-	TH_UNINIT_CHACDESC(ptChacDesc);
-	return bRet;
-}
-
 thBool CThCcCharacterSkillHanlder::setWarriorSkillUnion(enum THEM_CHARACTER_LEVEL emLevel, const thBool cbIsInit, CHARACTER_SKILL_UNION_PTR* ppRet, int* pnSkillCnt)
 {
 	thBool bRet = THFALSE;
@@ -115,6 +92,7 @@ thBool CThCcCharacterSkillHanlder::setWarriorSkillUnion(enum THEM_CHARACTER_LEVE
 		bRet = initGeneralSkill(ppRet);
 		TH_PROCESS_ERROR(bRet);
 		(*ppRet)->ptGeneralSkill->ptDefTowerLevelUp->nSkillPrice = 90;
+		*pnSkillCnt = 1;
 		break;
 	}
 	case CHARACTER_LEVEL_2:
@@ -122,6 +100,7 @@ thBool CThCcCharacterSkillHanlder::setWarriorSkillUnion(enum THEM_CHARACTER_LEVE
 		bRet = initGeneralSkill(ppRet);
 		TH_PROCESS_ERROR(bRet);
 		(*ppRet)->ptGeneralSkill->ptDefTowerLevelUp->nSkillPrice = 180;
+		*pnSkillCnt = 1;
 		break;
 	}
 	case CHARACTER_LEVEL_3:
@@ -129,6 +108,7 @@ thBool CThCcCharacterSkillHanlder::setWarriorSkillUnion(enum THEM_CHARACTER_LEVE
 		bRet = initGeneralSkill(ppRet);
 		TH_PROCESS_ERROR(bRet);
 		(*ppRet)->ptGeneralSkill->ptDefTowerLevelUp->nSkillPrice = 270;
+		*pnSkillCnt = 1;
 		break;
 	}
 	case CHARACTER_LEVEL_4:
@@ -155,6 +135,54 @@ thBool CThCcCharacterSkillHanlder::setWarriorSkillUnion(enum THEM_CHARACTER_LEVE
 	bRet = THTRUE;
 Exit0:
 	return bRet;
+}
+
+thBool CThCcCharacterSkillHanlder::initGeneralSkill(CHARACTER_SKILL_UNION_PTR* ppRet)
+{
+	thBool bRet = THFALSE;
+	char szarrPath[MAX_PATH] = { 0 };
+	CHARACTER_DESC_PTR ptChacDesc = NULL;
+	CHARACTER_SKILL_UNION_PTR puRet = THMALLOC(CHARACTER_SKILL_UNION, sizeof(CHARACTER_SKILL_UNION));
+	TH_PROCESS_ERROR(puRet);
+	puRet->ptGeneralSkill = THMALLOC(DEFTOWER_GENERAL_SKILL, sizeof(DEFTOWER_GENERAL_SKILL));
+	TH_PROCESS_ERROR(puRet->ptGeneralSkill);
+	puRet->ptGeneralSkill->ptDefTowerLevelUp = THMALLOC(TH_SKILL, sizeof(TH_SKILL));
+	TH_PROCESS_ERROR(puRet->ptGeneralSkill->ptDefTowerLevelUp);
+
+	TH_GETWINRESPATH(szarrPath, "data\\CharacterConfig\\Skill\\ChacSkTowerLevelUp.ini");
+
+	strcpy_s(puRet->ptGeneralSkill->ptDefTowerLevelUp->szarrSkill, THMAX_CHAR_DESC, "DfLvUp");
+	bRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(szarrPath, &ptChacDesc);
+	TH_PROCESS_ERROR(bRet);
+	bRet = CThBaseCharacter::initCharacterWithPlist(ptChacDesc, &puRet->ptGeneralSkill->ptDefTowerLevelUp->pChacFrSkill);
+	TH_PROCESS_ERROR(bRet);
+
+	puRet->ptGeneralSkill->ptDefTowerLevelUp->pSpFrameDisableSkill = puRet->ptGeneralSkill->ptDefTowerLevelUp->pChacFrSkill->pSpCharacter->getSpriteFrame();
+	puRet->ptGeneralSkill->ptDefTowerLevelUp->pSpFrameActiveSkill = SpriteFrameCache::getInstance()->getSpriteFrameByName("Quickmenu Material_29.png");
+	TH_PROCESS_ERROR(puRet->ptGeneralSkill->ptDefTowerLevelUp->pSpFrameActiveSkill);
+
+	puRet->ptGeneralSkill->ptDefTowerLevelUp->nSkillPrice = 0;
+
+	*ppRet = puRet;
+	bRet = THTRUE;
+
+Exit0:
+	if (THFALSE == bRet)
+	{
+		THFREE(puRet->ptGeneralSkill->ptDefTowerLevelUp);
+		THFREE(puRet->ptGeneralSkill);
+		THFREE(puRet);
+	}
+	TH_UNINIT_CHACDESC(ptChacDesc);
+	return bRet;
+}
+
+void CThCcCharacterSkillHanlder::uninitGeneralSkill(CHARACTER_SKILL_UNION_PTR p)
+{
+	THFREE(p->ptGeneralSkill->ptDefTowerLevelUp);
+	THFREE(p->ptGeneralSkill);
+	THFREE(p);
+	return;
 }
 
 thBool CThCcCharacterSkillHanlder::initWarriorSkillLv4Union(CHARACTER_SKILL_UNION_PTR* ppRet, int* pnSkillCnt)
@@ -212,7 +240,15 @@ thBool CThCcCharacterSkillHanlder::initWarriorSkillLv4Union(CHARACTER_SKILL_UNIO
 	*pnSkillCnt = 2;
 	*ppRet = puRet;
 	bRet = THTRUE;
+
 Exit0:
+	if (THFALSE == bRet)
+	{
+		THFREE(puRet->ptAliceMargatroidLv4Skill->ptSkDollRepair);
+		THFREE(puRet->ptAliceMargatroidLv4Skill->ptSkDollStrengthem);
+		THFREE(puRet->ptAliceMargatroidLv4Skill);
+		THFREE(puRet);
+	}
 	TH_UNINIT_CHACDESC(ptChacDesc);
 	return bRet;
 }

@@ -622,6 +622,11 @@ enum THEM_DEFTOWER_TYPE CThDefTower::getDefTowerType()
 	return m_emTowerType;
 }
 
+enum THEM_CHARACTER_LEVEL CThDefTower::getDefTowerCurLv()
+{
+	return m_ptTower->emCurLevel;
+}
+
 thBool CThDefTower::getTowerInfo(
 	enum THEM_CHARACTER_LEVEL emLevel, enum THEM_DEFTOWER_TYPE emTowerType, DEFTOWER_WARRIORS_PTR ptWarrior,
 	char* szpTowerDescRet, char** arrpAniRet, short* psAniSizeRet, char** arrpWarriorsRet, short* psWarriorsCnt, char* szpDefTowerConstruction
@@ -1018,10 +1023,19 @@ thBool CThDefTower::_setSpTowerSpecialValuesWarrior()
 	CHARACTER_SKILL_UNION_PTR ptmpSkillUnion = NULL;
 	int nSkCnt = 0;
 
-	switch (m_ptTower->emCurLevel)
+	if (m_ptTower->emCurLevel <= THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_3)
 	{
-	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4:
+		/* LV1 ~ LV3.*/
+		bRet = CThCcCharacterSkillHanlder::getInstance()->initGeneralSkill(&ptmpSkillUnion);
+		TH_PROCESS_ERROR(bRet);
+
+		m_arrpCurSkill[0] = THMALLOC(TH_SKILL, sizeof(TH_SKILL));
+		TH_PROCESS_ERROR(m_arrpCurSkill[0]);
+		memcpy_s(m_arrpCurSkill[0], sizeof(TH_SKILL), ptmpSkillUnion->ptGeneralSkill->ptDefTowerLevelUp, sizeof(TH_SKILL));
+	}
+	else
 	{
+		/* LV4. */
 		bRet = CThCcCharacterSkillHanlder::getInstance()->initWarriorSkillLv4Union(&ptmpSkillUnion, &nSkCnt);
 		TH_PROCESS_ERROR(bRet);
 
@@ -1041,23 +1055,17 @@ thBool CThDefTower::_setSpTowerSpecialValuesWarrior()
 		m_arrpCurSkill[1]->pChacFrSkill = THMALLOC(CHARACTER_FRAMEINFO, sizeof(CHARACTER_FRAMEINFO));
 		TH_PROCESS_ERROR(m_arrpCurSkill[1]->pChacFrSkill);
 		memcpy_s(m_arrpCurSkill[1]->pChacFrSkill, sizeof(CHARACTER_FRAMEINFO), ptmpSkillUnion->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->pChacFrSkill, sizeof(CHARACTER_FRAMEINFO));
-		break;
-	}
-	default:
-		break;
 	}
 
 	bRet = THTRUE;
 Exit0:
-	switch (m_ptTower->emCurLevel)
+	if (m_ptTower->emCurLevel <= THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_3)
 	{
-	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4:
+		CThCcCharacterSkillHanlder::getInstance()->uninitGeneralSkill(ptmpSkillUnion);
+	}
+	else
 	{
 		CThCcCharacterSkillHanlder::getInstance()->uninitWarriorSkillLv4Union(ptmpSkillUnion);
-		break;
-	}
-	default:
-		break;
 	}
 
 	return bRet;

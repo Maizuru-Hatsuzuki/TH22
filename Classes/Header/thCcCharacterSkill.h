@@ -11,11 +11,30 @@
 
 #include "thCcCharacter.h"
 
+#define GETSK_GEN_LEVELUP(p)				p->puChacSkill->ptGeneralSkill->ptDefTowerLevelUp
+#define GETSK_FRAMEINFO_GEN_LEVELUP(p)		p->puChacSkill->ptGeneralSkill->ptDefTowerLevelUp->pChacFrSkill
 #define GETSK_DOLLREPAIR(p)					p->puChacSkill->ptAliceMargatroidLv4Skill->ptSkDollRepair
 #define GETSK_FRAMEINFO_DOLLREPAIR(p)		p->puChacSkill->ptAliceMargatroidLv4Skill->ptSkDollRepair->pChacFrSkill
 #define GETSK_DOLLSTRENGTHEM(p)				p->puChacSkill->ptAliceMargatroidLv4Skill->ptSkDollStrengthem
 #define GETSK_FRAMEINFO_DOLLSTRENGTHEM(p)	p->puChacSkill->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->pChacFrSkill
-
+#define ADDCHILD_SKPRICE_AND_SKDESC(arrPrice, arrDesc)												\
+do																									\
+{																									\
+	/* 技能售价. */																					\
+	for (short s = 0; s < THMAX_TOWER_SKILL_COUNT; s++)												\
+	{																								\
+		TH_RUN_SUCCESS(NULL != arrPrice[s], this->addChild(arrPrice[s]->ptBg->pSpCharacter));		\
+		TH_RUN_SUCCESS(NULL != arrPrice[s], this->addChild(arrPrice[s]->pLbText));					\
+	}																								\
+	/* 技能说明. */																					\
+	for (short s = 0; s < THMAX_TOWER_SKILL_QM_COUNT; s++)											\
+	{																								\
+		TH_RUN_SUCCESS(NULL != arrDesc[s], this->addChild(arrDesc[s]->ptBg->pSpCharacter));			\
+		TH_RUN_SUCCESS(NULL != arrDesc[s], this->addChild(arrDesc[s]->pLbTitleText));				\
+		TH_RUN_SUCCESS(NULL != arrDesc[s], this->addChild(arrDesc[s]->pLbMainDesc));				\
+		TH_RUN_SUCCESS(NULL != arrDesc[s], this->addChild(arrDesc[s]->pLbSubDesc));					\
+	}																								\
+} while (0);
 
 struct _tSkill
 {
@@ -73,12 +92,13 @@ public:
 
 	void uninitSkillUnion(CHARACTER_SKILL_UNION_PTR pTag);
 
-	thBool initGeneralSkill(CHARACTER_SKILL_UNION_PTR* ppRet);
 	thBool getSkillTextDescIni(const char* cszpSk, char* szpTitleRet) const;
 	thBool getSkillTextDescXml(const char* cszpSk, char* szpTitleRet, char* szpMainDesc, char* szpSubDesc) const;
 	thBool setTargetSkillUnion(enum THEM_DEFTOWER_TYPE emChacType, enum THEM_CHARACTER_LEVEL emLevel, const thBool cbIsInit, CHARACTER_SKILL_UNION_PTR* ppRet, int* pnSkillCnt);
 	thBool setWarriorSkillUnion(enum THEM_CHARACTER_LEVEL emLevel, const thBool cbIsInit, CHARACTER_SKILL_UNION_PTR* ppRet, int* pnSkillCnt);
 
+	thBool initGeneralSkill(CHARACTER_SKILL_UNION_PTR* ppRet);
+	void uninitGeneralSkill(CHARACTER_SKILL_UNION_PTR p);
 	thBool initWarriorSkillLv4Union(CHARACTER_SKILL_UNION_PTR* ppRet, int* pnSkillCnt);
 	void uninitWarriorSkillLv4Union(CHARACTER_SKILL_UNION_PTR pUnion);
 
