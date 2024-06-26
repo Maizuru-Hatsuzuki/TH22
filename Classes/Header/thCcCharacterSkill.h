@@ -11,6 +11,8 @@
 
 #include "thCcCharacter.h"
 
+#define THSK_DEFTOWER_LVUP					"DfLvUp"
+
 #define GETSK_GEN_LEVELUP(p)				p->puChacSkill->ptGeneralSkill->ptDefTowerLevelUp
 #define GETSK_FRAMEINFO_GEN_LEVELUP(p)		p->puChacSkill->ptGeneralSkill->ptDefTowerLevelUp->pChacFrSkill
 #define GETSK_DOLLREPAIR(p)					p->puChacSkill->ptAliceMargatroidLv4Skill->ptSkDollRepair
@@ -36,6 +38,13 @@ do																									\
 	}																								\
 } while (0);
 
+
+typedef thBool(*THCALLBACK_LVUP)(
+	/* vpEnv: 类指针. 一般传 this. */
+	/* parrArgs: 函数参数，2 个参数; 0: CC Sequence action; 1: CHARACTER_ANI_FRAMEINFO_PTR  */
+	void* vpEnv,
+	void** parrArgs
+	);
 struct _tSkill
 {
 	char szarrSkill[THMAX_CHAR_DESC];
@@ -44,6 +53,7 @@ struct _tSkill
 	SpriteFrame* pSpFrameActiveSkill;
 	SpriteFrame* pSpFrameDisableSkill;
 	int nSkillPrice;
+	THCALLBACK_LVUP fnCallbackSkLvUp;
 };
 
 typedef _tSkill TH_SKILL, * TH_SKILL_PTR;

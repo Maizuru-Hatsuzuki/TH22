@@ -159,10 +159,12 @@ public:
 	void setUninitFlag();
 	void setWarriorExistsByAngle(const float cfAngle, const short csTag);
 	void setSkLevelUpByName(const char* cszpSk);
+	thBool setNewAnimate(char** szarrpAniDesc, const short csSize);
 	thBool setWarriorsOverallMovement(const float cfX, const float cfY);
 	thBool setPlayerAniBasic();
 	thBool setPlayAniTowerSummon(const short* arrnCondAniTag, const short cnSize, const thBool bIsSummoning);
 	thBool setPlayAniBuildSmoke(thBool bIsBuild);
+	THCALLBACK thBool setTowerLevelUp(void* vpEnv, void** parrArgs);
 
 	thBool execTowerShoot(const short csBulletCnt);
 
@@ -195,10 +197,12 @@ private:
 	thBool _initBasicAnimate(short* psOffset);
 	void _initAllWarriorsMovePosWithAngle(const CHARACTER_DESC_PTR cptCharacterDesc, const float cfFaceAngle);
 	void _initAllWarriorsMovePosWithXY(const float cfX, const float cfY);
+	thBool _getAniArrayVacantPos(int* pnRet);
 	thBool _getSpArrayVacantPos(short* psRet);
 	thBool _getWarArrayVacantPos(short* psRet);
 	thBool _setSpTowerSpecialValues();
 	thBool _setSpTowerSpecialValuesWarrior();
+	thBool _setSpTowerSpecialValuesWarriorLvUp();
 	thBool _setPlayerAniBasicWarriorTower();
 	thBool _setPlayAniOpenTheDoor();
 	thBool _setPlayAniCloseTheDoor();

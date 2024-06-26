@@ -43,8 +43,8 @@ void CThCcCharacterSkillHanlder::uninitSkillUnion(CHARACTER_SKILL_UNION_PTR pTag
 		goto Exit0;
 	}
 
-	/* union用的同一块内存. */
-	if (0 == strcmp("DfLvUp", pTag->ptGeneralSkill->ptDefTowerLevelUp->szarrSkill))
+	/* union 用的同一块内存. */
+	if (0 == strcmp(THSK_DEFTOWER_LVUP, pTag->ptGeneralSkill->ptDefTowerLevelUp->szarrSkill))
 	{
 		uninitGeneralSkill(pTag);
 	}
@@ -151,7 +151,7 @@ thBool CThCcCharacterSkillHanlder::initGeneralSkill(CHARACTER_SKILL_UNION_PTR* p
 
 	TH_GETWINRESPATH(szarrPath, "data\\CharacterConfig\\Skill\\ChacSkTowerLevelUp.ini");
 
-	strcpy_s(puRet->ptGeneralSkill->ptDefTowerLevelUp->szarrSkill, THMAX_CHAR_DESC, "DfLvUp");
+	strcpy_s(puRet->ptGeneralSkill->ptDefTowerLevelUp->szarrSkill, THMAX_CHAR_DESC, THSK_DEFTOWER_LVUP);
 	bRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(szarrPath, &ptChacDesc);
 	TH_PROCESS_ERROR(bRet);
 	bRet = CThBaseCharacter::initCharacterWithPlist(ptChacDesc, &puRet->ptGeneralSkill->ptDefTowerLevelUp->pChacFrSkill);
@@ -162,6 +162,7 @@ thBool CThCcCharacterSkillHanlder::initGeneralSkill(CHARACTER_SKILL_UNION_PTR* p
 	TH_PROCESS_ERROR(puRet->ptGeneralSkill->ptDefTowerLevelUp->pSpFrameActiveSkill);
 
 	puRet->ptGeneralSkill->ptDefTowerLevelUp->nSkillPrice = 0;
+	puRet->ptGeneralSkill->ptDefTowerLevelUp->fnCallbackSkLvUp = NULL;
 
 	*ppRet = puRet;
 	bRet = THTRUE;
@@ -215,6 +216,7 @@ thBool CThCcCharacterSkillHanlder::initWarriorSkillLv4Union(CHARACTER_SKILL_UNIO
 
 	memset(puRet->ptAliceMargatroidLv4Skill->ptSkDollRepair->arrpSkillLevelPoint, 0, sizeof(CHARACTER_FRAMEINFO_PTR) * THMAX_SKILL_LEVEL);
 	TH_UNINIT_CHACDESC(ptChacDesc);
+	puRet->ptAliceMargatroidLv4Skill->ptSkDollRepair->fnCallbackSkLvUp = NULL;
 
 	/* 魔彩光的上海人型. */
 	TH_GETWINRESPATH(szarrTmpSkillIni, "data\\CharacterConfig\\Skill\\ChacSkDollStrengthem.ini");
@@ -236,6 +238,7 @@ thBool CThCcCharacterSkillHanlder::initWarriorSkillLv4Union(CHARACTER_SKILL_UNIO
 
 	memset(puRet->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->arrpSkillLevelPoint, 0, sizeof(CHARACTER_FRAMEINFO_PTR) * THMAX_SKILL_LEVEL);
 	TH_UNINIT_CHACDESC(ptChacDesc);
+	puRet->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->fnCallbackSkLvUp = NULL;
 
 	*pnSkillCnt = 2;
 	*ppRet = puRet;

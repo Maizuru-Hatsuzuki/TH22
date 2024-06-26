@@ -342,6 +342,10 @@ thBool CThDefTower::initAnimate(char** szarrpAniDesc, const short csSize)
 
 	bRet = THTRUE;
 Exit0:
+	if (THFALSE == bRet)
+	{
+		CthCcCharacterLoadHandler::getInstance()->uninitCharacterAniDesc(ptmpAniDesc);
+	}
 	return bRet;
 }
 
@@ -594,19 +598,6 @@ void CThDefTower::getCurSkillByName(const char* cszpSk, TH_SKILL_PTR* ppRet)
 	return;
 }
 
-void CThDefTower::setSkLevelUpByName(const char* cszpSk)
-{
-	for (short s = 0; s < THMAX_TOWER_SKILL_COUNT; s++)
-	{
-		if (NULL != m_arrpCurSkill[s] && 0 == strcmp(cszpSk, m_arrpCurSkill[s]->szarrSkill))
-		{
-			TH_CHAC_LEVELUP(m_arrpCurSkill[s]->pChacFrSkill->emCurLevel);
-			break;
-		}
-	}
-	return;
-}
-
 const float CThDefTower::getQmScale() const
 {
 	return m_fQmScale;
@@ -806,6 +797,21 @@ Exit0:
 	return bRet;
 }
 
+thBool CThDefTower::_getAniArrayVacantPos(int* pnRet)
+{
+	thBool bFull = THTRUE;
+	for (int i = 0; i < THMAX_SP_COUNT; i++)
+	{
+		if (NULL == m_arrpAniGroup[i])
+		{
+			bFull = THFALSE;
+			*pnRet = i;
+			break;
+		}
+	}
+	return bFull;
+}
+
 thBool CThDefTower::_getSpArrayVacantPos(short* psRet)
 {
 	thBool bFull = THTRUE;
@@ -843,6 +849,84 @@ void CThDefTower::setWarriorExistsByAngle(const float cfAngle, const short csTag
 {
 	m_arrpWarriors[csTag]->setWarriorBirthMoveAngle(cfAngle);
 	return;
+}
+
+void CThDefTower::setSkLevelUpByName(const char* cszpSk)
+{
+	thBool bRet = THFALSE;
+
+	/* 技能升级. */
+	for (short s = 0; s < THMAX_TOWER_SKILL_COUNT; s++)
+	{
+		if (NULL != m_arrpCurSkill[s] && 0 == strcmp(cszpSk, m_arrpCurSkill[s]->szarrSkill))
+		{
+			TH_CHAC_LEVELUP(m_arrpCurSkill[s]->pChacFrSkill->emCurLevel);
+			TH_RUN_SUCCESS(NULL != m_arrpCurSkill[s]->fnCallbackSkLvUp, bRet = m_arrpCurSkill[s]->fnCallbackSkLvUp(this, NULL));
+			break;
+		}
+	}
+
+	bRet = THTRUE;
+Exit0:
+	ASSERT(bRet);
+	return;
+}
+
+/* 会覆盖相同描述的原动画数据. */
+thBool CThDefTower::setNewAnimate(char** szarrpAniDesc, const short csSize)
+{
+	thBool bRet = THFALSE;
+	int nAniExistsPos = -1;
+	CHARACTER_ANI_DESC_PTR ptmpAniDesc = NULL;
+	CHARACTER_ANI_FRAMEINFO_PTR pResAni = NULL;
+
+	TH_PROCESS_ERROR(THMAX_ANI_COUNT > csSize);
+	for (short i = 0; i < csSize; i++)
+	{
+		bRet = CthCcCharacterLoadHandler::getInstance()->getCharacterAniDescFromIni(szarrpAniDesc[i], &ptmpAniDesc);
+		TH_PROCESS_ERROR(bRet);
+
+		getAniTagByDesc(ptmpAniDesc->szarrAniDesc, &nAniExistsPos);
+		if (-1 != nAniExistsPos)
+		{
+			/* 替换原有数据. */
+			while (0 < m_arrpAniGroup[nAniExistsPos]->pAnimate->getReferenceCount())
+			{
+				m_arrpAniGroup[nAniExistsPos]->pAnimate->release();
+			}
+			m_arrpAniGroup[nAniExistsPos]->pAnimate = NULL;
+			strcpy_s(m_arrpAniGroup[nAniExistsPos]->szarrDesc, strlen(ptmpAniDesc->szarrAniDesc) + 1, ptmpAniDesc->szarrAniDesc);
+			
+			bRet = initCharacterAnimate(ptmpAniDesc, nAniExistsPos);
+			TH_PROCESS_ERROR(bRet);
+			CthCcCharacterLoadHandler::getInstance()->uninitCharacterAniDesc(ptmpAniDesc);
+		}
+		else
+		{
+			/* 没找到相同描述 Animate, 不存在. */
+			bRet = _getAniArrayVacantPos(&nAniExistsPos);
+			TH_PROCESS_ERROR(!bRet);
+
+			pResAni = THMALLOC(CHARACTER_ANI_FRAMEINFO, sizeof(CHARACTER_ANI_FRAMEINFO));
+			TH_PROCESS_ERROR(pResAni);
+			pResAni->pAnimate = NULL;
+			strcpy_s(pResAni->szarrDesc, strlen(ptmpAniDesc->szarrAniDesc) + 1, ptmpAniDesc->szarrAniDesc);
+
+			bRet = initCharacterAnimate(ptmpAniDesc, nAniExistsPos);
+			TH_PROCESS_ERROR(bRet);
+
+			m_arrpAniGroup[nAniExistsPos] = pResAni;
+			CthCcCharacterLoadHandler::getInstance()->uninitCharacterAniDesc(ptmpAniDesc);
+		}
+	}
+
+	bRet = THTRUE;
+Exit0:
+	if (THFALSE == bRet)
+	{
+		CthCcCharacterLoadHandler::getInstance()->uninitCharacterAniDesc(ptmpAniDesc);
+	}
+	return bRet;
 }
 
 thBool CThDefTower::setWarriorsOverallMovement(const float cfX, const float cfY)
@@ -990,6 +1074,28 @@ Exit0:
 	return bRet;
 }
 
+thBool CThDefTower::setTowerLevelUp(void* vpEnv, void** parrArgs)
+{
+	thBool bRet = THFALSE;
+	CThDefTower_ptr pEnv = static_cast<CThDefTower_ptr>(vpEnv);
+
+	switch (pEnv->getDefTowerType())
+	{
+	case THEM_DEFTOWER_TYPE::DEFTOWERTYPE_WARRIORS:
+	{
+		bRet = pEnv->_setSpTowerSpecialValuesWarrior();
+		TH_PROCESS_ERROR(bRet);
+		break;
+	}
+	default:
+		break;
+	}
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
 void CThDefTower::setUninitFlag()
 {
 	m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_NEED_UNINIT;
@@ -1023,51 +1129,110 @@ thBool CThDefTower::_setSpTowerSpecialValuesWarrior()
 	CHARACTER_SKILL_UNION_PTR ptmpSkillUnion = NULL;
 	int nSkCnt = 0;
 
-	if (m_ptTower->emCurLevel <= THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_3)
+	if (NULL == m_arrpCurSkill[0])
 	{
-		/* LV1 ~ LV3.*/
-		bRet = CThCcCharacterSkillHanlder::getInstance()->initGeneralSkill(&ptmpSkillUnion);
-		TH_PROCESS_ERROR(bRet);
+		if (m_ptTower->emCurLevel <= THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_3)
+		{
+			/* LV1 ~ LV3.*/
+			bRet = CThCcCharacterSkillHanlder::getInstance()->initGeneralSkill(&ptmpSkillUnion);
+			TH_PROCESS_ERROR(bRet);
 
-		m_arrpCurSkill[0] = THMALLOC(TH_SKILL, sizeof(TH_SKILL));
-		TH_PROCESS_ERROR(m_arrpCurSkill[0]);
-		memcpy_s(m_arrpCurSkill[0], sizeof(TH_SKILL), ptmpSkillUnion->ptGeneralSkill->ptDefTowerLevelUp, sizeof(TH_SKILL));
+			m_arrpCurSkill[0] = THMALLOC(TH_SKILL, sizeof(TH_SKILL));
+			TH_PROCESS_ERROR(m_arrpCurSkill[0]);
+			memcpy_s(m_arrpCurSkill[0], sizeof(TH_SKILL), ptmpSkillUnion->ptGeneralSkill->ptDefTowerLevelUp, sizeof(TH_SKILL));
+			m_arrpCurSkill[0]->fnCallbackSkLvUp = &setTowerLevelUp;
+		}
+		else
+		{
+			/* LV4. */
+			bRet = CThCcCharacterSkillHanlder::getInstance()->initWarriorSkillLv4Union(&ptmpSkillUnion, &nSkCnt);
+			TH_PROCESS_ERROR(bRet);
+
+			/* 直接用里面的精灵Frame结构体的等级作为现在等级. */
+			m_arrpCurSkill[0] = THMALLOC(TH_SKILL, sizeof(TH_SKILL));
+			TH_PROCESS_ERROR(m_arrpCurSkill[0]);
+			memcpy_s(m_arrpCurSkill[0], sizeof(TH_SKILL), ptmpSkillUnion->ptAliceMargatroidLv4Skill->ptSkDollRepair, sizeof(TH_SKILL));
+
+			m_arrpCurSkill[0]->pChacFrSkill = THMALLOC(CHARACTER_FRAMEINFO, sizeof(CHARACTER_FRAMEINFO));
+			TH_PROCESS_ERROR(m_arrpCurSkill[0]->pChacFrSkill);
+			memcpy_s(m_arrpCurSkill[0]->pChacFrSkill, sizeof(CHARACTER_FRAMEINFO), ptmpSkillUnion->ptAliceMargatroidLv4Skill->ptSkDollRepair->pChacFrSkill, sizeof(CHARACTER_FRAMEINFO));
+
+			m_arrpCurSkill[1] = THMALLOC(TH_SKILL, sizeof(TH_SKILL));
+			TH_PROCESS_ERROR(m_arrpCurSkill[1]);
+			memcpy_s(m_arrpCurSkill[1], sizeof(TH_SKILL), ptmpSkillUnion->ptAliceMargatroidLv4Skill->ptSkDollStrengthem, sizeof(TH_SKILL));
+
+			m_arrpCurSkill[1]->pChacFrSkill = THMALLOC(CHARACTER_FRAMEINFO, sizeof(CHARACTER_FRAMEINFO));
+			TH_PROCESS_ERROR(m_arrpCurSkill[1]->pChacFrSkill);
+			memcpy_s(m_arrpCurSkill[1]->pChacFrSkill, sizeof(CHARACTER_FRAMEINFO), ptmpSkillUnion->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->pChacFrSkill, sizeof(CHARACTER_FRAMEINFO));
+		}
 	}
-	else
-	{
-		/* LV4. */
-		bRet = CThCcCharacterSkillHanlder::getInstance()->initWarriorSkillLv4Union(&ptmpSkillUnion, &nSkCnt);
-		TH_PROCESS_ERROR(bRet);
 
-		/* 直接用里面的精灵Frame结构体的等级作为现在等级. */
-		m_arrpCurSkill[0] = THMALLOC(TH_SKILL, sizeof(TH_SKILL));
-		TH_PROCESS_ERROR(m_arrpCurSkill[0]);
-		memcpy_s(m_arrpCurSkill[0], sizeof(TH_SKILL), ptmpSkillUnion->ptAliceMargatroidLv4Skill->ptSkDollRepair, sizeof(TH_SKILL));
-
-		m_arrpCurSkill[0]->pChacFrSkill = THMALLOC(CHARACTER_FRAMEINFO, sizeof(CHARACTER_FRAMEINFO));
-		TH_PROCESS_ERROR(m_arrpCurSkill[0]->pChacFrSkill);
-		memcpy_s(m_arrpCurSkill[0]->pChacFrSkill, sizeof(CHARACTER_FRAMEINFO), ptmpSkillUnion->ptAliceMargatroidLv4Skill->ptSkDollRepair->pChacFrSkill, sizeof(CHARACTER_FRAMEINFO));
-
-		m_arrpCurSkill[1] = THMALLOC(TH_SKILL, sizeof(TH_SKILL));
-		TH_PROCESS_ERROR(m_arrpCurSkill[1]);
-		memcpy_s(m_arrpCurSkill[1], sizeof(TH_SKILL), ptmpSkillUnion->ptAliceMargatroidLv4Skill->ptSkDollStrengthem, sizeof(TH_SKILL));
-
-		m_arrpCurSkill[1]->pChacFrSkill = THMALLOC(CHARACTER_FRAMEINFO, sizeof(CHARACTER_FRAMEINFO));
-		TH_PROCESS_ERROR(m_arrpCurSkill[1]->pChacFrSkill);
-		memcpy_s(m_arrpCurSkill[1]->pChacFrSkill, sizeof(CHARACTER_FRAMEINFO), ptmpSkillUnion->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->pChacFrSkill, sizeof(CHARACTER_FRAMEINFO));
-	}
+	bRet = _setSpTowerSpecialValuesWarriorLvUp();
+	TH_PROCESS_ERROR(bRet);
 
 	bRet = THTRUE;
 Exit0:
 	if (m_ptTower->emCurLevel <= THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_3)
 	{
-		CThCcCharacterSkillHanlder::getInstance()->uninitGeneralSkill(ptmpSkillUnion);
+		TH_RUN_SUCCESS(NULL != ptmpSkillUnion, CThCcCharacterSkillHanlder::getInstance()->uninitGeneralSkill(ptmpSkillUnion));
 	}
 	else
 	{
-		CThCcCharacterSkillHanlder::getInstance()->uninitWarriorSkillLv4Union(ptmpSkillUnion);
+		TH_RUN_SUCCESS(NULL != ptmpSkillUnion, CThCcCharacterSkillHanlder::getInstance()->uninitWarriorSkillLv4Union(ptmpSkillUnion));
 	}
 
+	return bRet;
+}
+
+thBool CThDefTower::_setSpTowerSpecialValuesWarriorLvUp()
+{
+	thBool bRet = THFALSE;
+	short psAniCnt = 0;
+	char* arrszpAniPath[THMAX_ANI_COUNT] = { 0 };
+	SpriteFrame* pSpFrameLvUpTower = NULL;
+
+	bRet = CThDefTower::getTowerInfo(m_ptTower->emCurLevel, THEM_DEFTOWER_TYPE::DEFTOWERTYPE_WARRIORS, NULL, NULL, arrszpAniPath, &psAniCnt, NULL, NULL, NULL);
+	TH_PROCESS_ERROR(bRet);
+
+	/* 更新防御塔和战士不同等级纹理. */
+	switch (m_ptTower->emCurLevel)
+	{
+	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1:
+	{
+		/* 1 级等级不做处理, 因为初始化的时候就做处理了. */
+		break;
+	}
+	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_2:
+	{
+		pSpFrameLvUpTower = SpriteFrameCache::getInstance()->getSpriteFrameByName("kn2dt4.png");
+		TH_PROCESS_ERROR(pSpFrameLvUpTower);
+		bRet = setNewAnimate(arrszpAniPath, psAniCnt);
+		TH_PROCESS_ERROR(bRet);
+
+		bRet = setPlayAniBuildSmoke(THTRUE);
+		TH_PROCESS_ERROR(bRet);
+
+		m_ptTower->pSpCharacter->setSpriteFrame(pSpFrameLvUpTower);
+		break;
+	}
+	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_3:
+	{
+		break;
+	}
+	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4:
+	{
+		break;
+	}
+	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_5:
+	{
+		break;
+	}
+	default:
+		break;
+	}
+
+	bRet = THTRUE;
+Exit0:
 	return bRet;
 }
 

@@ -927,24 +927,30 @@ void CThDefTowerQuickMenu::onMouseUp(EventMouse* pMouse)
 				bRet = CThBaseCharacter::getIsHoverSprite(m_arrpCurSk[s]->pChacFrSkill->pSpCharacter, vecMousePos, THFALSE);
 				if (
 					bRet && m_arrpCurSk[s]->nSkillPrice <= nPlayerMoney &&
-					pPlayerSk->pChacFrSkill->emMaxLevel > pPlayerSk->pChacFrSkill->emCurLevel && THEM_CHARACTER_LEVEL::CHARACTER_MAXLEVEL > pPlayerSk->pChacFrSkill->emCurLevel &&
-					0 != strcmp(m_arrpCurSk[s]->szarrSkill, "DfLvUp")
+					pPlayerSk->pChacFrSkill->emMaxLevel > pPlayerSk->pChacFrSkill->emCurLevel && THEM_CHARACTER_LEVEL::CHARACTER_MAXLEVEL > pPlayerSk->pChacFrSkill->emCurLevel
 					)
 				{
-					nCurLv = int(pPlayerSk->pChacFrSkill->emCurLevel);
-					TH_PROCESS_ERROR(0 <= nCurLv && THMAX_SKILL_LEVEL > nCurLv);
-					m_arrpCurSk[s]->arrpSkillLevelPoint[nCurLv]->pSpCharacter->setSpriteFrame(m_pSpFrameActiveSkillPoint);
 					m_pTaget->setSkLevelUpByName(m_arrpCurSk[s]->szarrSkill);
-					
-					m_ptTowerSkillLevelUp->pSpCharacter->setPosition(m_arrpCurSk[s]->pChacFrSkill->pSpCharacter->getPosition());
-					m_ptTowerSkillLevelUp->pSpCharacter->setVisible(THTRUE);
-					
-					bRet = getQmIsPlayAni(TH_ANITAG_TOWERSK_LVUP);
-					if (THFALSE == bRet)
+
+					if (0 != strcmp(m_arrpCurSk[s]->szarrSkill, THSK_DEFTOWER_LVUP))
 					{
-						nSkZ = m_arrpCurSk[s]->pChacFrSkill->pSpCharacter->getLocalZOrder();
-						m_ptTowerSkillLevelUp->pSpCharacter->setLocalZOrder(nSkZ + 1);
-						m_ptTowerSkillLevelUp->pSpCharacter->runAction(m_ptAniTowerSkillLevelUp->pAnimate);
+						nCurLv = int(pPlayerSk->pChacFrSkill->emCurLevel);
+						TH_PROCESS_ERROR(0 <= nCurLv && THMAX_SKILL_LEVEL > nCurLv);
+						m_arrpCurSk[s]->arrpSkillLevelPoint[nCurLv]->pSpCharacter->setSpriteFrame(m_pSpFrameActiveSkillPoint);
+
+						m_ptTowerSkillLevelUp->pSpCharacter->setPosition(m_arrpCurSk[s]->pChacFrSkill->pSpCharacter->getPosition());
+						m_ptTowerSkillLevelUp->pSpCharacter->setVisible(THTRUE);
+
+						bRet = getQmIsPlayAni(TH_ANITAG_TOWERSK_LVUP);
+						if (THFALSE == bRet)
+						{
+							nSkZ = m_arrpCurSk[s]->pChacFrSkill->pSpCharacter->getLocalZOrder();
+							m_ptTowerSkillLevelUp->pSpCharacter->setLocalZOrder(nSkZ + 1);
+							m_ptTowerSkillLevelUp->pSpCharacter->runAction(m_ptAniTowerSkillLevelUp->pAnimate);
+						}
+					}
+					else
+					{
 					}
 					break;
 				}

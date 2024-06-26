@@ -39,6 +39,8 @@
 #define TH_DLLEXPORT __declspec(dllimport)
 #endif
 
+#define THCALLBACK static
+
 /* CC use. */
 #define THMAX_CHARACTER_FSMSTATUS			16
 #define THMAX_SEQACTION						16
