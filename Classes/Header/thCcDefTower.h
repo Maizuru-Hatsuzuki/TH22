@@ -297,6 +297,7 @@ private:
 	CHARACTER_FRAMEINFO_PTR m_ptSellHoverBorder;
 	CHARACTER_FRAMEINFO_PTR m_ptMoveHoverBorder;
 	CHARACTER_FRAMEINFO_PTR m_ptSkillHoverBorder;
+	CHARACTER_FRAMEINFO_PTR m_ptLvUpHoverBorder;
 	CHARACTER_FRAMEINFO_PTR m_ptMoveRangeHalo;
 	CHARACTER_FRAMEINFO_PTR m_ptMoveSelectingMouse;
 	CHARACTER_FRAMEINFO_PTR m_ptMoveSelectedMouse;

@@ -53,6 +53,7 @@ thBool CThDefTower::init(
 	m_tChacFrameQuickMenuBg				= { NULL, NULL, NULL, THEM_DEFTOWER_TYPE::DEFTOWERTYPE_UNKNOW, THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, NULL, 0 };
 	m_tAniTag.sOffset					= THMAX_ANI_COUNT;
 	m_vecAnchorPoint					= Vec2(0.5, 0);
+	memset(m_tAniTag.arrTag, 0, sizeof(CHARACTER_ANI_TAG::_tTag) * THMAX_ANI_TAG);
 	/* AniTagTowerSummon nTag = 33 */
 	m_tAniTag.arrTag[0].sTag = m_tAniTag.sOffset + 1;
 	m_tAniTag.arrTag[0].cszpDesc = "AniTagTowerSummon";
@@ -60,8 +61,8 @@ thBool CThDefTower::init(
 	m_tAniTag.arrTag[1].sTag = m_tAniTag.sOffset + 2;
 	m_tAniTag.arrTag[1].cszpDesc = "AniTagWarriorsDie";
 	/* AniTagBuildSmoke nTag = 35 */
-	m_tAniTag.arrTag[1].sTag = m_tAniTag.sOffset + 3;
-	m_tAniTag.arrTag[1].cszpDesc = "AniTagBuildSmoke";
+	m_tAniTag.arrTag[2].sTag = m_tAniTag.sOffset + 3;
+	m_tAniTag.arrTag[2].cszpDesc = "AniTagBuildSmoke";
 
 	getBulletInfo(emBullet, szarrBulletPlistPng, szarrBulletDescPath);
 	TH_PROCESS_ERROR(0 != strcmp("\0", szarrBulletDescPath));
@@ -500,7 +501,7 @@ void CThDefTower::getAniTagByDesc(const char* cszpDesc, int* pnRet) const
 {
 	for (short i = 0; i < THMAX_ANI_TAG; i++)
 	{
-		if (0 == strcmp(m_tAniTag.arrTag[i].cszpDesc, cszpDesc))
+		if (NULL != m_tAniTag.arrTag[i].cszpDesc && 0 == strcmp(m_tAniTag.arrTag[i].cszpDesc, cszpDesc))
 		{
 			*pnRet = m_tAniTag.arrTag[i].sTag;
 			break;
@@ -860,6 +861,10 @@ void CThDefTower::setSkLevelUpByName(const char* cszpSk)
 	{
 		if (NULL != m_arrpCurSkill[s] && 0 == strcmp(cszpSk, m_arrpCurSkill[s]->szarrSkill))
 		{
+			if (0 == strcmp(m_arrpCurSkill[s]->szarrSkill, THSK_DEFTOWER_LVUP))
+			{
+				TH_CHAC_LEVELUP(m_ptTower->emCurLevel);
+			}
 			TH_CHAC_LEVELUP(m_arrpCurSkill[s]->pChacFrSkill->emCurLevel);
 			TH_RUN_SUCCESS(NULL != m_arrpCurSkill[s]->fnCallbackSkLvUp, bRet = m_arrpCurSkill[s]->fnCallbackSkLvUp(this, NULL));
 			break;
@@ -889,8 +894,8 @@ thBool CThDefTower::setNewAnimate(char** szarrpAniDesc, const short csSize)
 		getAniTagByDesc(ptmpAniDesc->szarrAniDesc, &nAniExistsPos);
 		if (-1 != nAniExistsPos)
 		{
-			/* 替换原有数据. */
-			while (0 < m_arrpAniGroup[nAniExistsPos]->pAnimate->getReferenceCount())
+			/* 替换原有数据. 引用减到 1, 剩下交给 autoRelease. */
+			while (1 < m_arrpAniGroup[nAniExistsPos]->pAnimate->getReferenceCount())
 			{
 				m_arrpAniGroup[nAniExistsPos]->pAnimate->release();
 			}
@@ -912,10 +917,10 @@ thBool CThDefTower::setNewAnimate(char** szarrpAniDesc, const short csSize)
 			pResAni->pAnimate = NULL;
 			strcpy_s(pResAni->szarrDesc, strlen(ptmpAniDesc->szarrAniDesc) + 1, ptmpAniDesc->szarrAniDesc);
 
+			m_arrpAniGroup[nAniExistsPos] = pResAni;
 			bRet = initCharacterAnimate(ptmpAniDesc, nAniExistsPos);
 			TH_PROCESS_ERROR(bRet);
 
-			m_arrpAniGroup[nAniExistsPos] = pResAni;
 			CthCcCharacterLoadHandler::getInstance()->uninitCharacterAniDesc(ptmpAniDesc);
 		}
 	}
@@ -1131,7 +1136,7 @@ thBool CThDefTower::_setSpTowerSpecialValuesWarrior()
 
 	if (NULL == m_arrpCurSkill[0])
 	{
-		if (m_ptTower->emCurLevel <= THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_3)
+		if (m_ptTower->emCurLevel <= THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_2)
 		{
 			/* LV1 ~ LV3.*/
 			bRet = CThCcCharacterSkillHanlder::getInstance()->initGeneralSkill(&ptmpSkillUnion);
@@ -1172,7 +1177,7 @@ thBool CThDefTower::_setSpTowerSpecialValuesWarrior()
 
 	bRet = THTRUE;
 Exit0:
-	if (m_ptTower->emCurLevel <= THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_3)
+	if (m_ptTower->emCurLevel <= THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_2)
 	{
 		TH_RUN_SUCCESS(NULL != ptmpSkillUnion, CThCcCharacterSkillHanlder::getInstance()->uninitGeneralSkill(ptmpSkillUnion));
 	}

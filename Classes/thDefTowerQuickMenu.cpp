@@ -23,6 +23,7 @@ CThDefTowerQuickMenu::CThDefTowerQuickMenu()
 	m_ptSellHoverBorder						= NULL;
 	m_ptMoveHoverBorder						= NULL;
 	m_ptSkillHoverBorder					= NULL;
+	m_ptLvUpHoverBorder						= NULL;
 	m_ptMoveRangeHalo						= NULL;
 	m_ptMoveSelectingMouse					= NULL;
 	m_ptMoveSelectedMouse					= NULL;
@@ -79,6 +80,13 @@ thBool CThDefTowerQuickMenu::init()
 		TH_PROCESS_ERROR(bRet);
 		m_ptSkillHoverBorder->pSpCharacter->setVisible(THFALSE);
 		this->addChild(m_ptSkillHoverBorder->pSpCharacter);
+	}
+	if (NULL == m_ptLvUpHoverBorder)
+	{
+		bRet = CThBaseCharacter::initCharacterWithPlistSimple("Quickmenu skill lvup border", cszpSpTex, 65, &m_ptLvUpHoverBorder);
+		TH_PROCESS_ERROR(bRet);
+		m_ptLvUpHoverBorder->pSpCharacter->setVisible(THFALSE);
+		this->addChild(m_ptLvUpHoverBorder->pSpCharacter);
 	}
 	if (NULL == m_ptMoveRangeHalo)
 	{
@@ -209,6 +217,7 @@ void CThDefTowerQuickMenu::uninit()
 	THFREE(m_ptMoveRangeHalo);
 	THFREE(m_ptTowerSkillLevelUp);
 	THFREE(m_ptMoveSelectingMouse);
+	THFREE(m_ptLvUpHoverBorder);
 	THFREE(m_ptMoveSelectedMouse);
 	THFREE(m_ptMoveSelectedErrorMouse);
 	THFREE(m_ptAniMovePosSelectingMouse);
@@ -234,6 +243,10 @@ void CThDefTowerQuickMenu::uninit()
 	}
 
 	CThCcCharacterSkillHanlder::getInstance()->uninitSkillUnion(m_ptQm->puChacSkill);
+	for (int i = 0; i < THMAX_TOWER_SKILL_COUNT; i++)
+	{
+		m_arrpCurSk[i] = NULL;
+	}
 
 	unscheduleUpdate();
 	CTHCcBaseHandler::getInstance()->setShowWinMouseCursor(THTRUE);
@@ -796,7 +809,7 @@ thBool CThDefTowerQuickMenu::createQmWarrior(enum THEM_CHARACTER_LEVEL emLv, con
 
 	bRet = init();
 	TH_PROCESS_ERROR(bRet);
-	bRet = createBasicQm(cfX, cfY, cfTagScale, ptDefTowerQm, emLv <= THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_3);
+	bRet = createBasicQm(cfX, cfY, cfTagScale, ptDefTowerQm, emLv <= THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_2);
 	TH_PROCESS_ERROR(bRet);
 
 	/* 低于等级 3 级的防御塔技能在 createBaseQm 实现. */
@@ -949,10 +962,14 @@ void CThDefTowerQuickMenu::onMouseUp(EventMouse* pMouse)
 							m_ptTowerSkillLevelUp->pSpCharacter->runAction(m_ptAniTowerSkillLevelUp->pAnimate);
 						}
 					}
-					else
-					{
-					}
 					break;
+				}
+				else
+				{
+					CCLOG("bRet: %d", bRet);
+					CCLOG("m_arrpCurSk[s]->nSkillPrice <= nPlayerMoney: %d", m_arrpCurSk[s]->nSkillPrice <= nPlayerMoney);
+					CCLOG("emCurLevel: %d", pPlayerSk->pChacFrSkill->emMaxLevel > pPlayerSk->pChacFrSkill->emCurLevel);
+					CCLOG("max lv: %d", THEM_CHARACTER_LEVEL::CHARACTER_MAXLEVEL > pPlayerSk->pChacFrSkill->emCurLevel);
 				}
 			}
 		}
@@ -1097,8 +1114,7 @@ void CThDefTowerQuickMenu::onMouseMove(EventMouse* pMouse)
 		if (NULL != m_arrpCurSk[s])
 		{
 			bRet = CThBaseCharacter::getIsHoverSprite(m_arrpCurSk[s]->pChacFrSkill->pSpCharacter, vecMousePos, THFALSE);
-			m_ptSkillHoverBorder->pSpCharacter->setVisible(bRet);
-
+			
 			/* 检查技能说明. */
 			getSkTextBySkillName(m_arrpCurSk[s]->szarrSkill, &pTmpSkText);
 			TH_PROCESS_ERROR(pTmpSkText);
@@ -1109,10 +1125,24 @@ void CThDefTowerQuickMenu::onMouseMove(EventMouse* pMouse)
 
 			if (bRet)
 			{
-				m_ptSkillHoverBorder->pSpCharacter->setPosition(m_arrpCurSk[s]->pChacFrSkill->pSpCharacter->getPosition());
-				m_ptSkillHoverBorder->pSpCharacter->setScale(m_arrpCurSk[s]->pChacFrSkill->pSpCharacter->getScale() + 0.05f);
-
+				if (0 == strcmp(m_arrpCurSk[s]->szarrSkill, THSK_DEFTOWER_LVUP))
+				{
+					m_ptLvUpHoverBorder->pSpCharacter->setVisible(bRet);
+					m_ptLvUpHoverBorder->pSpCharacter->setPosition(m_arrpCurSk[s]->pChacFrSkill->pSpCharacter->getPosition());
+					m_ptLvUpHoverBorder->pSpCharacter->setScale(m_arrpCurSk[s]->pChacFrSkill->pSpCharacter->getScale() + 0.05f);
+				}
+				else
+				{
+					m_ptSkillHoverBorder->pSpCharacter->setVisible(bRet);
+					m_ptSkillHoverBorder->pSpCharacter->setPosition(m_arrpCurSk[s]->pChacFrSkill->pSpCharacter->getPosition());
+					m_ptSkillHoverBorder->pSpCharacter->setScale(m_arrpCurSk[s]->pChacFrSkill->pSpCharacter->getScale() + 0.05f);
+				}
 				break;
+			}
+			else
+			{
+				m_ptLvUpHoverBorder->pSpCharacter->setVisible(THFALSE);
+				m_ptSkillHoverBorder->pSpCharacter->setVisible(THFALSE);
 			}
 		}
 	}
