@@ -1173,6 +1173,8 @@ thBool CThDefTower::_setSpTowerSpecialValuesWarrior()
 	}
 
 	bRet = _setSpTowerSpecialValuesWarriorLvUp();
+	/* ·ÀÓùËþµÄÎ»ÖÃÆ«ÒÆÎ¢µ÷. */
+	_setSpTowerSpecialValuesWarriorTowerPosition();
 	TH_PROCESS_ERROR(bRet);
 
 	bRet = THTRUE;
@@ -1211,17 +1213,12 @@ thBool CThDefTower::_setSpTowerSpecialValuesWarriorLvUp()
 	{
 		pSpFrameLvUpTower = SpriteFrameCache::getInstance()->getSpriteFrameByName("kn2dt4.png");
 		TH_PROCESS_ERROR(pSpFrameLvUpTower);
-		bRet = setNewAnimate(arrszpAniPath, psAniCnt);
-		TH_PROCESS_ERROR(bRet);
-
-		bRet = setPlayAniBuildSmoke(THTRUE);
-		TH_PROCESS_ERROR(bRet);
-
-		m_ptTower->pSpCharacter->setSpriteFrame(pSpFrameLvUpTower);
 		break;
 	}
 	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_3:
 	{
+		pSpFrameLvUpTower = SpriteFrameCache::getInstance()->getSpriteFrameByName("kn3dt4.png");
+		TH_PROCESS_ERROR(pSpFrameLvUpTower);
 		break;
 	}
 	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4:
@@ -1234,6 +1231,16 @@ thBool CThDefTower::_setSpTowerSpecialValuesWarriorLvUp()
 	}
 	default:
 		break;
+	}
+
+	if (NULL != pSpFrameLvUpTower)
+	{
+		m_ptTower->pSpCharacter->setSpriteFrame(pSpFrameLvUpTower);
+		bRet = setNewAnimate(arrszpAniPath, psAniCnt);
+		TH_PROCESS_ERROR(bRet);
+
+		bRet = setPlayAniBuildSmoke(THTRUE);
+		TH_PROCESS_ERROR(bRet);
 	}
 
 	bRet = THTRUE;
@@ -1253,8 +1260,6 @@ thBool CThDefTower::_setPlayerAniBasicWarriorTower()
 	{
 	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1:
 	{
-		m_ptTower->pSpCharacter->setPositionX(m_ptTower->pSpCharacter->getPositionX() - 8);
-		m_ptTower->pSpCharacter->setPositionY(m_ptTower->pSpCharacter->getPositionY() + 8);
 		break;
 	}
 	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_2:
@@ -1267,8 +1272,6 @@ thBool CThDefTower::_setPlayerAniBasicWarriorTower()
 	}
 	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4:
 	{
-		m_ptTower->pSpCharacter->setPositionX(m_ptTower->pSpCharacter->getPositionX() - 3);
-		m_ptTower->pSpCharacter->setPositionY(m_ptTower->pSpCharacter->getPositionY() + 12);
 
 		/* Ëþ¼âÆì. */
 		bRet = _getSpArrayVacantPos(&sVancantPos);
@@ -1300,6 +1303,41 @@ thBool CThDefTower::_setPlayerAniBasicWarriorTower()
 Exit0:
 	TH_UNINIT_CHACDESC(ptTmpChacDesc);
 	return bRet;
+}
+
+void CThDefTower::_setSpTowerSpecialValuesWarriorTowerPosition()
+{
+	switch (m_ptTower->emCurLevel)
+	{
+	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1:
+	{
+		m_ptTower->pSpCharacter->setPositionX(m_ptTower->pSpCharacter->getPositionX() - 8);
+		m_ptTower->pSpCharacter->setPositionY(m_ptTower->pSpCharacter->getPositionY() + 8);
+		break;
+	}
+	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_2:
+	{
+		m_ptTower->pSpCharacter->setPositionX(m_ptTower->pSpCharacter->getPositionX() + 3);
+		m_ptTower->pSpCharacter->setPositionY(m_ptTower->pSpCharacter->getPositionY());
+		break;
+	}
+	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_3:
+	{
+		m_ptTower->pSpCharacter->setPositionX(m_ptTower->pSpCharacter->getPositionX() + 3);
+		m_ptTower->pSpCharacter->setPositionY(m_ptTower->pSpCharacter->getPositionY());
+		break;
+	}
+	case THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_4:
+	{
+		m_ptTower->pSpCharacter->setPositionX(m_ptTower->pSpCharacter->getPositionX() - 3);
+		m_ptTower->pSpCharacter->setPositionY(m_ptTower->pSpCharacter->getPositionY() + 12);
+		break;
+	}
+	default:
+		break;
+	}
+
+	return;
 }
 
 thBool CThDefTower::_setPlayAniOpenTheDoor()

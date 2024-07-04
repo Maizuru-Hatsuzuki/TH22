@@ -25,6 +25,7 @@ struct _tQmPrice
 {
 	CHARACTER_FRAMEINFO_PTR ptBg;
 	Label* pLbText;
+	char szarrSk[THMAX_CHAR_DESC];
 };
 
 struct _tQmSkTextDesc
@@ -203,6 +204,7 @@ private:
 	thBool _setSpTowerSpecialValues();
 	thBool _setSpTowerSpecialValuesWarrior();
 	thBool _setSpTowerSpecialValuesWarriorLvUp();
+	void _setSpTowerSpecialValuesWarriorTowerPosition();
 	thBool _setPlayerAniBasicWarriorTower();
 	thBool _setPlayAniOpenTheDoor();
 	thBool _setPlayAniCloseTheDoor();
@@ -254,11 +256,13 @@ public:
 	thBool init();
 	thBool initBasicAni();
 	void uninit();
+	void uninitAllSkillIconObject();
 	static CThDefTowerQuickMenu* getInstance();
 	thBool createBasicQm(const float cfX, const float cfY, const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm, thBool bIsCreateGenSk);
 	void destoryQm();
 	thBool createQmGenera(enum THEM_CHARACTER_LEVEL emLv);
 	thBool createQmWarrior(enum THEM_CHARACTER_LEVEL emLv, const float cfX, const float cfY, const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget);
+	thBool createQmWarriorLevel3(const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget);
 	thBool createQmWarriorLevel4(const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget);
 	thBool getQmIsPlayAni(const int cnAniTag);
 	thBool getIsClickInMoveRangeHalo(Vec2 vecPosInView);
@@ -267,6 +271,7 @@ public:
 	void getSkTextBySkillName(const char* cszpSk, THQM_SKTEXT_PTR* ppRet);
 	thBool setChacSkillLevelPoint(enum THEM_CHARACTER_LEVEL emLv, TH_SKILL_PTR pSk);
 	thBool setChacSkillPrice(TH_SKILL_PTR pSk);
+	thBool resetChacSkillPrice(const char* cszpTag, const int cnCurPrice, int* pPriceRet);
 	thBool setChacSkillTextDesc(TH_SKILL_PTR pSk);
 	enum THEM_DELAY_UNINIT_FLAG getDefTowerDelayUninitType() const;
 	void setMouseCursorAni(enum THEM_QM_MOUSECURSOR emMouseType);
@@ -275,6 +280,7 @@ public:
 	void onMouseUp(EventMouse* pMouse);
 	void onMouseDown(EventMouse* pMouse);
 	void onMouseMove(EventMouse* pMouse);
+	thBool updateSkillLvUp(const short sPos);
 	void update(float dt);
 
 	virtual thBool delayUninitMonitoring();

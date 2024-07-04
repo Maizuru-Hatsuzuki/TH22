@@ -231,6 +231,19 @@ void CThDefTowerQuickMenu::uninit()
 	/* m_ptCurrentMouse 不是堆上的内存, 直接置空. */
 	m_ptCurrentMouse = NULL;
 
+	uninitAllSkillIconObject();
+
+	unscheduleUpdate();
+	CTHCcBaseHandler::getInstance()->setShowWinMouseCursor(THTRUE);
+	Director::getInstance()->getEventDispatcher()->removeEventListener(m_pMouse);
+	m_pMouse = NULL;
+	m_ptQm = NULL;
+
+	return;
+}
+
+void CThDefTowerQuickMenu::uninitAllSkillIconObject()
+{
 	for (short s = 0; s < THMAX_TOWER_SKILL_COUNT; s++)
 	{
 		TH_RUN_SUCCESS(NULL != m_arrpQmPrice[s], THFREE(m_arrpQmPrice[s]->ptBg));
@@ -248,10 +261,6 @@ void CThDefTowerQuickMenu::uninit()
 		m_arrpCurSk[i] = NULL;
 	}
 
-	unscheduleUpdate();
-	CTHCcBaseHandler::getInstance()->setShowWinMouseCursor(THTRUE);
-	Director::getInstance()->getEventDispatcher()->removeEventListener(m_pMouse);
-	m_pMouse = NULL;
 	return;
 }
 
@@ -478,6 +487,7 @@ thBool CThDefTowerQuickMenu::setChacSkillPrice(TH_SKILL_PTR pSk)
 	sprintf_s(szarrPrice, "%d", pSk->nSkillPrice);
 	m_arrpQmPrice[sTag] = THMALLOC(THQM_PRICE, sizeof(THQM_PRICE));
 	TH_PROCESS_ERROR(m_arrpQmPrice[sTag]);
+	strcpy_s(m_arrpQmPrice[sTag]->szarrSk, THMAX_CHAR_DESC, pSk->szarrSkill);
 	m_arrpQmPrice[sTag]->pLbText = Label::createWithTTF(szarrPrice, "fonts\\Marker Felt.ttf", 18);
 	TH_PROCESS_ERROR(m_arrpQmPrice[sTag]->pLbText);
 
@@ -497,6 +507,29 @@ thBool CThDefTowerQuickMenu::setChacSkillPrice(TH_SKILL_PTR pSk)
 	m_arrpQmPrice[sTag]->pLbText->setPosition(pSk->pChacFrSkill->pSpCharacter->getBoundingBox().getMidX(), fBgY - 7);
 	m_arrpQmPrice[sTag]->pLbText->setColor(tFontColor);
 
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+thBool CThDefTowerQuickMenu::resetChacSkillPrice(const char* cszpTag, const int cnCurPrice, int* pPriceRet)
+{
+	thBool bRet = THFALSE;
+	/* 基础上涨比例. */
+	const float cfBasePercIncr = 1.5f;
+	int nTagPrice = cnCurPrice * cfBasePercIncr;
+	char szPrice[6] = { 0 };
+
+	for (int i = 0; i < THMAX_TOWER_SKILL_COUNT; i++)
+	{
+		if (NULL != m_arrpQmPrice[i] && 0 == strcmp(cszpTag, m_arrpQmPrice[i]->szarrSk))
+		{
+			sprintf_s(szPrice, "%d", nTagPrice);
+			m_arrpQmPrice[i]->pLbText->setString(szPrice);
+		}
+	}
+
+	*pPriceRet = nTagPrice;
 	bRet = THTRUE;
 Exit0:
 	return bRet;
@@ -683,6 +716,7 @@ thBool CThDefTowerQuickMenu::createBasicQm(const float cfX, const float cfY, con
 	CHARACTER_FRAMEINFO_PTR ptChacSellDefTower = NULL;
 	enum THEM_CHARACTER_LEVEL emLv = THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_0;
 
+	TH_PROCESS_SUCCESS(m_ptQm);
 	m_ptQm = ptDefTowerQm;
 
 	this->setScale(0.2f);
@@ -745,7 +779,7 @@ thBool CThDefTowerQuickMenu::createBasicQm(const float cfX, const float cfY, con
 	this->addChild(ptDefTowerQm->pCommandMovement->pSpCharacter, 0, "QM_CommandMove");
 	this->addChild(ptDefTowerQm->pSellTower->pSpCharacter, 0, "QM_Sell");
 
-	/* 通用技能, 防御塔低于等级 3. */
+	/* 通用技能, 防御塔低于等级 2. */
 	if (bIsCreateGenSk)
 	{
 		emLv = m_pTaget->getDefTowerCurLv();
@@ -753,6 +787,11 @@ thBool CThDefTowerQuickMenu::createBasicQm(const float cfX, const float cfY, con
 		TH_PROCESS_ERROR(bRet);
 	}
 
+	/* 设置一下范围圈的坐标. 防御塔锚点是 0.5, 0, 也同步修改一下. */
+	m_ptMoveRangeHalo->pSpCharacter->setPosition(m_pTaget->getPosition());
+	m_ptMoveSelectedMouse->pSpCharacter->setScale(cfTagScale);
+
+Exit1:
 	bRet = THTRUE;
 Exit0:
 	return bRet;
@@ -803,7 +842,10 @@ Exit0:
 thBool CThDefTowerQuickMenu::createQmWarrior(enum THEM_CHARACTER_LEVEL emLv, const float cfX, const float cfY, const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget)
 {
 	thBool bRet = THFALSE;
-	m_pTaget = pTaget;
+	if (NULL == m_pTaget)
+	{
+		m_pTaget = pTaget;
+	}
 	m_emTagTowerType = m_pTaget->getDefTowerType();
 	m_emStepUninit = THEM_DELAY_UNINIT_FLAG::FLAG_NOTNEED_UNINIT;
 
@@ -812,7 +854,7 @@ thBool CThDefTowerQuickMenu::createQmWarrior(enum THEM_CHARACTER_LEVEL emLv, con
 	bRet = createBasicQm(cfX, cfY, cfTagScale, ptDefTowerQm, emLv <= THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_2);
 	TH_PROCESS_ERROR(bRet);
 
-	/* 低于等级 3 级的防御塔技能在 createBaseQm 实现. */
+	/* 低于等级 2 级的防御塔技能在 createBaseQm 实现. */
 	switch (emLv)
 	{
 	case CHARACTER_LEVEL_0:
@@ -822,7 +864,11 @@ thBool CThDefTowerQuickMenu::createQmWarrior(enum THEM_CHARACTER_LEVEL emLv, con
 	case CHARACTER_LEVEL_2:
 		break;
 	case CHARACTER_LEVEL_3:
+	{
+		bRet = createQmWarriorLevel3(cfTagScale, ptDefTowerQm, pTaget);
+		TH_PROCESS_ERROR(bRet);
 		break;
+	}
 	case CHARACTER_LEVEL_4:
 	{
 		bRet = createQmWarriorLevel4(cfTagScale, ptDefTowerQm, pTaget);
@@ -842,10 +888,53 @@ Exit0:
 	return bRet;
 }
 
+thBool CThDefTowerQuickMenu::createQmWarriorLevel3(const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget)
+{
+	thBool bRet = THFALSE;
+	float arrarrfSkillPos[THMAX_TOWER_SKILL_COUNT][2] = { 0 };
+
+	/* 删除普通升级图标. */
+	for (short s = 0; s < THMAX_TOWER_SKILL_COUNT; s++)
+	{
+		TH_RUN_SUCCESS(NULL != m_arrpCurSk[s], this->removeChild(m_arrpCurSk[s]->pChacFrSkill->pSpCharacter));
+		THFREE(m_arrpQmPrice[s]);
+	}
+	uninitAllSkillIconObject();
+
+	/* 添加转职技能. */
+	bRet = CThCcCharacterSkillHanlder::getInstance()->setTargetSkillUnion(ptDefTowerQm->emTowerType, ptDefTowerQm->emCharacterLevel, THTRUE, &m_ptQm->puChacSkill, &m_ptQm->nChacSkillCnt);
+	TH_PROCESS_ERROR(bRet);
+	bRet = getChacSkillPos(m_ptQm->nChacSkillCnt, arrarrfSkillPos);
+	TH_PROCESS_ERROR(bRet);
+
+	GETSK_FRAMEINFO_DTCAREERCHANGE_WARRIOR(m_ptQm)->pSpCharacter->setPositionX(TH_GETX(arrarrfSkillPos[0]));
+	GETSK_FRAMEINFO_DTCAREERCHANGE_WARRIOR(m_ptQm)->pSpCharacter->setPositionY(TH_GETY(arrarrfSkillPos[0]));
+	bRet = setChacSkillPrice(GETSK_DTCAREERCHANGE_WARRIOR(m_ptQm));
+	TH_PROCESS_ERROR(bRet);
+	bRet = setChacSkillTextDesc(GETSK_DTCAREERCHANGE_WARRIOR(m_ptQm));
+	TH_PROCESS_ERROR(bRet);
+	m_arrpCurSk[0] = GETSK_DTCAREERCHANGE_WARRIOR(m_ptQm);
+
+	this->addChild(GETSK_FRAMEINFO_DTCAREERCHANGE_WARRIOR(m_ptQm)->pSpCharacter);
+	ADDCHILD_SKPRICE_AND_SKDESC(m_arrpQmPrice, m_arrpQmSkText);
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
 thBool CThDefTowerQuickMenu::createQmWarriorLevel4(const float cfTagScale, DEFTOWER_QUICKMENU_PTR ptDefTowerQm, CThDefTower_ptr pTaget)
 {
 	thBool bRet = THFALSE;
 	float arrarrfSkillPos[THMAX_TOWER_SKILL_COUNT][2] = { 0 };
+
+	/* 删除普通升级图标. */
+	for (short s = 0; s < THMAX_TOWER_SKILL_COUNT; s++)
+	{
+		TH_RUN_SUCCESS(NULL != m_arrpCurSk[s], this->removeChild(m_arrpCurSk[s]->pChacFrSkill->pSpCharacter));
+		THFREE(m_arrpQmPrice[s]);
+	}
+	uninitAllSkillIconObject();
 
 	/* 技能图标. */
 	bRet = CThCcCharacterSkillHanlder::getInstance()->setTargetSkillUnion(ptDefTowerQm->emTowerType, ptDefTowerQm->emCharacterLevel, THTRUE, &m_ptQm->puChacSkill, &m_ptQm->nChacSkillCnt);
@@ -888,10 +977,6 @@ thBool CThDefTowerQuickMenu::createQmWarriorLevel4(const float cfTagScale, DEFTO
 
 	ADDCHILD_SKPRICE_AND_SKDESC(m_arrpQmPrice, m_arrpQmSkText);
 
-	/* 设置一下范围圈的坐标. 防御塔锚点是 0.5, 0, 也同步修改一下. */
-	m_ptMoveRangeHalo->pSpCharacter->setPosition(pTaget->getPosition());
-	m_ptMoveSelectedMouse->pSpCharacter->setScale(cfTagScale);
-
 	bRet = THTRUE;
 Exit0:
 	return bRet;
@@ -908,7 +993,7 @@ void CThDefTowerQuickMenu::onMouseUp(EventMouse* pMouse)
 	TH_SKILL_PTR pPlayerSk = NULL;
 
 	/* debug use. */
-	int nPlayerMoney = 100;
+	int nPlayerMoney = 1000;
 
 	TH_PROCESS_SUCCESS(NULL == m_ptQm);
 
@@ -962,14 +1047,21 @@ void CThDefTowerQuickMenu::onMouseUp(EventMouse* pMouse)
 							m_ptTowerSkillLevelUp->pSpCharacter->runAction(m_ptAniTowerSkillLevelUp->pAnimate);
 						}
 					}
+
+					/* 升级后更换价格或者图标. */
+					bRet = updateSkillLvUp(s);
+					TH_PROCESS_ERROR(bRet);
+
 					break;
 				}
 				else
 				{
+				#if !THDBG_FLAG_QMMOUSEUP
 					CCLOG("bRet: %d", bRet);
 					CCLOG("m_arrpCurSk[s]->nSkillPrice <= nPlayerMoney: %d", m_arrpCurSk[s]->nSkillPrice <= nPlayerMoney);
 					CCLOG("emCurLevel: %d", pPlayerSk->pChacFrSkill->emMaxLevel > pPlayerSk->pChacFrSkill->emCurLevel);
 					CCLOG("max lv: %d", THEM_CHARACTER_LEVEL::CHARACTER_MAXLEVEL > pPlayerSk->pChacFrSkill->emCurLevel);
+				#endif
 				}
 			}
 		}
@@ -1205,13 +1297,41 @@ Exit0:
 	return bRet;
 }
 
+thBool CThDefTowerQuickMenu::updateSkillLvUp(const short sPos)
+{
+	thBool bRet = THFALSE;
+	DEFTOWER_QUICKMENU tDefQm = { NULL, NULL, NULL, THEM_DEFTOWER_TYPE::DEFTOWERTYPE_UNKNOW, THEM_CHARACTER_LEVEL::CHARACTER_LEVEL_1, NULL, 0 };
+	THEM_CHARACTER_LEVEL emCurLv = m_pTaget->getDefTowerCurLv();
+
+	bRet = resetChacSkillPrice(m_arrpCurSk[sPos]->szarrSkill, m_arrpCurSk[sPos]->nSkillPrice, &m_arrpCurSk[sPos]->nSkillPrice);
+	TH_PROCESS_ERROR(bRet);
+
+	switch (m_pTaget->getDefTowerType())
+	{
+	case THEM_DEFTOWER_TYPE::DEFTOWERTYPE_WARRIORS:
+	{
+		tDefQm.emCharacterLevel = emCurLv;
+		tDefQm.emTowerType = THEM_DEFTOWER_TYPE::DEFTOWERTYPE_WARRIORS;
+		bRet = createQmWarrior(emCurLv, 0.f, 0.f, 0.f, &tDefQm, m_pTaget);
+		TH_PROCESS_ERROR(bRet);
+		break;
+	}
+	default:
+		break;
+	}
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
 void CThDefTowerQuickMenu::update(float dt)
 {
 	thBool bRet = THFALSE;
 	TH_SKILL_PTR pPlayerSk = NULL;
 
 	/* debug use. */
-	int nPlayerMoney = 100;
+	int nPlayerMoney = 1000;
 	
 	/* 更新技能图标.*/
 	for (short s = 0; s < THMAX_TOWER_SKILL_COUNT; s++)

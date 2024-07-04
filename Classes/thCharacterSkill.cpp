@@ -52,7 +52,7 @@ void CThCcCharacterSkillHanlder::uninitSkillUnion(CHARACTER_SKILL_UNION_PTR pTag
 	{
 		uninitWarriorSkillLv4Union(pTag);
 	}
-
+	pTag = NULL;
 Exit0:
 	return;
 }
@@ -105,9 +105,15 @@ thBool CThCcCharacterSkillHanlder::setWarriorSkillUnion(enum THEM_CHARACTER_LEVE
 	}
 	case CHARACTER_LEVEL_3:
 	{
-		bRet = initGeneralSkill(ppRet);
-		TH_PROCESS_ERROR(bRet);
-		(*ppRet)->ptGeneralSkill->ptDefTowerLevelUp->nSkillPrice = 270;
+		if (THTRUE == cbIsInit)
+		{
+			bRet = initWarriorSkillLv3Union(ppRet, pnSkillCnt);
+			TH_PROCESS_ERROR(bRet);
+		}
+		else
+		{
+			uninitWarriorSkillLv3Union(*ppRet);
+		}
 		*pnSkillCnt = 1;
 		break;
 	}
@@ -183,6 +189,52 @@ void CThCcCharacterSkillHanlder::uninitGeneralSkill(CHARACTER_SKILL_UNION_PTR p)
 	THFREE(p->ptGeneralSkill->ptDefTowerLevelUp);
 	THFREE(p->ptGeneralSkill);
 	THFREE(p);
+	return;
+}
+
+thBool CThCcCharacterSkillHanlder::initWarriorSkillLv3Union(CHARACTER_SKILL_UNION_PTR* ppRet, int* pnSkillCnt)
+{
+	thBool bRet = THFALSE;
+	char szarrTmpSkillIni[MAX_PATH] = { 0 };
+	CHARACTER_DESC_PTR ptChacDesc = NULL;
+	CHARACTER_SKILL_UNION_PTR puRet = THMALLOC(CHARACTER_SKILL_UNION, sizeof(CHARACTER_SKILL_UNION));
+	TH_PROCESS_ERROR(puRet);
+	puRet->ptDtCareerChangeWarrior = THMALLOC(DT_CAREERCHANGE_WARRIOR, sizeof(DT_CAREERCHANGE_WARRIOR));
+	TH_PROCESS_ERROR(puRet->ptDtCareerChangeWarrior);
+
+	/* ×ªÖ°ÕÙ»½ÈËÅ¼. */
+	TH_GETWINRESPATH(szarrTmpSkillIni, "data\\CharacterConfig\\Skill\\ChacSkLv3Doll.ini");
+	puRet->ptDtCareerChangeWarrior->ptSummonDoll = THMALLOC(TH_SKILL, sizeof(TH_SKILL));
+	TH_PROCESS_ERROR(puRet->ptDtCareerChangeWarrior->ptSummonDoll);
+
+	bRet = CthCcCharacterLoadHandler::getInstance()->getCharaterDescFromIni(szarrTmpSkillIni, &ptChacDesc);
+	TH_PROCESS_ERROR(bRet);
+	strcpy_s(puRet->ptDtCareerChangeWarrior->ptSummonDoll->szarrSkill, THMAX_CHAR_DESC, ptChacDesc->szarrSpriteName);
+	bRet = CThBaseCharacter::initCharacterWithPlist(ptChacDesc, &puRet->ptDtCareerChangeWarrior->ptSummonDoll->pChacFrSkill);
+	TH_PROCESS_ERROR(bRet);
+
+	puRet->ptDtCareerChangeWarrior->ptSummonDoll->pSpFrameActiveSkill = puRet->ptDtCareerChangeWarrior->ptSummonDoll->pChacFrSkill->pSpCharacter->getSpriteFrame();
+	puRet->ptDtCareerChangeWarrior->ptSummonDoll->pSpFrameDisableSkill = SpriteFrameCache::getInstance()->getSpriteFrameByName("Quickmenu Material_88.png");
+	TH_PROCESS_ERROR(puRet->ptDtCareerChangeWarrior->ptSummonDoll->pSpFrameDisableSkill);
+
+	bRet = CthCcCharacterLoadHandler::getInstance()->getSkillFromIni(szarrTmpSkillIni, &puRet->ptDtCareerChangeWarrior->ptSummonDoll->nSkillPrice);
+	TH_PROCESS_ERROR(bRet);
+
+	memset(puRet->ptDtCareerChangeWarrior->ptSummonDoll->arrpSkillLevelPoint, 0, sizeof(CHARACTER_FRAMEINFO_PTR) * THMAX_SKILL_LEVEL);
+	TH_UNINIT_CHACDESC(ptChacDesc);
+	puRet->ptDtCareerChangeWarrior->ptSummonDoll->fnCallbackSkLvUp = NULL;
+
+	bRet = THTRUE;
+Exit0:
+	return bRet;
+}
+
+void CThCcCharacterSkillHanlder::uninitWarriorSkillLv3Union(CHARACTER_SKILL_UNION_PTR pUnion)
+{
+	THFREE(pUnion->ptDtCareerChangeWarrior->ptSummonDoll->pChacFrSkill);
+	THFREE(pUnion->ptDtCareerChangeWarrior->ptSummonDoll);
+	THFREE(pUnion->ptDtCareerChangeWarrior);
+	THFREE(pUnion);
 	return;
 }
 

@@ -333,5 +333,8 @@
     <None Include="..\Resources\data\AnimateConfig\Warriors\LV3\AniWarriorsMove.ini">
       <Filter>Config\Animate\Warriors\LV3</Filter>
     </None>
+    <None Include="..\Resources\data\CharacterConfig\Skill\ChacSkLv3Doll.ini">
+      <Filter>Config\Character\Skill</Filter>
+    </None>
   </ItemGroup>
 </Project>

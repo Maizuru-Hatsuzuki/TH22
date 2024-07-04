@@ -19,6 +19,9 @@
 #define GETSK_FRAMEINFO_DOLLREPAIR(p)		p->puChacSkill->ptAliceMargatroidLv4Skill->ptSkDollRepair->pChacFrSkill
 #define GETSK_DOLLSTRENGTHEM(p)				p->puChacSkill->ptAliceMargatroidLv4Skill->ptSkDollStrengthem
 #define GETSK_FRAMEINFO_DOLLSTRENGTHEM(p)	p->puChacSkill->ptAliceMargatroidLv4Skill->ptSkDollStrengthem->pChacFrSkill
+#define GETSK_DTCAREERCHANGE_WARRIOR(p)		p->puChacSkill->ptDtCareerChangeWarrior->ptSummonDoll
+#define GETSK_FRAMEINFO_DTCAREERCHANGE_WARRIOR(p)		p->puChacSkill->ptDtCareerChangeWarrior->ptSummonDoll->pChacFrSkill
+
 #define ADDCHILD_SKPRICE_AND_SKDESC(arrPrice, arrDesc)												\
 do																									\
 {																									\
@@ -65,6 +68,12 @@ struct _tDefTowerGeneralSkill
 };
 typedef struct _tDefTowerGeneralSkill DEFTOWER_GENERAL_SKILL, * DEFTOWER_GENERAL_SKILL_PTR;
 
+struct _tDefTowerCareerChangeWarrior
+{
+	TH_SKILL_PTR ptSummonDoll;
+};
+typedef struct _tDefTowerCareerChangeWarrior DT_CAREERCHANGE_WARRIOR, * DT_CAREERCHANGE_WARRIOR_PTR;
+
 /* Alice Margatroid */
 struct _tWarriorLv4Skill
 {
@@ -78,6 +87,7 @@ typedef struct _tWarriorLv4Skill ALICEMARGATROID_LV4_SKILL, * ALICEMARGATROID_LV
 union _uCharacterSkill
 {
 	DEFTOWER_GENERAL_SKILL_PTR ptGeneralSkill;
+	DT_CAREERCHANGE_WARRIOR_PTR ptDtCareerChangeWarrior;
 	ALICEMARGATROID_LV4_SKILL_PTR ptAliceMargatroidLv4Skill;
 };
 typedef union _uCharacterSkill CHARACTER_SKILL_UNION, * CHARACTER_SKILL_UNION_PTR;
@@ -109,6 +119,8 @@ public:
 
 	thBool initGeneralSkill(CHARACTER_SKILL_UNION_PTR* ppRet);
 	void uninitGeneralSkill(CHARACTER_SKILL_UNION_PTR p);
+	thBool initWarriorSkillLv3Union(CHARACTER_SKILL_UNION_PTR* ppRet, int* pnSkillCnt);
+	void uninitWarriorSkillLv3Union(CHARACTER_SKILL_UNION_PTR pUnion);
 	thBool initWarriorSkillLv4Union(CHARACTER_SKILL_UNION_PTR* ppRet, int* pnSkillCnt);
 	void uninitWarriorSkillLv4Union(CHARACTER_SKILL_UNION_PTR pUnion);
 

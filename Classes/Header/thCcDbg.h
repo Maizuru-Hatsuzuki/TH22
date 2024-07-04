@@ -15,6 +15,10 @@
 #define THDBG_FLAG_MOVERANGEHALO 0
 #endif
 
+#ifndef THDBG_FLAG_QMMOUSEUP
+#define THDBG_FLAG_QMMOUSEUP 0
+#endif
+
 
 class CThCCDbg :
 	public Node
